@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using eNote.API.Data;
+using eNote.Services.Database;
 
 #nullable disable
 
-namespace eNote.API.Data.Migrations
+namespace eNote.Services.Migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -17,12 +17,12 @@ namespace eNote.API.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("eNote.Model.Models.Instrument", b =>
+            modelBuilder.Entity("eNote.Services.Database.Instrumenti", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Instrumenti");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.IznajmljivanjeInstrumenta", b =>
+            modelBuilder.Entity("eNote.Services.Database.IznajmljivanjeInstrumenta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,13 +60,10 @@ namespace eNote.API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Cijena")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DatumIznajmljivanja")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DatumPovratka")
+                    b.Property<DateTime>("DatumVracanja")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("InstrumentId")
@@ -74,6 +71,9 @@ namespace eNote.API.Data.Migrations
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Vracen")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -84,7 +84,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("IznajmljivanjeInstrumenata");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Korisnik", b =>
+            modelBuilder.Entity("eNote.Services.Database.Korisnik", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,7 +116,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Korisnici");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Kurs", b =>
+            modelBuilder.Entity("eNote.Services.Database.Kurs", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,7 +142,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Kursevi");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.MusicShop", b =>
+            modelBuilder.Entity("eNote.Services.Database.MusicShop", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,7 +163,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("MusicShops");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Obavijest", b =>
+            modelBuilder.Entity("eNote.Services.Database.Obavijest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -192,7 +192,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Obavijesti");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.OglasnaTabla", b =>
+            modelBuilder.Entity("eNote.Services.Database.OglasnaTabla", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -221,7 +221,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("OglasnaTabla");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.PredajaZadatka", b =>
+            modelBuilder.Entity("eNote.Services.Database.PredajaZadatka", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -250,7 +250,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("PredajaZadatka");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Predavanje", b =>
+            modelBuilder.Entity("eNote.Services.Database.Predavanje", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -280,7 +280,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Predavanja");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Prisustvo", b =>
+            modelBuilder.Entity("eNote.Services.Database.Prisustvo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -306,7 +306,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Prisustva");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Uloge", b =>
+            modelBuilder.Entity("eNote.Services.Database.Uloge", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,7 +323,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Uloge");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Upis", b =>
+            modelBuilder.Entity("eNote.Services.Database.Upis", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -346,7 +346,7 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Upisi");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Zadatak", b =>
+            modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -375,9 +375,9 @@ namespace eNote.API.Data.Migrations
                     b.ToTable("Zadaci");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Instrument", b =>
+            modelBuilder.Entity("eNote.Services.Database.Instrumenti", b =>
                 {
-                    b.HasOne("eNote.Model.Models.MusicShop", "MusicShop")
+                    b.HasOne("eNote.Services.Database.MusicShop", "MusicShop")
                         .WithMany("Instrumenti")
                         .HasForeignKey("MusicShopId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,15 +386,15 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("MusicShop");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.IznajmljivanjeInstrumenta", b =>
+            modelBuilder.Entity("eNote.Services.Database.IznajmljivanjeInstrumenta", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Instrument", "Instrument")
+                    b.HasOne("eNote.Services.Database.Instrumenti", "Instrument")
                         .WithMany("IznajmljivanjeInstrumenta")
                         .HasForeignKey("InstrumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eNote.Model.Models.Korisnik", "Student")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("IznajmljivanjeInstrumenta")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,9 +405,9 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Korisnik", b =>
+            modelBuilder.Entity("eNote.Services.Database.Korisnik", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Uloge", "Uloga")
+                    b.HasOne("eNote.Services.Database.Uloge", "Uloga")
                         .WithMany("Korisnici")
                         .HasForeignKey("UlogaId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -416,9 +416,9 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Uloga");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Kurs", b =>
+            modelBuilder.Entity("eNote.Services.Database.Kurs", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Korisnik", "Instruktor")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Instruktor")
                         .WithMany("Kurs")
                         .HasForeignKey("InstruktorId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -427,9 +427,9 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Instruktor");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Obavijest", b =>
+            modelBuilder.Entity("eNote.Services.Database.Obavijest", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Predavanje", "Predavanje")
+                    b.HasOne("eNote.Services.Database.Predavanje", "Predavanje")
                         .WithMany("Obavijesti")
                         .HasForeignKey("PredavanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -438,9 +438,9 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Predavanje");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.OglasnaTabla", b =>
+            modelBuilder.Entity("eNote.Services.Database.OglasnaTabla", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Korisnik", "Autor")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Autor")
                         .WithMany("PostavljeneObavijesti")
                         .HasForeignKey("AutorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -449,15 +449,15 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Autor");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.PredajaZadatka", b =>
+            modelBuilder.Entity("eNote.Services.Database.PredajaZadatka", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Korisnik", "Student")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("PredajaZadatka")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eNote.Model.Models.Zadatak", "Zadatak")
+                    b.HasOne("eNote.Services.Database.Zadatak", "Zadatak")
                         .WithMany("PredajaZadatka")
                         .HasForeignKey("ZadatakId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -468,9 +468,9 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Zadatak");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Predavanje", b =>
+            modelBuilder.Entity("eNote.Services.Database.Predavanje", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Kurs", "Kurs")
+                    b.HasOne("eNote.Services.Database.Kurs", "Kurs")
                         .WithMany("Predavanje")
                         .HasForeignKey("KursId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -479,15 +479,15 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Kurs");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Prisustvo", b =>
+            modelBuilder.Entity("eNote.Services.Database.Prisustvo", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Predavanje", "Predavanje")
+                    b.HasOne("eNote.Services.Database.Predavanje", "Predavanje")
                         .WithMany("Prisustvo")
                         .HasForeignKey("PredavanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eNote.Model.Models.Korisnik", "Student")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("Prisustvo")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -498,15 +498,15 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Upis", b =>
+            modelBuilder.Entity("eNote.Services.Database.Upis", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Kurs", "Kurs")
+                    b.HasOne("eNote.Services.Database.Kurs", "Kurs")
                         .WithMany("Upis")
                         .HasForeignKey("KursId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eNote.Model.Models.Korisnik", "Studenti")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Studenti")
                         .WithMany("Upis")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -517,9 +517,9 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Studenti");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Zadatak", b =>
+            modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>
                 {
-                    b.HasOne("eNote.Model.Models.Predavanje", "Predavanje")
+                    b.HasOne("eNote.Services.Database.Predavanje", "Predavanje")
                         .WithMany("Zadaci")
                         .HasForeignKey("PredavanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -528,12 +528,12 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Predavanje");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Instrument", b =>
+            modelBuilder.Entity("eNote.Services.Database.Instrumenti", b =>
                 {
                     b.Navigation("IznajmljivanjeInstrumenta");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Korisnik", b =>
+            modelBuilder.Entity("eNote.Services.Database.Korisnik", b =>
                 {
                     b.Navigation("IznajmljivanjeInstrumenta");
 
@@ -548,19 +548,19 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Upis");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Kurs", b =>
+            modelBuilder.Entity("eNote.Services.Database.Kurs", b =>
                 {
                     b.Navigation("Predavanje");
 
                     b.Navigation("Upis");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.MusicShop", b =>
+            modelBuilder.Entity("eNote.Services.Database.MusicShop", b =>
                 {
                     b.Navigation("Instrumenti");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Predavanje", b =>
+            modelBuilder.Entity("eNote.Services.Database.Predavanje", b =>
                 {
                     b.Navigation("Obavijesti");
 
@@ -569,12 +569,12 @@ namespace eNote.API.Data.Migrations
                     b.Navigation("Zadaci");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Uloge", b =>
+            modelBuilder.Entity("eNote.Services.Database.Uloge", b =>
                 {
                     b.Navigation("Korisnici");
                 });
 
-            modelBuilder.Entity("eNote.Model.Models.Zadatak", b =>
+            modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>
                 {
                     b.Navigation("PredajaZadatka");
                 });

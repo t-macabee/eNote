@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace eNote.API.Data.Migrations
+namespace eNote.Services.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -90,8 +90,8 @@ namespace eNote.API.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DatumIznajmljivanja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DatumPovratka = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Cijena = table.Column<int>(type: "int", nullable: false),
+                    DatumVracanja = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Vracen = table.Column<bool>(type: "bit", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     InstrumentId = table.Column<int>(type: "int", nullable: false)
                 },

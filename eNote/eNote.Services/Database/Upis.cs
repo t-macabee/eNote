@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eNote.Model.Models
+﻿namespace eNote.Services.Database
 {
     public class Upis
     {

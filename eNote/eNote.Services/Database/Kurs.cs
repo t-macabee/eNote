@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eNote.Model.Models
+﻿namespace eNote.Services.Database
 {
     public class Kurs
     {
@@ -12,8 +8,8 @@ namespace eNote.Model.Models
 
         public int InstruktorId { get; set; }
         public Korisnik Instruktor { get; set; }
-        
-        public ICollection<Predavanje> Predavanje { get; set;}
-        public ICollection<Upis> Upis { get; set;}
+
+        public ICollection<Predavanje> Predavanje { get; set; }
+        public ICollection<Upis> Upis { get; set; }
     }
 }

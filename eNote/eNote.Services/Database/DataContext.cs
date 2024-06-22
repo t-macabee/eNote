@@ -1,7 +1,12 @@
-﻿using eNote.Model.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace eNote.API.Data
+namespace eNote.Services.Database
 {
     public class DataContext : DbContext
     {
@@ -12,7 +17,7 @@ namespace eNote.API.Data
         public DbSet<Kurs> Kursevi { get; set; }
         public DbSet<Predavanje> Predavanja { get; set; }
         public DbSet<Upis> Upisi { get; set; }
-        public DbSet<Instrument> Instrumenti { get; set; }
+        public DbSet<Instrumenti> Instrumenti { get; set; }
         public DbSet<MusicShop> MusicShops { get; set; }
         public DbSet<IznajmljivanjeInstrumenta> IznajmljivanjeInstrumenata { get; set; }
         public DbSet<Obavijest> Obavijesti { get; set; }
@@ -23,13 +28,13 @@ namespace eNote.API.Data
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
+        {
             //Korisnik-uloge
             modelBuilder.Entity<Korisnik>()
                 .HasOne(k => k.Uloga)
                 .WithMany(u => u.Korisnici)
                 .HasForeignKey(k => k.UlogaId)
-                .OnDelete(DeleteBehavior.Restrict);            
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Upis
             modelBuilder.Entity<Upis>()
@@ -99,7 +104,7 @@ namespace eNote.API.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             //MusicShop-instrument
-            modelBuilder.Entity<Instrument>()
+            modelBuilder.Entity<Instrumenti>()
                 .HasOne(i => i.MusicShop)
                 .WithMany(ms => ms.Instrumenti)
                 .HasForeignKey(i => i.MusicShopId)
@@ -120,16 +125,16 @@ namespace eNote.API.Data
 
             //OglasnaTabla-instruktor
             modelBuilder.Entity<OglasnaTabla>()
-                .HasOne(o => o.Autor)
-                .WithMany(u => u.PostavljeneObavijesti)
-                .HasForeignKey(o => o.AutorId)
-                .OnDelete(DeleteBehavior.Cascade);
+               .HasOne(o => o.Autor)
+               .WithMany(u => u.PostavljeneObavijesti)
+               .HasForeignKey(o => o.AutorId)
+               .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {            
+        {
             base.OnConfiguring(optionsBuilder);
         }
     }

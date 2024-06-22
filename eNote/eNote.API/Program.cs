@@ -1,10 +1,14 @@
-using eNote.API.Data;
-using Microsoft.Data.SqlClient;
+using eNote.Services.Database;
+using eNote.Services.Interfaces;
+using eNote.Services.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddTransient<IMusicShopService, MusicShopService>();
+builder.Services.AddTransient<IInstrumentService, InstrumentService>();
 
 
 builder.Services.AddControllers();

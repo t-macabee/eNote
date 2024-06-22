@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eNote.Model.Models
+﻿namespace eNote.Services.Database
 {
     public class OglasnaTabla
     {
@@ -11,7 +7,7 @@ namespace eNote.Model.Models
         public string Sadrzaj { get; set; }
         public DateTime DatumPostavljanja { get; set; }
 
-        public int AutorId { get; set; } 
-        public Korisnik Autor { get; set; } 
+        public int AutorId { get; set; }
+        public Korisnik Autor { get; set; }
     }
 }

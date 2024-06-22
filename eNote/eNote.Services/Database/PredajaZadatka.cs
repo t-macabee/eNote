@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eNote.Model.Models
+﻿namespace eNote.Services.Database
 {
     public class PredajaZadatka
     {
         public int Id { get; set; }
-        public DateTime DatumPredaje { get; set; }        
+        public DateTime DatumPredaje { get; set; }
         public int? Ocjena { get; set; }
         //public string FilePath { get; set; } 
 
@@ -16,6 +12,5 @@ namespace eNote.Model.Models
 
         public int StudentId { get; set; }
         public Korisnik Student { get; set; }
-
     }
 }
