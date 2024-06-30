@@ -70,6 +70,9 @@ namespace eNote.Services.Migrations
                     Prezime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Telefon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    KorisnickoIme = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LozinkaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LozinkaSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UlogaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

@@ -1,6 +1,8 @@
 using eNote.Services.Database;
+using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using eNote.Services.Services;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IInstrumentService, InstrumentService>();
+builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 
 
 builder.Services.AddControllers();
@@ -19,6 +22,9 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options => 
     options.UseSqlServer(connectionString));
+
+builder.Services.AddMapster();
+MapsterConfig.RegisterMappings();
 
 var app = builder.Build();
 

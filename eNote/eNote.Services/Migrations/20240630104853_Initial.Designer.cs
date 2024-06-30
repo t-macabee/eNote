@@ -12,7 +12,7 @@ using eNote.Services.Database;
 namespace eNote.Services.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240622204017_Initial")]
+    [Migration("20240630104853_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -99,6 +99,18 @@ namespace eNote.Services.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KorisnickoIme")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LozinkaHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LozinkaSalt")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
