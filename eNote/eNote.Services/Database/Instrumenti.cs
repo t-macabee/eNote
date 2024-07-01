@@ -3,12 +3,15 @@
     public class Instrumenti
     {
         public int Id { get; set; }
-        public string Ime { get; set; }
-        public string Vrsta { get; set; }
+        public string Model { get; set; }
+        public string Proizvodjac { get; set; }        
         public string Opis { get; set; }
 
         public int MusicShopId { get; set; }
         public MusicShop MusicShop { get; set; }
+
+        public int VrstaInstrumentaId { get; set; } 
+        public VrstaInstrumenta VrstaInstrumenta { get; set; } 
 
         public ICollection<IznajmljivanjeInstrumenta> IznajmljivanjeInstrumenta { get; set; }
     }

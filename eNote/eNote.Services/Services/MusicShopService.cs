@@ -1,30 +1,33 @@
-﻿using eNote.Services.Database;
+﻿using eNote.Model.Pagination;
+using eNote.Model.SearchObjects;
+using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class MusicShopService : IMusicShopService
+    public class MusicShopService : BaseService<Model.MusicShop, MusicShopSearchObject, Database.MusicShop>, IMusicShopService
     {
-        public DataContext _context { get; set; }
-        public IMapper _mapper { get; set; }
-
-        public MusicShopService(DataContext context, IMapper mapper) 
+        public MusicShopService(eNoteContext context, IMapper mapper) : base(context, mapper)
         {
-            _context = context;  
-            _mapper = mapper;
         }
 
-        public List<Model.MusicShop> GetAll()
+        public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
         {
-            var list = _context.MusicShops.ToList();
+            var filteredQuery = base.AddFilter(search, query);
 
-            return _mapper.Map<List<Model.MusicShop>>(list);
-        }
+            if (!string.IsNullOrWhiteSpace(search?.NazivGTE))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Naziv.Contains(search.NazivGTE));
+            }
 
-        public MusicShop Insert(MusicShop request)
-        {
-            throw new NotImplementedException();
+            if (!string.IsNullOrWhiteSpace(search?.LokacijaGTE))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Adresa.Contains(search.LokacijaGTE));
+            }
+
+            return filteredQuery;
         }
     }
 }

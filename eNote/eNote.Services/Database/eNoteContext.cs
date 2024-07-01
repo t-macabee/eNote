@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using eNote.Services.Helpers;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace eNote.Services.Database
 {
-    public class DataContext : DbContext
+    public class eNoteContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public eNoteContext(DbContextOptions<eNoteContext> options) : base(options) { }
 
         public DbSet<Korisnik> Korisnici { get; set; }
         public DbSet<Uloge> Uloge { get; set; }
@@ -110,6 +111,13 @@ namespace eNote.Services.Database
                 .HasForeignKey(i => i.MusicShopId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            //Instrument-tipInstrumenta
+            modelBuilder.Entity<Instrumenti>()
+                .HasOne(i => i.VrstaInstrumenta)
+                .WithMany(v => v.Instrumenti)
+                .HasForeignKey(i => i.VrstaInstrumentaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             //Iznajmljivanje
             modelBuilder.Entity<IznajmljivanjeInstrumenta>()
                 .HasOne(r => r.Student)
@@ -131,6 +139,8 @@ namespace eNote.Services.Database
                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
+
+            SeedData.Seed(modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

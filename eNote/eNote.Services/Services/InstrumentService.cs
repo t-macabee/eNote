@@ -1,25 +1,28 @@
-﻿using eNote.Services.Database;
+﻿using eNote.Model.Pagination;
+using eNote.Model.SearchObjects;
+using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
 
 namespace eNote.Services.Services
 {
-    public class InstrumentService : IInstrumentService
+    public class InstrumentService : BaseService<Model.Instrumenti, InstrumentSearchObject, Database.Instrumenti>, IInstrumentService
     {
-        public DataContext _context { get; set; }
-        public IMapper _mapper { get; set; }
+        public InstrumentService(eNoteContext context, IMapper mapper) : base(context, mapper) { }
 
-        public InstrumentService(DataContext context, IMapper mapper)
+        public override IQueryable<Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Instrumenti> query)
         {
-            _context = context;
-            _mapper = mapper;
-        }
+            var filteredQuery = base.AddFilter(search, query);
 
-        public List<Model.Instrumenti> GetAll()
-        {
-            var list = _context.Instrumenti.ToList();
+            if(!string.IsNullOrWhiteSpace(search?.FTS))
+            {
+                filteredQuery = filteredQuery.Where(x => x.Model.Contains(search.FTS) || x.Proizvodjac.Contains(search.FTS));
+            }
 
-            return _mapper.Map<List<Model.Instrumenti>>(list);
+            return filteredQuery;
         }
     }
 }

@@ -20,7 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataContext>(options => 
+builder.Services.AddDbContext<eNoteContext>(options => 
     options.UseSqlServer(connectionString));
 
 builder.Services.AddMapster();

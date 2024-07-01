@@ -1,42 +1,75 @@
-﻿using eNote.Model.Requests.Korisnik;
+﻿using eNote.Model.Pagination;
+using eNote.Model.Requests.Korisnik;
+using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 
 namespace eNote.Services.Services
 {
     public class KorisniciService : IKorisniciService
     {
-        public DataContext _context { get; set; }
-        public IMapper _mapper { get; set; }
+        public eNoteContext context { get; set; }
+        public IMapper mapper { get; set; }
 
-        public KorisniciService(DataContext context, IMapper mapper)
+        public KorisniciService(eNoteContext context, IMapper mapper)
         {
-            _context = context;
-            _mapper = mapper;
+            this.context = context;
+            this.mapper = mapper;
         }
 
-        public List<Model.Korisnik> GetAll()
-        {
-            return _context.Korisnici
-                .Include(x => x.Uloga)
-                .ProjectToType<Model.Korisnik>()
-                .ToList();
+        public PagedResult<Model.Korisnik> GetAll(KorisnikSearchObject searchObject)
+        {        
+            var query = context.Korisnici.Include(x => x.Uloga).AsQueryable();
+
+            if(!string.IsNullOrWhiteSpace(searchObject?.ImeGTE))
+            {
+                query = query.Where(x => x.Ime.StartsWith(searchObject.ImeGTE));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchObject?.PrezimeGTE))
+            {
+                query = query.Where(x => x.Prezime.StartsWith(searchObject.PrezimeGTE));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchObject?.KorisnickoIme))
+            {
+                query = query.Where(x => x.KorisnickoIme == searchObject.KorisnickoIme);
+            }            
+
+            int count = query.Count();
+
+            if(searchObject?.Page.HasValue == true && searchObject.PageSize.HasValue == true)
+            {
+                query = query.Skip(searchObject.Page.Value * searchObject.PageSize.Value)
+                    .Take(searchObject.PageSize.Value);
+            }            
+
+            var list = query.ToList();
+
+            var resultList = mapper.Map<List<Model.Korisnik>>(list);
+
+            return new PagedResult<Model.Korisnik>
+            {
+                ResultList = resultList,
+                Count = count
+            };
         }
 
         public Model.Korisnik GetById(int id)
         {
-            return _context.Korisnici
+            return context.Korisnici
                 .Include(x => x.Uloga)
                 .Where(x => x.Id == id)
                 .ProjectToType<Model.Korisnik>()
                 .FirstOrDefault();
         }
-
 
         public Model.Korisnik Insert(KorisnikInsertRequest request)
         {
@@ -46,25 +79,25 @@ namespace eNote.Services.Services
             }
 
             var entity = new Korisnik();
-            _mapper.Map(request, entity);
+            mapper.Map(request, entity);
 
             entity.UlogaId = request.UlogaId;
             entity.LozinkaSalt = GenerateSalt();
             entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
 
-            _context.Add(entity);
-            _context.SaveChanges();
+            context.Add(entity);
+            context.SaveChanges();
 
-            _context.Entry(entity).Reference(x => x.Uloga).Load();
+            context.Entry(entity).Reference(x => x.Uloga).Load();
 
             return entity.Adapt<Model.Korisnik>();
         }
 
         public Model.Korisnik Update(int id, KorisnikUpdateRequest request)
         {
-            var entity = _context.Korisnici.Find(id);
+            var entity = context.Korisnici.Find(id);
 
-            _mapper.Map(request, entity);
+            mapper.Map(request, entity);
 
             if(request.Lozinka != null)
             {
@@ -76,11 +109,11 @@ namespace eNote.Services.Services
                 entity.LozinkaHash = GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }            
 
-            _context.SaveChanges();
+            context.SaveChanges();
 
-            _context.Entry(entity).Reference(x => x.Uloga).Load();
+            context.Entry(entity).Reference(x => x.Uloga).Load();
 
-            return _mapper.Map<Model.Korisnik>(entity);
+            return mapper.Map<Model.Korisnik>(entity);
         }
 
         public static string GenerateSalt()
@@ -103,8 +136,6 @@ namespace eNote.Services.Services
             byte[] inArray = algorithm.ComputeHash(dst);
 
             return Convert.ToBase64String(inArray);
-        }
-
-       
+        }        
     }
 }

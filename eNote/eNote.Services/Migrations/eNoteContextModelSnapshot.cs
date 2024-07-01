@@ -10,8 +10,8 @@ using eNote.Services.Database;
 
 namespace eNote.Services.Migrations
 {
-    [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(eNoteContext))]
+    partial class eNoteContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,7 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Ime")
+                    b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -41,15 +41,247 @@ namespace eNote.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Vrsta")
+                    b.Property<string>("Proizvodjac")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VrstaInstrumentaId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MusicShopId");
 
+                    b.HasIndex("VrstaInstrumentaId");
+
                     b.ToTable("Instrumenti");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Model = "J-45",
+                            MusicShopId = 1,
+                            Opis = "Ikonična akustična gitara poznata po bogatom, punom zvuku.",
+                            Proizvodjac = "Gibson",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Model = "214ce",
+                            MusicShopId = 2,
+                            Opis = "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.",
+                            Proizvodjac = "Taylor",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Model = "CD-60S",
+                            MusicShopId = 1,
+                            Opis = "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.",
+                            Proizvodjac = "Fender",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Model = "Stratocaster",
+                            MusicShopId = 2,
+                            Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.",
+                            Proizvodjac = "Fender",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Model = "Les Paul",
+                            MusicShopId = 1,
+                            Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.",
+                            Proizvodjac = "Gibson",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Model = "RG",
+                            MusicShopId = 2,
+                            Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.",
+                            Proizvodjac = "Ibanez",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Model = "Custom 24",
+                            MusicShopId = 1,
+                            Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.",
+                            Proizvodjac = "PRS",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Model = "Pacifica",
+                            MusicShopId = 2,
+                            Opis = "Svestrana električna gitara pogodna za različite žanrove.",
+                            Proizvodjac = "Yamaha",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Model = "Dinky",
+                            MusicShopId = 1,
+                            Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.",
+                            Proizvodjac = "Jackson",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Model = "C-1",
+                            MusicShopId = 2,
+                            Opis = "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.",
+                            Proizvodjac = "Schecter",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Model = "Precision Bass",
+                            MusicShopId = 1,
+                            Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.",
+                            Proizvodjac = "Fender",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Model = "SR",
+                            MusicShopId = 2,
+                            Opis = "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.",
+                            Proizvodjac = "Ibanez",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Model = "Thunderbird",
+                            MusicShopId = 1,
+                            Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.",
+                            Proizvodjac = "Gibson",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Model = "BB",
+                            MusicShopId = 2,
+                            Opis = "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.",
+                            Proizvodjac = "Yamaha",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Model = "RockBass",
+                            MusicShopId = 1,
+                            Opis = "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.",
+                            Proizvodjac = "Warwick",
+                            VrstaInstrumentaId = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Model = "Export",
+                            MusicShopId = 2,
+                            Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.",
+                            Proizvodjac = "Pearl",
+                            VrstaInstrumentaId = 3
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Model = "Imperialstar",
+                            MusicShopId = 1,
+                            Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.",
+                            Proizvodjac = "Tama",
+                            VrstaInstrumentaId = 3
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Model = "Breakbeats",
+                            MusicShopId = 2,
+                            Opis = "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.",
+                            Proizvodjac = "Ludwig",
+                            VrstaInstrumentaId = 3
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Model = "Mark VI",
+                            MusicShopId = 1,
+                            Opis = "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.",
+                            Proizvodjac = "Selmer",
+                            VrstaInstrumentaId = 2
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Model = "YAS-280",
+                            MusicShopId = 2,
+                            Opis = "Popularni saksofon među studentima i srednje naprednim sviračima.",
+                            Proizvodjac = "Yamaha",
+                            VrstaInstrumentaId = 2
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Model = "Minilogue",
+                            MusicShopId = 1,
+                            Opis = "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.",
+                            Proizvodjac = "Korg",
+                            VrstaInstrumentaId = 4
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Model = "Juno-DS",
+                            MusicShopId = 2,
+                            Opis = "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.",
+                            Proizvodjac = "Roland",
+                            VrstaInstrumentaId = 4
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Model = "Sub Phatty",
+                            MusicShopId = 1,
+                            Opis = "Analogni sintisajzer poznat po svom snažnom basu i lead tonovima.",
+                            Proizvodjac = "Moog",
+                            VrstaInstrumentaId = 4
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Model = "Stradivarius",
+                            MusicShopId = 1,
+                            Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.",
+                            Proizvodjac = "Bach",
+                            VrstaInstrumentaId = 2
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Model = "YSL-354",
+                            MusicShopId = 2,
+                            Opis = "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.",
+                            Proizvodjac = "Yamaha",
+                            VrstaInstrumentaId = 2
+                        });
                 });
 
             modelBuilder.Entity("eNote.Services.Database.IznajmljivanjeInstrumenta", b =>
@@ -173,6 +405,20 @@ namespace eNote.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MusicShops");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Adresa = "Ferhadija 15, Sarajevo",
+                            Naziv = "Bonemeal Music Shop"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Adresa = "Maršala Tita 45, Sarajevo",
+                            Naziv = "Harmonia Music Store"
+                        });
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Obavijest", b =>
@@ -333,6 +579,23 @@ namespace eNote.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Uloge");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Naziv = "Administrator"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Naziv = "Instruktor"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Naziv = "Učenik"
+                        });
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Upis", b =>
@@ -356,6 +619,50 @@ namespace eNote.Services.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Upisi");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.VrstaInstrumenta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VrstaInstrumenta");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Naziv = "Žičani instrument"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Naziv = "Limeni instrument"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Naziv = "Udaraljke"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Naziv = "Instrument s tipkama"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Naziv = "Elektronički instrumenti"
+                        });
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>
@@ -395,7 +702,15 @@ namespace eNote.Services.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("eNote.Services.Database.VrstaInstrumenta", "VrstaInstrumenta")
+                        .WithMany("Instrumenti")
+                        .HasForeignKey("VrstaInstrumentaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("MusicShop");
+
+                    b.Navigation("VrstaInstrumenta");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.IznajmljivanjeInstrumenta", b =>
@@ -584,6 +899,11 @@ namespace eNote.Services.Migrations
             modelBuilder.Entity("eNote.Services.Database.Uloge", b =>
                 {
                     b.Navigation("Korisnici");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.VrstaInstrumenta", b =>
+                {
+                    b.Navigation("Instrumenti");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>

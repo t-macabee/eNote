@@ -14,6 +14,21 @@ namespace eNote.Services.Helpers
         {
             TypeAdapterConfig<Korisnik, Model.Korisnik>
                 .NewConfig().Map(dest => dest.Uloga, src => src.Uloga.Naziv);
+
+            TypeAdapterConfig<Database.Instrumenti, Model.Instrumenti>
+                .NewConfig()
+                .Map(dest => dest.Model, src => src.Model)
+                .Map(dest => dest.Proizvodjac, src => src.Proizvodjac) 
+                .Map(dest => dest.Opis, src => src.Opis);
+
+            TypeAdapterConfig<Database.MusicShop, Model.MusicShop>
+                .NewConfig()
+                .Map(dest => dest.Naziv, src => src.Naziv)
+                .Map(dest => dest.Adresa, src => src.Adresa);
+
+            TypeAdapterConfig<Database.VrstaInstrumenta, Model.VrstaInstrumenta>
+                .NewConfig()
+                .Map(dest => dest.Naziv, src => src.Naziv);            
         }
     }
 }

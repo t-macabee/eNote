@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace eNote.Services.Migrations
 {
     /// <inheritdoc />
@@ -39,25 +41,16 @@ namespace eNote.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Instrumenti",
+                name: "VrstaInstrumenta",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ime = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Vrsta = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MusicShopId = table.Column<int>(type: "int", nullable: false)
+                    Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Instrumenti", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Instrumenti_MusicShops_MusicShopId",
-                        column: x => x.MusicShopId,
-                        principalTable: "MusicShops",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_VrstaInstrumenta", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,32 +80,32 @@ namespace eNote.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IznajmljivanjeInstrumenata",
+                name: "Instrumenti",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DatumIznajmljivanja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DatumVracanja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Vracen = table.Column<bool>(type: "bit", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: false),
-                    InstrumentId = table.Column<int>(type: "int", nullable: false)
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Proizvodjac = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MusicShopId = table.Column<int>(type: "int", nullable: false),
+                    VrstaInstrumentaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IznajmljivanjeInstrumenata", x => x.Id);
+                    table.PrimaryKey("PK_Instrumenti", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IznajmljivanjeInstrumenata_Instrumenti_InstrumentId",
-                        column: x => x.InstrumentId,
-                        principalTable: "Instrumenti",
+                        name: "FK_Instrumenti_MusicShops_MusicShopId",
+                        column: x => x.MusicShopId,
+                        principalTable: "MusicShops",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_IznajmljivanjeInstrumenata_Korisnici_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Korisnici",
+                        name: "FK_Instrumenti_VrstaInstrumenta_VrstaInstrumentaId",
+                        column: x => x.VrstaInstrumentaId,
+                        principalTable: "VrstaInstrumenta",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,6 +146,35 @@ namespace eNote.Services.Migrations
                     table.ForeignKey(
                         name: "FK_OglasnaTabla_Korisnici_AutorId",
                         column: x => x.AutorId,
+                        principalTable: "Korisnici",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IznajmljivanjeInstrumenata",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DatumIznajmljivanja = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DatumVracanja = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Vracen = table.Column<bool>(type: "bit", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    InstrumentId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IznajmljivanjeInstrumenata", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_IznajmljivanjeInstrumenata_Instrumenti_InstrumentId",
+                        column: x => x.InstrumentId,
+                        principalTable: "Instrumenti",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_IznajmljivanjeInstrumenata_Korisnici_StudentId",
+                        column: x => x.StudentId,
                         principalTable: "Korisnici",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -305,10 +327,78 @@ namespace eNote.Services.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "MusicShops",
+                columns: new[] { "Id", "Adresa", "Naziv" },
+                values: new object[,]
+                {
+                    { 1, "Ferhadija 15, Sarajevo", "Bonemeal Music Shop" },
+                    { 2, "Maršala Tita 45, Sarajevo", "Harmonia Music Store" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Uloge",
+                columns: new[] { "Id", "Naziv" },
+                values: new object[,]
+                {
+                    { 1, "Administrator" },
+                    { 2, "Instruktor" },
+                    { 3, "Učenik" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "VrstaInstrumenta",
+                columns: new[] { "Id", "Naziv" },
+                values: new object[,]
+                {
+                    { 1, "Žičani instrument" },
+                    { 2, "Limeni instrument" },
+                    { 3, "Udaraljke" },
+                    { 4, "Instrument s tipkama" },
+                    { 5, "Elektronički instrumenti" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Instrumenti",
+                columns: new[] { "Id", "Model", "MusicShopId", "Opis", "Proizvodjac", "VrstaInstrumentaId" },
+                values: new object[,]
+                {
+                    { 1, "J-45", 1, "Ikonična akustična gitara poznata po bogatom, punom zvuku.", "Gibson", 1 },
+                    { 2, "214ce", 2, "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", "Taylor", 1 },
+                    { 3, "CD-60S", 1, "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", "Fender", 1 },
+                    { 4, "Stratocaster", 2, "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", "Fender", 1 },
+                    { 5, "Les Paul", 1, "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", "Gibson", 1 },
+                    { 6, "RG", 2, "Visokoperformansna električna gitara popularna među rok i metal sviračima.", "Ibanez", 1 },
+                    { 7, "Custom 24", 1, "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", "PRS", 1 },
+                    { 8, "Pacifica", 2, "Svestrana električna gitara pogodna za različite žanrove.", "Yamaha", 1 },
+                    { 9, "Dinky", 1, "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", "Jackson", 1 },
+                    { 10, "C-1", 2, "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", "Schecter", 1 },
+                    { 11, "Precision Bass", 1, "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", "Fender", 1 },
+                    { 12, "SR", 2, "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", "Ibanez", 1 },
+                    { 13, "Thunderbird", 1, "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", "Gibson", 1 },
+                    { 14, "BB", 2, "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", "Yamaha", 1 },
+                    { 15, "RockBass", 1, "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", "Warwick", 1 },
+                    { 16, "Export", 2, "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", "Pearl", 3 },
+                    { 17, "Imperialstar", 1, "Svestran bubanj set sa izvrsnom izradom i zvukom.", "Tama", 3 },
+                    { 18, "Breakbeats", 2, "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.", "Ludwig", 3 },
+                    { 19, "Mark VI", 1, "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.", "Selmer", 2 },
+                    { 20, "YAS-280", 2, "Popularni saksofon među studentima i srednje naprednim sviračima.", "Yamaha", 2 },
+                    { 21, "Minilogue", 1, "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.", "Korg", 4 },
+                    { 22, "Juno-DS", 2, "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.", "Roland", 4 },
+                    { 23, "Sub Phatty", 1, "Analogni sintisajzer poznat po svom snažnom basu i lead tonovima.", "Moog", 4 },
+                    { 24, "Stradivarius", 1, "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.", "Bach", 2 },
+                    { 25, "YSL-354", 2, "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.", "Yamaha", 2 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Instrumenti_MusicShopId",
                 table: "Instrumenti",
                 column: "MusicShopId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Instrumenti_VrstaInstrumentaId",
+                table: "Instrumenti",
+                column: "VrstaInstrumentaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IznajmljivanjeInstrumenata_InstrumentId",
@@ -410,6 +500,9 @@ namespace eNote.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "MusicShops");
+
+            migrationBuilder.DropTable(
+                name: "VrstaInstrumenta");
 
             migrationBuilder.DropTable(
                 name: "Predavanja");

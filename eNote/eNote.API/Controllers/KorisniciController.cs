@@ -1,5 +1,7 @@
 ﻿using eNote.Model;
+using eNote.Model.Pagination;
 using eNote.Model.Requests.Korisnik;
+using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +19,9 @@ namespace eNote.API.Controllers
         }
 
         [HttpGet]
-        public List<Korisnik> GetList()
+        public PagedResult<Korisnik> GetList([FromQuery]KorisnikSearchObject searchObject)
         {
-            return _service.GetAll();
+            return _service.GetAll(searchObject);
         }
 
         [HttpGet("{id}")]
