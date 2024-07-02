@@ -9,11 +9,8 @@ using System.Threading.Tasks;
 
 namespace eNote.Services.Interfaces
 {
-    public interface IKorisniciService
+    public interface IKorisniciService : ICRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
-        PagedResult<Model.Korisnik> GetAll(KorisnikSearchObject searchObject);
-        Model.Korisnik GetById(int id);
-        Model.Korisnik Insert(KorisnikInsertRequest request);
-        Model.Korisnik Update(int id, KorisnikUpdateRequest request);
+
     }
 }

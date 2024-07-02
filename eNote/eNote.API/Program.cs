@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IInstrumentService, InstrumentService>();
+builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 
 

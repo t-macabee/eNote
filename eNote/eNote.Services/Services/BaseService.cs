@@ -4,15 +4,14 @@ using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace eNote.Services.Services
 {
-    public class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
+    public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch>
+    where TSearch : BaseSearchObject
+    where TDbEntity : class
+    where TModel : class
     {
         public eNoteContext context { get; set; }
         public IMapper mapper { get; set; }
@@ -23,21 +22,21 @@ namespace eNote.Services.Services
             this.mapper = mapper;
         }
 
-        public TModel GetById(int id)
+        public virtual TModel GetById(int id)
         {
             var entity = context.Set<TDbEntity>().Find(id);
 
-            if(entity != null)
+            if (entity != null)
             {
                 return mapper.Map<TModel>(entity);
             }
-            else 
+            else
             {
                 return null;
-            }            
+            }
         }
 
-        public PagedResult<TModel> GetPaged(TSearch search)
+        public virtual PagedResult<TModel> GetPaged(TSearch search)
         {
             var query = context.Set<TDbEntity>().AsQueryable();
 
@@ -61,9 +60,6 @@ namespace eNote.Services.Services
             };
         }
 
-        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query)
-        {
-            return query;
-        }
+        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;
     }
 }

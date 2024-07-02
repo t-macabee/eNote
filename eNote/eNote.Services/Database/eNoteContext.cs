@@ -15,6 +15,7 @@ namespace eNote.Services.Database
 
         public DbSet<Korisnik> Korisnici { get; set; }
         public DbSet<Uloge> Uloge { get; set; }
+        public DbSet<Adresa> Adresa { get; set; }
         public DbSet<Kurs> Kursevi { get; set; }
         public DbSet<Predavanje> Predavanja { get; set; }
         public DbSet<Upis> Upisi { get; set; }
@@ -35,6 +36,13 @@ namespace eNote.Services.Database
                 .HasOne(k => k.Uloga)
                 .WithMany(u => u.Korisnici)
                 .HasForeignKey(k => k.UlogaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Korisnik-adresa
+            modelBuilder.Entity<Korisnik>()
+                .HasOne(k => k.Adresa)
+                .WithMany(u => u.Korisnici)
+                .HasForeignKey(k => k.AdresaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Upis
@@ -110,6 +118,13 @@ namespace eNote.Services.Database
                 .WithMany(ms => ms.Instrumenti)
                 .HasForeignKey(i => i.MusicShopId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //MusicShop-adresa
+            modelBuilder.Entity<MusicShop>()
+                .HasOne(k => k.Adresa)
+                .WithMany(u => u.MusicShops)
+                .HasForeignKey(k => k.AdresaId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Instrument-tipInstrumenta
             modelBuilder.Entity<Instrumenti>()

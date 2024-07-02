@@ -18,17 +18,42 @@ namespace eNote.Services.Helpers
                 new Uloge { Id = 3, Naziv = "Učenik" }
             );
 
+            modelBuilder.Entity<Adresa>().HasData(
+                new Adresa { AdresaId = 1, Grad = "Gradacac", Ulica = "7. bataljon", Broj = "11" },
+                new Adresa { AdresaId = 2, Grad = "Sarajevo", Ulica = "Ferhadija", Broj = "15" },
+                new Adresa { AdresaId = 3, Grad = "Sarajevo", Ulica = "Maršala Tita", Broj = "45" }
+            );
+
+            var salt = PasswordUtils.GenerateSalt();
+            var hash = PasswordUtils.GenerateHash(salt, "admin");
+
+            modelBuilder.Entity<Korisnik>().HasData(
+                new Korisnik { 
+                    Id = 1, 
+                    Ime = "Admin", 
+                    Prezime = "Admin",  
+                    DatumRodjenja = DateTime.Now,
+                    Email = "admin@outlook.com",
+                    Telefon = "000000000",
+                    KorisnickoIme = "admin",                    
+                    LozinkaSalt = salt,
+                    LozinkaHash = hash,
+                    UlogaId = 1,
+                    AdresaId = 1
+                }
+            );
+
             modelBuilder.Entity<VrstaInstrumenta>().HasData(
-                new VrstaInstrumenta { Id = 1, Naziv = "Žičani instrument" },                
-                new VrstaInstrumenta { Id = 2, Naziv = "Limeni instrument" },
+                new VrstaInstrumenta { Id = 1, Naziv = "Žičani" },                
+                new VrstaInstrumenta { Id = 2, Naziv = "Limeni" },
                 new VrstaInstrumenta { Id = 3, Naziv = "Udaraljke" },
                 new VrstaInstrumenta { Id = 4, Naziv = "Instrument s tipkama"},
-                new VrstaInstrumenta { Id = 5, Naziv = "Elektronički instrumenti" }
+                new VrstaInstrumenta { Id = 5, Naziv = "Elektronički" }
             );
 
             modelBuilder.Entity<MusicShop>().HasData(
-                new MusicShop { Id = 1, Naziv = "Bonemeal Music Shop", Adresa = "Ferhadija 15, Sarajevo" },
-                new MusicShop { Id = 2, Naziv = "Harmonia Music Store", Adresa = "Maršala Tita 45, Sarajevo" }
+                new MusicShop { Id = 1, Naziv = "Bonemeal Music Shop", AdresaId = 2 },
+                new MusicShop { Id = 2, Naziv = "Harmonia Music Store", AdresaId = 3 }
             );
 
             modelBuilder.Entity<Instrumenti>().HasData(                

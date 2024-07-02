@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eNote.Model
+namespace eNote.Model.Requests.VrstaInstrumenta
 {
-    public class MusicShop
+    public class VrstaInstrumentaUpsertRequest
     {
-        public int Id { get; set; }
         public string Naziv { get; set; }
-        public string Adresa { get; set; }
     }
 }

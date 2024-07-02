@@ -12,7 +12,7 @@ using eNote.Services.Database;
 namespace eNote.Services.Migrations
 {
     [DbContext(typeof(eNoteContext))]
-    [Migration("20240701102056_Initial")]
+    [Migration("20240702091510_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,54 @@ namespace eNote.Services.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("eNote.Services.Database.Adresa", b =>
+                {
+                    b.Property<int>("AdresaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdresaId"));
+
+                    b.Property<string>("Broj")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ulica")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AdresaId");
+
+                    b.ToTable("Adresa");
+
+                    b.HasData(
+                        new
+                        {
+                            AdresaId = 1,
+                            Broj = "11",
+                            Grad = "Gradacac",
+                            Ulica = "7. bataljon"
+                        },
+                        new
+                        {
+                            AdresaId = 2,
+                            Broj = "15",
+                            Grad = "Sarajevo",
+                            Ulica = "Ferhadija"
+                        },
+                        new
+                        {
+                            AdresaId = 3,
+                            Broj = "45",
+                            Grad = "Sarajevo",
+                            Ulica = "Maršala Tita"
+                        });
+                });
 
             modelBuilder.Entity("eNote.Services.Database.Instrumenti", b =>
                 {
@@ -47,6 +95,12 @@ namespace eNote.Services.Migrations
                     b.Property<string>("Proizvodjac")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Slika")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("SlikaThumb")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("VrstaInstrumentaId")
                         .HasColumnType("int");
@@ -327,6 +381,12 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AdresaId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DatumRodjenja")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -350,6 +410,12 @@ namespace eNote.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("Slika")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("SlikaThumb")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("Telefon")
                         .HasColumnType("nvarchar(max)");
 
@@ -358,9 +424,27 @@ namespace eNote.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdresaId");
+
                     b.HasIndex("UlogaId");
 
                     b.ToTable("Korisnici");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AdresaId = 1,
+                            DatumRodjenja = new DateTime(2024, 7, 2, 11, 15, 9, 826, DateTimeKind.Local).AddTicks(5445),
+                            Email = "admin@outlook.com",
+                            Ime = "Admin",
+                            KorisnickoIme = "admin",
+                            LozinkaHash = "1UXPLvECxiCQ6PI2TF6WNpEj6lE=",
+                            LozinkaSalt = "kQqmO6YAjmmjThnd7Kn+KQ==",
+                            Prezime = "Admin",
+                            Telefon = "000000000",
+                            UlogaId = 1
+                        });
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Kurs", b =>
@@ -397,9 +481,8 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Adresa")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AdresaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Naziv")
                         .IsRequired()
@@ -407,19 +490,21 @@ namespace eNote.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AdresaId");
+
                     b.ToTable("MusicShops");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Adresa = "Ferhadija 15, Sarajevo",
+                            AdresaId = 2,
                             Naziv = "Bonemeal Music Shop"
                         },
                         new
                         {
                             Id = 2,
-                            Adresa = "Maršala Tita 45, Sarajevo",
+                            AdresaId = 3,
                             Naziv = "Harmonia Music Store"
                         });
                 });
@@ -644,12 +729,12 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 1,
-                            Naziv = "Žičani instrument"
+                            Naziv = "Žičani"
                         },
                         new
                         {
                             Id = 2,
-                            Naziv = "Limeni instrument"
+                            Naziv = "Limeni"
                         },
                         new
                         {
@@ -664,7 +749,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 5,
-                            Naziv = "Elektronički instrumenti"
+                            Naziv = "Elektronički"
                         });
                 });
 
@@ -737,11 +822,19 @@ namespace eNote.Services.Migrations
 
             modelBuilder.Entity("eNote.Services.Database.Korisnik", b =>
                 {
+                    b.HasOne("eNote.Services.Database.Adresa", "Adresa")
+                        .WithMany("Korisnici")
+                        .HasForeignKey("AdresaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("eNote.Services.Database.Uloge", "Uloga")
                         .WithMany("Korisnici")
                         .HasForeignKey("UlogaId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Adresa");
 
                     b.Navigation("Uloga");
                 });
@@ -755,6 +848,17 @@ namespace eNote.Services.Migrations
                         .IsRequired();
 
                     b.Navigation("Instruktor");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.MusicShop", b =>
+                {
+                    b.HasOne("eNote.Services.Database.Adresa", "Adresa")
+                        .WithMany("MusicShops")
+                        .HasForeignKey("AdresaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Adresa");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Obavijest", b =>
@@ -856,6 +960,13 @@ namespace eNote.Services.Migrations
                         .IsRequired();
 
                     b.Navigation("Predavanje");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.Adresa", b =>
+                {
+                    b.Navigation("Korisnici");
+
+                    b.Navigation("MusicShops");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Instrumenti", b =>

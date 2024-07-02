@@ -18,7 +18,7 @@ namespace eNote.API.Controllers
         }
 
         [HttpGet]
-        public PagedResult<TModel> GetAll([FromQuery] TSearch searchObject)         
+        public PagedResult<TModel> GetAll([FromQuery]TSearch searchObject)         
         {
             return service.GetPaged(searchObject);
         }
