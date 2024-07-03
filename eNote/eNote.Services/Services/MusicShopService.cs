@@ -4,6 +4,7 @@ using eNote.Model.Requests.Korisnik;
 using eNote.Model.Requests.MusicShop;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -20,33 +21,67 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.NazivGTE))
+            if (!string.IsNullOrWhiteSpace(search?.Naziv))
             {
-                query = query.Where(x => x.Naziv.Contains(search.NazivGTE));
+                query = query.Where(x => x.Naziv.Contains(search.Naziv));
             }
 
-            if (!string.IsNullOrWhiteSpace(search?.LokacijaGTE))
+            if (!string.IsNullOrWhiteSpace(search?.Adresa))
             {
-                query = query.Where(x => x.Adresa != null && $"{x.Adresa.Ulica} {x.Adresa.Broj}, {x.Adresa.Grad}".Contains(search.LokacijaGTE));
+                query = query.Include(x => x.Adresa).Where(x => x.Adresa.Grad.Contains(search.Adresa) 
+                    || x.Adresa.Ulica.Contains(search.Adresa) 
+                    || x.Adresa.Broj.Contains(search.Adresa));                
             }
-            
-            query = query.Include(x => x.Adresa);
+
+            query = QueryChain.IncludeMusicShop(query);
 
             return query;
         }
 
         public override Model.MusicShop GetById(int id)
         {
-            var entity = context.Set<MusicShop>().Include(x => x.Adresa).FirstOrDefault(x => x.Id == id);
+            var entity = QueryChain.IncludeMusicShop(context.MusicShops).FirstOrDefault(x => x.Id == id);
 
-            if (entity != null)
+            return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
+        }
+
+        public override Model.MusicShop Insert(MusicShopUpsertRequest request)
+        {
+            var adresa = AddressUtils.Create(context, request.Adresa);
+
+            var entity = new MusicShop
             {
-                return mapper.Map<Model.MusicShop>(entity);
-            }
-            else
+                Naziv = request.Naziv,
+                Adresa = adresa,
+            };
+
+            context.MusicShops.Add(entity);
+            context.SaveChanges();
+
+            var result = QueryChain.IncludeMusicShop(context.MusicShops)
+                .FirstOrDefault(x => x.Id == entity.Id);
+
+            return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
+        }
+
+        public override Model.MusicShop Update(int id, MusicShopUpsertRequest request)
+        {
+            var entity = QueryChain.IncludeMusicShop(context.MusicShops).FirstOrDefault(x => x.Id == id);
+
+            entity.Naziv = request.Naziv;
+
+            if (!string.IsNullOrEmpty(request.Adresa))
             {
-                return null;
+                AddressUtils.Update(context, entity.Adresa, request.Adresa);
+                context.SaveChanges();
             }
+
+            context.SaveChanges();
+
+            var result = QueryChain.IncludeMusicShop(context.MusicShops)
+                .FirstOrDefault(x => x.Id == entity.Id);
+
+            return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }
     }
 }

@@ -20,14 +20,14 @@ namespace eNote.Services.Services
 
         public override IQueryable<VrstaInstrumenta> AddFilter(VrstaInstrumentaSearchObject search, IQueryable<VrstaInstrumenta> query)
         {
-            var filteredQuery = base.AddFilter(search, query);
+            query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.FTS))
+            if (!string.IsNullOrWhiteSpace(search?.Naziv))
             {
-                filteredQuery = filteredQuery.Where(x => x.Naziv.Contains(search.FTS));
+                query = query.Where(x => x.Naziv.Contains(search.Naziv));
             }           
 
-            return filteredQuery;
+            return query;
         }
     }       
 }

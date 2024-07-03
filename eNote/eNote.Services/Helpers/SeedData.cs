@@ -19,9 +19,9 @@ namespace eNote.Services.Helpers
             );
 
             modelBuilder.Entity<Adresa>().HasData(
-                new Adresa { AdresaId = 1, Grad = "Gradacac", Ulica = "7. bataljon", Broj = "11" },
-                new Adresa { AdresaId = 2, Grad = "Sarajevo", Ulica = "Ferhadija", Broj = "15" },
-                new Adresa { AdresaId = 3, Grad = "Sarajevo", Ulica = "Maršala Tita", Broj = "45" }
+                new Adresa { Id = 1, Grad = "Gradacac", Ulica = "7. bataljon", Broj = "11" },
+                new Adresa { Id = 2, Grad = "Sarajevo", Ulica = "Ferhadija", Broj = "15" },
+                new Adresa { Id = 3, Grad = "Sarajevo", Ulica = "Maršala Tita", Broj = "45" }
             );
 
             var salt = PasswordUtils.GenerateSalt();

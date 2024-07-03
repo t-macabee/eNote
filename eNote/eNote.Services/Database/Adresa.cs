@@ -8,7 +8,7 @@ namespace eNote.Services.Database
 {
     public class Adresa
     {
-        public int AdresaId { get; set; }
+        public int Id { get; set; }
         public string Grad {  get; set; }
         public string Ulica { get; set; }
         public string Broj { get; set; }

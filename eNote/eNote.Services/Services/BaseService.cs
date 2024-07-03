@@ -26,14 +26,7 @@ namespace eNote.Services.Services
         {
             var entity = context.Set<TDbEntity>().Find(id);
 
-            if (entity != null)
-            {
-                return mapper.Map<TModel>(entity);
-            }
-            else
-            {
-                return null;
-            }
+            return entity != null ? mapper.Map<TModel>(entity) : null;
         }
 
         public virtual PagedResult<TModel> GetPaged(TSearch search)
@@ -49,17 +42,18 @@ namespace eNote.Services.Services
                 query = query.Skip(search.Page.Value * search.PageSize.Value)
                     .Take(search.PageSize.Value);
             }
+
             var list = query.ToList();
 
-            var resultList = mapper.Map<List<TModel>>(list);
+            var result = mapper.Map<List<TModel>>(list);  
 
             return new PagedResult<TModel>
             {
-                ResultList = resultList,
+                ResultList = result,
                 Count = count
             };
         }
-
-        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;
+        
+        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;        
     }
 }

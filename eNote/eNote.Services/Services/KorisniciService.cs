@@ -12,20 +12,20 @@ namespace eNote.Services.Services
     {
         public KorisniciService(eNoteContext context, IMapper mapper) : base(context, mapper)
         {
-        }        
+        }
 
         public override IQueryable<Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Korisnik> query)
         {
             query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.ImeGTE))
+            if (!string.IsNullOrWhiteSpace(search?.Ime))
             {
-                query = query.Where(x => x.Ime.StartsWith(search.ImeGTE));
+                query = query.Where(x => x.Ime.StartsWith(search.Ime));
             }
 
-            if (!string.IsNullOrWhiteSpace(search?.PrezimeGTE))
+            if (!string.IsNullOrWhiteSpace(search?.Prezime))
             {
-                query = query.Where(x => x.Prezime.StartsWith(search.PrezimeGTE));
+                query = query.Where(x => x.Prezime.StartsWith(search.Prezime));
             }
 
             if (!string.IsNullOrWhiteSpace(search?.KorisnickoIme))
@@ -46,30 +46,23 @@ namespace eNote.Services.Services
                     .Take(search.PageSize.Value);
             }
 
-            query = query.Include(x => x.Uloga).Include(x => x.Adresa);
+            query = QueryChain.IncludeKorisnik(context.Korisnici);
 
             return query;
         }
 
         public override Model.Korisnik GetById(int id)
         {
-            var entity = context.Set<Korisnik>().Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefault(x => x.Id == id);
+            var entity = QueryChain.IncludeKorisnik(context.Korisnici).FirstOrDefault(x => x.Id == id);
 
-            if (entity != null)
-            {
-                return mapper.Map<Model.Korisnik>(entity);
-            }
-            else
-            {
-                return null;
-            }
+            return entity != null ? mapper.Map<Model.Korisnik>(entity) : null;
         }
-        
+
         public override Model.Korisnik Insert(KorisnikInsertRequest request)
         {
             base.Insert(request);
 
-            var entity = context.Set<Korisnik>().Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+            var entity = QueryChain.IncludeKorisnik(context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
 
             return mapper.Map<Model.Korisnik>(entity);
         }
@@ -78,7 +71,7 @@ namespace eNote.Services.Services
         {
             base.Update(id, request);
 
-            var entity = context.Set<Korisnik>().Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefault(x => x.Ime == request.Ime);
+            var entity = QueryChain.IncludeKorisnik(context.Korisnici).FirstOrDefault(x => x.Ime == request.Ime);
 
             return mapper.Map<Model.Korisnik>(entity);
         }

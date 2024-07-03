@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 namespace eNote.Services.Services
 {
     public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity> : BaseService<TModel, TSearch, TDbEntity>
-     where TModel : class
-     where TSearch : BaseSearchObject
-     where TDbEntity : class
+    where TModel : class
+    where TSearch : BaseSearchObject
+    where TDbEntity : class
     {
         public CRUDService(eNoteContext context, IMapper mapper) : base(context, mapper)
         {
@@ -44,7 +44,6 @@ namespace eNote.Services.Services
 
         public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }
 
-        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }        
+        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }               
     }
-
 }

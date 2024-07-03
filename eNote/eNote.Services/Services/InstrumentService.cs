@@ -6,6 +6,7 @@ using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using eNote.Model.Pagination;
+using eNote.Services.Helpers;
 
 namespace eNote.Services.Services
 {
@@ -15,63 +16,56 @@ namespace eNote.Services.Services
         {
         }
 
-        public override Model.DTOs.Instrumenti GetById(int id)
+        public override IQueryable<Database.Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Database.Instrumenti> query)
         {
-            var entity = context.Instrumenti.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop).FirstOrDefault(x => x.Id == id);
+            query = base.AddFilter(search, query);
 
-            return entity != null ? mapper.Map<Model.DTOs.Instrumenti>(entity) : null;
-        }
+            if (!string.IsNullOrWhiteSpace(search?.Model))
+            {
+                query = query.Where(x => x.Model.StartsWith(search.Model));
+            }
 
-        public override PagedResult<Model.DTOs.Instrumenti> GetPaged(InstrumentSearchObject search)
-        {
-            var query = context.Instrumenti.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop).AsQueryable();
-
-            query = AddFilter(search, query);
+            if (!string.IsNullOrWhiteSpace(search?.Proizvodjac))
+            {
+                query = query.Where(x => x.Model.StartsWith(search.Proizvodjac));
+            }
 
             int count = query.Count();
 
             if (search?.Page.HasValue == true && search.PageSize.HasValue == true)
             {
                 query = query.Skip(search.Page.Value * search.PageSize.Value)
-                             .Take(search.PageSize.Value);
+                    .Take(search.PageSize.Value);
             }
 
-            var list = query.ToList();
+            query = QueryChain.IncludeInstrumenti(query);
 
-            var resultList = mapper.Map<List<Model.DTOs.Instrumenti>>(list);
+            return query;
+        }
 
-            return new PagedResult<Model.DTOs.Instrumenti>
-            {
-                ResultList = resultList,
-                Count = count
-            };
+        public override Model.DTOs.Instrumenti GetById(int id)
+        {
+            var entity = QueryChain.IncludeInstrumenti(context.Instrumenti).FirstOrDefault(x => x.Id == id);
+
+            return entity != null ? mapper.Map<Model.DTOs.Instrumenti>(entity) : null;
         }
 
         public override Model.DTOs.Instrumenti Insert(InstrumentInsertRequest request)
         {
-            var entity = mapper.Map<Database.Instrumenti>(request);
+            base.Insert(request);
 
-            BeforeInsert(request, entity);
-
-            context.Add(entity);
-
-            context.SaveChanges();
+            var entity = QueryChain.IncludeInstrumenti(context.Instrumenti).FirstOrDefault(x => x.Model == request.Model);
 
             return mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
 
         public override Model.DTOs.Instrumenti Update(int id, InstrumentUpdateRequest request)
         {
-            var entity = context.Set<Database.Instrumenti>().Find(id);
+            base.Update(id, request);
 
-            mapper.Map(request, entity);
-
-            BeforeUpdate(request, entity);
-
-            context.SaveChanges();
+            var entity = QueryChain.IncludeInstrumenti(context.Instrumenti).FirstOrDefault(x => x.Id == id);
 
             return mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
     }
-
 }

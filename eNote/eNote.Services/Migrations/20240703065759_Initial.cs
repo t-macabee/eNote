@@ -17,7 +17,7 @@ namespace eNote.Services.Migrations
                 name: "Adresa",
                 columns: table => new
                 {
-                    AdresaId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Grad = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Ulica = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -25,7 +25,7 @@ namespace eNote.Services.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Adresa", x => x.AdresaId);
+                    table.PrimaryKey("PK_Adresa", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,7 +70,7 @@ namespace eNote.Services.Migrations
                         name: "FK_MusicShops_Adresa_AdresaId",
                         column: x => x.AdresaId,
                         principalTable: "Adresa",
-                        principalColumn: "AdresaId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -100,7 +100,7 @@ namespace eNote.Services.Migrations
                         name: "FK_Korisnici_Adresa_AdresaId",
                         column: x => x.AdresaId,
                         principalTable: "Adresa",
-                        principalColumn: "AdresaId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Korisnici_Uloge_UlogaId",
@@ -362,7 +362,7 @@ namespace eNote.Services.Migrations
 
             migrationBuilder.InsertData(
                 table: "Adresa",
-                columns: new[] { "AdresaId", "Broj", "Grad", "Ulica" },
+                columns: new[] { "Id", "Broj", "Grad", "Ulica" },
                 values: new object[,]
                 {
                     { 1, "11", "Gradacac", "7. bataljon" },
@@ -395,7 +395,7 @@ namespace eNote.Services.Migrations
             migrationBuilder.InsertData(
                 table: "Korisnici",
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Telefon", "UlogaId" },
-                values: new object[] { 1, 1, new DateTime(2024, 7, 2, 11, 15, 9, 826, DateTimeKind.Local).AddTicks(5445), "admin@outlook.com", "Admin", "admin", "1UXPLvECxiCQ6PI2TF6WNpEj6lE=", "kQqmO6YAjmmjThnd7Kn+KQ==", "Admin", null, null, "000000000", 1 });
+                values: new object[] { 1, 1, new DateTime(2024, 7, 3, 8, 57, 59, 635, DateTimeKind.Local).AddTicks(6430), "admin@outlook.com", "Admin", "admin", "UyjGKrNo9BMWSgfbwfeinyssbFU=", "pNyxCLThBwn1CXlP8KtoyA==", "Admin", null, null, "000000000", 1 });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",

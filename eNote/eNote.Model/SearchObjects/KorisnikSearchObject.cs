@@ -7,8 +7,8 @@ namespace eNote.Model.SearchObjects
 {
     public class KorisnikSearchObject : BaseSearchObject
     {
-        public string? ImeGTE { get; set; }
-        public string? PrezimeGTE { get; set; }
+        public string? Ime { get; set; }
+        public string? Prezime { get; set; }
         public string? KorisnickoIme { get; set; }  
         public string? Grad { get; set; }
     }

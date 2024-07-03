@@ -24,11 +24,11 @@ namespace eNote.Services.Migrations
 
             modelBuilder.Entity("eNote.Services.Database.Adresa", b =>
                 {
-                    b.Property<int>("AdresaId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdresaId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Broj")
                         .IsRequired()
@@ -42,28 +42,28 @@ namespace eNote.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AdresaId");
+                    b.HasKey("Id");
 
                     b.ToTable("Adresa");
 
                     b.HasData(
                         new
                         {
-                            AdresaId = 1,
+                            Id = 1,
                             Broj = "11",
                             Grad = "Gradacac",
                             Ulica = "7. bataljon"
                         },
                         new
                         {
-                            AdresaId = 2,
+                            Id = 2,
                             Broj = "15",
                             Grad = "Sarajevo",
                             Ulica = "Ferhadija"
                         },
                         new
                         {
-                            AdresaId = 3,
+                            Id = 3,
                             Broj = "45",
                             Grad = "Sarajevo",
                             Ulica = "Maršala Tita"
@@ -432,12 +432,12 @@ namespace eNote.Services.Migrations
                         {
                             Id = 1,
                             AdresaId = 1,
-                            DatumRodjenja = new DateTime(2024, 7, 2, 11, 15, 9, 826, DateTimeKind.Local).AddTicks(5445),
+                            DatumRodjenja = new DateTime(2024, 7, 3, 8, 57, 59, 635, DateTimeKind.Local).AddTicks(6430),
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "1UXPLvECxiCQ6PI2TF6WNpEj6lE=",
-                            LozinkaSalt = "kQqmO6YAjmmjThnd7Kn+KQ==",
+                            LozinkaHash = "UyjGKrNo9BMWSgfbwfeinyssbFU=",
+                            LozinkaSalt = "pNyxCLThBwn1CXlP8KtoyA==",
                             Prezime = "Admin",
                             Telefon = "000000000",
                             UlogaId = 1
