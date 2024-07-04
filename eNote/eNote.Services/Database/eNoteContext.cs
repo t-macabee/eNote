@@ -1,4 +1,4 @@
-﻿using eNote.Services.Helpers;
+﻿using eNote.Services.Configurations;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

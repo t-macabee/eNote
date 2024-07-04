@@ -18,16 +18,26 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            query = query.Filtering(search);
+            query = query.ApplyFilters(new List<Func<IQueryable<Korisnik>, IQueryable<Korisnik>>>
+            {
+                x => !string.IsNullOrWhiteSpace(search?.Ime) ? x.Where(k => k.Ime.StartsWith(search.Ime)) : x,
+                x => !string.IsNullOrWhiteSpace(search?.Prezime) ? x.Where(k => k.Prezime.StartsWith(search.Prezime)) : x,
+                x => !string.IsNullOrWhiteSpace(search?.KorisnickoIme) ? x.Where(k => k.KorisnickoIme.StartsWith(search.KorisnickoIme)) : x,
+                x => !string.IsNullOrWhiteSpace(search?.Grad) ? x.Include(k => k.Adresa).Where(k => k.Adresa.Grad.StartsWith(search.Grad)) : x
+            });
 
-            query = QueryExtensions.QueryChain(context.Korisnici);
+            int count = query.Count();
+
+            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
+
+            query = QueryBuilder.ApplyChaining(query);
 
             return query;
         }
 
         public override Model.Korisnik GetById(int id)
         {
-            var entity = context.Korisnici.QueryChain().CompareId(id);
+            var entity = QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefault(x => x.Id == id);
 
             return entity != null ? mapper.Map<Model.Korisnik>(entity) : null;
         }
@@ -36,7 +46,7 @@ namespace eNote.Services.Services
         {
             base.Insert(request);
 
-            var entity = context.Korisnici.QueryChain().CompareProperty("KorisnickoIme", request.KorisnickoIme);
+            var entity = QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
 
             return mapper.Map<Model.Korisnik>(entity);
         }
@@ -45,7 +55,7 @@ namespace eNote.Services.Services
         {
             base.Update(id, request);
 
-            var entity = context.Korisnici.QueryChain().CompareId(id);
+            var entity = QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefault(x => x.Ime == request.Ime);
 
             return mapper.Map<Model.Korisnik>(entity);
         }

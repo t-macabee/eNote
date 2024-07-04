@@ -21,16 +21,24 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            query = query.Filtering(search);
+            query = query.ApplyFilters(new List<Func<IQueryable<MusicShop>, IQueryable<MusicShop>>>
+            {
+                 x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.Contains(search.Naziv)) : x,
+                 x => !string.IsNullOrWhiteSpace(search?.Adresa) ? x.Include(k => k.Adresa).Where(k => k.Adresa.Grad.Contains(search.Adresa)
+                                                             || k.Adresa.Ulica.Contains(search.Adresa)
+                                                             || k.Adresa.Broj.Contains(search.Adresa)) : x
+            });                    
 
-            query = QueryExtensions.QueryChain(query);
+            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
+
+            query = QueryBuilder.ApplyChaining(query);
 
             return query;
         }
 
         public override Model.MusicShop GetById(int id)
-        {
-            var entity = context.MusicShops.QueryChain().CompareId(id);
+        { 
+            var entity = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == id);
 
             return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }
@@ -48,14 +56,14 @@ namespace eNote.Services.Services
             context.MusicShops.Add(entity);
             context.SaveChanges();
 
-            var result = QueryExtensions.QueryChain(context.MusicShops).CompareId(entity.Id);
+            var result = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
 
             return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }
 
         public override Model.MusicShop Update(int id, MusicShopUpsertRequest request)
         {
-            var entity = context.MusicShops.QueryChain().CompareId(id);
+            var entity = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == id);
 
             entity.Naziv = request.Naziv;
 
@@ -67,7 +75,7 @@ namespace eNote.Services.Services
 
             context.SaveChanges();
 
-            var result = QueryExtensions.QueryChain(context.MusicShops).CompareId(entity.Id);
+            var result = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
 
             return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }

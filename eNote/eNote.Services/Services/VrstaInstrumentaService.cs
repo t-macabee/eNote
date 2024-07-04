@@ -23,7 +23,12 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            query = query.Filtering(search);
+            query = query.ApplyFilters(new List<Func<IQueryable<VrstaInstrumenta>, IQueryable<VrstaInstrumenta>>>
+            {
+                x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.StartsWith(search.Naziv)) : x,                
+            });
+
+            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
 
             return query;
         }

@@ -1,13 +1,14 @@
 ﻿using eNote.Services.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 namespace eNote.Services.Helpers
 {
-    public static class QueryExtensions
-    { 
-        public static IQueryable<TEntity> QueryChain<TEntity>(this IQueryable<TEntity> query) where TEntity: class
-        {        
+    public static class QueryBuilder
+    {
+        public static IQueryable<TEntity> ApplyChaining<TEntity>(this IQueryable<TEntity> query) where TEntity : class
+        {
             if (typeof(TEntity) == typeof(Korisnik))
             {
                 return (IQueryable<TEntity>)((IQueryable<Korisnik>)query).Include(x => x.Uloga).Include(x => x.Adresa);
@@ -20,18 +21,26 @@ namespace eNote.Services.Helpers
             {
                 return (IQueryable<TEntity>)((IQueryable<Instrumenti>)query).Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop);
             }
-            return query;        
+            return query;
         }
 
-        public static TEntity CompareId<TEntity>(this IQueryable<TEntity> query, int id) where TEntity : class
+        public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, IEnumerable<Func<IQueryable<T>, IQueryable<T>>> filters)
         {
-            return query.FirstOrDefault(x => EF.Property<int>(x, "Id") == id);
+            foreach (var filter in filters)
+            {
+                query = filter(query);
+            }
+
+            return query;
         }
-        
-        public static TEntity CompareProperty<TEntity>(this IQueryable<TEntity> query, string propertyName, object value)
-            where TEntity : class
+
+        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, int? page, int? pageSize)
         {
-            return query.FirstOrDefault($"{propertyName} == @0", value);
+            if (page.HasValue && pageSize.HasValue)
+            {
+                return query.Skip(page.Value * pageSize.Value).Take(pageSize.Value);
+            }
+            return query;
         }
     }
 }

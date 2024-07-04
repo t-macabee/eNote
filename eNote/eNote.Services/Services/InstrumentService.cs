@@ -20,16 +20,24 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            query = query.Filtering(search);
+            query = query.ApplyFilters(new List<Func<IQueryable<Database.Instrumenti>, IQueryable<Database.Instrumenti>>>
+            {
+                x => !string.IsNullOrWhiteSpace(search?.Model) ? x.Where(k => k.Model.StartsWith(search.Model)) : x,
+                x => !string.IsNullOrWhiteSpace(search?.Proizvodjac) ? x.Where(k => k.Proizvodjac.StartsWith(search.Proizvodjac)) : x,                
+            });
 
-            query = QueryExtensions.QueryChain(query);
+            int count = query.Count();
+
+            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
+
+            query = QueryBuilder.ApplyChaining(query);
 
             return query;
         }
 
         public override Model.DTOs.Instrumenti GetById(int id)
         {
-            var entity = context.Instrumenti.QueryChain().CompareId(id);
+            var entity = QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefault(x => x.Id == id);
 
             return entity != null ? mapper.Map<Model.DTOs.Instrumenti>(entity) : null;
         }
@@ -38,7 +46,7 @@ namespace eNote.Services.Services
         {
             base.Insert(request);
 
-            var entity = context.Instrumenti.QueryChain().CompareProperty("Model", request.Model);
+            var entity = QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefault(x => x.Model == request.Model);
 
             return mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
@@ -47,7 +55,7 @@ namespace eNote.Services.Services
         {
             base.Update(id, request);
 
-            var entity = context.Instrumenti.QueryChain().CompareId(id);
+            var entity = QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefault(x => x.Id == id);
 
             return mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
