@@ -21,33 +21,23 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.Naziv))
-            {
-                query = query.Where(x => x.Naziv.Contains(search.Naziv));
-            }
+            query = query.Filtering(search);
 
-            if (!string.IsNullOrWhiteSpace(search?.Adresa))
-            {
-                query = query.Include(x => x.Adresa).Where(x => x.Adresa.Grad.Contains(search.Adresa) 
-                    || x.Adresa.Ulica.Contains(search.Adresa) 
-                    || x.Adresa.Broj.Contains(search.Adresa));                
-            }
-
-            query = QueryChain.IncludeMusicShop(query);
+            query = QueryExtensions.QueryChain(query);
 
             return query;
         }
 
         public override Model.MusicShop GetById(int id)
         {
-            var entity = QueryChain.IncludeMusicShop(context.MusicShops).FirstOrDefault(x => x.Id == id);
+            var entity = context.MusicShops.QueryChain().CompareId(id);
 
             return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }
 
         public override Model.MusicShop Insert(MusicShopUpsertRequest request)
         {
-            var adresa = AddressUtils.Create(context, request.Adresa);
+            var adresa = AddressBuilder.Create(context, request.Adresa);
 
             var entity = new MusicShop
             {
@@ -58,28 +48,26 @@ namespace eNote.Services.Services
             context.MusicShops.Add(entity);
             context.SaveChanges();
 
-            var result = QueryChain.IncludeMusicShop(context.MusicShops)
-                .FirstOrDefault(x => x.Id == entity.Id);
+            var result = QueryExtensions.QueryChain(context.MusicShops).CompareId(entity.Id);
 
             return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }
 
         public override Model.MusicShop Update(int id, MusicShopUpsertRequest request)
         {
-            var entity = QueryChain.IncludeMusicShop(context.MusicShops).FirstOrDefault(x => x.Id == id);
+            var entity = context.MusicShops.QueryChain().CompareId(id);
 
             entity.Naziv = request.Naziv;
 
             if (!string.IsNullOrEmpty(request.Adresa))
             {
-                AddressUtils.Update(context, entity.Adresa, request.Adresa);
+                AddressBuilder.Update(context, entity.Adresa, request.Adresa);
                 context.SaveChanges();
             }
 
             context.SaveChanges();
 
-            var result = QueryChain.IncludeMusicShop(context.MusicShops)
-                .FirstOrDefault(x => x.Id == entity.Id);
+            var result = QueryExtensions.QueryChain(context.MusicShops).CompareId(entity.Id);
 
             return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
         }

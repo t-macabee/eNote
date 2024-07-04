@@ -20,32 +20,16 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.Model))
-            {
-                query = query.Where(x => x.Model.StartsWith(search.Model));
-            }
+            query = query.Filtering(search);
 
-            if (!string.IsNullOrWhiteSpace(search?.Proizvodjac))
-            {
-                query = query.Where(x => x.Model.StartsWith(search.Proizvodjac));
-            }
-
-            int count = query.Count();
-
-            if (search?.Page.HasValue == true && search.PageSize.HasValue == true)
-            {
-                query = query.Skip(search.Page.Value * search.PageSize.Value)
-                    .Take(search.PageSize.Value);
-            }
-
-            query = QueryChain.IncludeInstrumenti(query);
+            query = QueryExtensions.QueryChain(query);
 
             return query;
         }
 
         public override Model.DTOs.Instrumenti GetById(int id)
         {
-            var entity = QueryChain.IncludeInstrumenti(context.Instrumenti).FirstOrDefault(x => x.Id == id);
+            var entity = context.Instrumenti.QueryChain().CompareId(id);
 
             return entity != null ? mapper.Map<Model.DTOs.Instrumenti>(entity) : null;
         }
@@ -54,7 +38,7 @@ namespace eNote.Services.Services
         {
             base.Insert(request);
 
-            var entity = QueryChain.IncludeInstrumenti(context.Instrumenti).FirstOrDefault(x => x.Model == request.Model);
+            var entity = context.Instrumenti.QueryChain().CompareProperty("Model", request.Model);
 
             return mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
@@ -63,7 +47,7 @@ namespace eNote.Services.Services
         {
             base.Update(id, request);
 
-            var entity = QueryChain.IncludeInstrumenti(context.Instrumenti).FirstOrDefault(x => x.Id == id);
+            var entity = context.Instrumenti.QueryChain().CompareId(id);
 
             return mapper.Map<Model.DTOs.Instrumenti>(entity);
         }

@@ -2,6 +2,7 @@
 using eNote.Model.Requests.VrstaInstrumenta;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using System;
@@ -22,10 +23,7 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.Naziv))
-            {
-                query = query.Where(x => x.Naziv.Contains(search.Naziv));
-            }           
+            query = query.Filtering(search);
 
             return query;
         }

@@ -50,7 +50,8 @@ namespace eNote.Services.Services
             return new PagedResult<TModel>
             {
                 ResultList = result,
-                Count = count
+                Count = count,
+                CurrentPage = list.Count()
             };
         }
         

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace eNote.Services.Helpers
 {
-    public static class AddressUtils
+    public static class AddressBuilder
     {
         public static Adresa Create(eNoteContext context, string adresaString)
         {

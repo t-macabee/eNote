@@ -24,8 +24,8 @@ namespace eNote.Services.Helpers
                 new Adresa { Id = 3, Grad = "Sarajevo", Ulica = "Maršala Tita", Broj = "45" }
             );
 
-            var salt = PasswordUtils.GenerateSalt();
-            var hash = PasswordUtils.GenerateHash(salt, "admin");
+            var salt = PasswordBuilder.GenerateSalt();
+            var hash = PasswordBuilder.GenerateHash(salt, "admin");
 
             modelBuilder.Entity<Korisnik>().HasData(
                 new Korisnik { 

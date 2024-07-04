@@ -18,42 +18,16 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query);
 
-            if (!string.IsNullOrWhiteSpace(search?.Ime))
-            {
-                query = query.Where(x => x.Ime.StartsWith(search.Ime));
-            }
+            query = query.Filtering(search);
 
-            if (!string.IsNullOrWhiteSpace(search?.Prezime))
-            {
-                query = query.Where(x => x.Prezime.StartsWith(search.Prezime));
-            }
-
-            if (!string.IsNullOrWhiteSpace(search?.KorisnickoIme))
-            {
-                query = query.Where(x => x.KorisnickoIme == search.KorisnickoIme);
-            }
-
-            if (!string.IsNullOrWhiteSpace(search?.Grad))
-            {
-                query = query.Where(x => x.Adresa.Grad.StartsWith(search.Grad));
-            }
-
-            int count = query.Count();
-
-            if (search?.Page.HasValue == true && search.PageSize.HasValue == true)
-            {
-                query = query.Skip(search.Page.Value * search.PageSize.Value)
-                    .Take(search.PageSize.Value);
-            }
-
-            query = QueryChain.IncludeKorisnik(context.Korisnici);
+            query = QueryExtensions.QueryChain(context.Korisnici);
 
             return query;
         }
 
         public override Model.Korisnik GetById(int id)
         {
-            var entity = QueryChain.IncludeKorisnik(context.Korisnici).FirstOrDefault(x => x.Id == id);
+            var entity = context.Korisnici.QueryChain().CompareId(id);
 
             return entity != null ? mapper.Map<Model.Korisnik>(entity) : null;
         }
@@ -62,7 +36,7 @@ namespace eNote.Services.Services
         {
             base.Insert(request);
 
-            var entity = QueryChain.IncludeKorisnik(context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+            var entity = context.Korisnici.QueryChain().CompareProperty("KorisnickoIme", request.KorisnickoIme);
 
             return mapper.Map<Model.Korisnik>(entity);
         }
@@ -71,7 +45,7 @@ namespace eNote.Services.Services
         {
             base.Update(id, request);
 
-            var entity = QueryChain.IncludeKorisnik(context.Korisnici).FirstOrDefault(x => x.Ime == request.Ime);
+            var entity = context.Korisnici.QueryChain().CompareId(id);
 
             return mapper.Map<Model.Korisnik>(entity);
         }
@@ -85,9 +59,9 @@ namespace eNote.Services.Services
 
             entity.UlogaId = request.UlogaId;            
 
-            entity.LozinkaSalt = PasswordUtils.GenerateSalt();
+            entity.LozinkaSalt = PasswordBuilder.GenerateSalt();
 
-            entity.LozinkaHash = PasswordUtils.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+            entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
 
             base.BeforeInsert(request, entity);
         }
@@ -100,8 +74,8 @@ namespace eNote.Services.Services
                 {
                     throw new Exception("Lozinka i lozinka potvrda moraju biti iste!");
                 }
-                entity.LozinkaSalt = PasswordUtils.GenerateSalt();
-                entity.LozinkaHash = PasswordUtils.GenerateHash(entity.LozinkaSalt, request.Lozinka);
+                entity.LozinkaSalt = PasswordBuilder.GenerateSalt();
+                entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
             base.BeforeUpdate(request, entity);
         }                

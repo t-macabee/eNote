@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace eNote.Services.Helpers
 {
-    public static class PasswordUtils
+    public static class PasswordBuilder
     {
         public static string GenerateSalt()
         {

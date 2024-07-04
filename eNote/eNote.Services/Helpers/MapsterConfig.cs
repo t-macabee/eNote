@@ -14,7 +14,7 @@ namespace eNote.Services.Helpers
                 .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.ToString("d"))
                 .Map(dest => dest.Adresa, src => src.Adresa != null ? $"{src.Adresa.Ulica} {src.Adresa.Broj}, {src.Adresa.Grad}" : null);
             
-            TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
+            TypeAdapterConfig<Instrumenti, Model.DTOs.Instrumenti>
                 .NewConfig()
                 .Map(dest => dest.Model, src => src.Model)
                 .Map(dest => dest.Proizvodjac, src => src.Proizvodjac)
@@ -22,20 +22,20 @@ namespace eNote.Services.Helpers
                 .Map(dest => dest.MusicShop, src => src.MusicShop != null ? src.MusicShop.Naziv : null)
                 .Map(dest => dest.VrstaInstrumenta, src => src.VrstaInstrumenta != null ? src.VrstaInstrumenta.Naziv : null);
 
-            TypeAdapterConfig<MusicShopUpsertRequest, Database.MusicShop>
+            TypeAdapterConfig<MusicShopUpsertRequest, MusicShop>
                 .NewConfig()
                 .Ignore(dest => dest.Adresa);
 
-            TypeAdapterConfig<Database.MusicShop, Model.MusicShop>
+            TypeAdapterConfig<MusicShop, Model.MusicShop>
                 .NewConfig()
                 .Map(dest => dest.Naziv, src => src.Naziv)
                 .Map(dest => dest.AdresaString, src => src.Adresa != null ? $"{src.Adresa.Ulica} {src.Adresa.Broj}, {src.Adresa.Grad}" : null);
             
-            TypeAdapterConfig<Database.VrstaInstrumenta, Model.VrstaInstrumenta>
+            TypeAdapterConfig<VrstaInstrumenta, Model.VrstaInstrumenta>
                 .NewConfig()
                 .Map(dest => dest.Naziv, src => src.Naziv);
             
-            TypeAdapterConfig<Database.Adresa, Model.DTOs.Adresa>
+            TypeAdapterConfig<Adresa, Model.DTOs.Adresa>
                 .NewConfig()
                 .Map(dest => dest.Id, src => src.Id)  
                 .Map(dest => dest.Grad, src => src.Grad)
