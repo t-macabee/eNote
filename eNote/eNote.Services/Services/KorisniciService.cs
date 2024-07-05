@@ -1,24 +1,27 @@
-﻿using eNote.Model.Requests.Korisnik;
+﻿using eNote.Model;
+using eNote.Model.Requests.Korisnik;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.Extensions.Logging;
 
 namespace eNote.Services.Services
 {
     public class KorisniciService : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>, IKorisniciService
-    {
+    {       
         public KorisniciService(eNoteContext context, IMapper mapper) : base(context, mapper)
-        {
+        {            
         }
 
-        public override IQueryable<Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Korisnik> query)
+        public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
             query = base.AddFilter(search, query);
 
-            query = query.ApplyFilters(new List<Func<IQueryable<Korisnik>, IQueryable<Korisnik>>>
+            query = query.ApplyFilters(new List<Func<IQueryable<Database.Korisnik>, IQueryable<Database.Korisnik>>>
             {
                 x => !string.IsNullOrWhiteSpace(search?.Ime) ? x.Where(k => k.Ime.StartsWith(search.Ime)) : x,
                 x => !string.IsNullOrWhiteSpace(search?.Prezime) ? x.Where(k => k.Prezime.StartsWith(search.Prezime)) : x,
@@ -60,8 +63,27 @@ namespace eNote.Services.Services
             return mapper.Map<Model.Korisnik>(entity);
         }
 
-        public override void BeforeInsert(KorisnikInsertRequest request, Korisnik entity)
+        public Model.Korisnik Login(string korisnickoIme, string lozinka)
         {
+            var entity = context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == korisnickoIme);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var hash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, lozinka);
+
+            if (hash != entity.LozinkaHash)
+            {
+                return null;
+            }
+
+            return mapper.Map<Model.Korisnik>(entity);
+        }
+
+        public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
+        {            
             if (request.Lozinka != request.LozinkaPotvrda)
             {
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
@@ -76,7 +98,7 @@ namespace eNote.Services.Services
             base.BeforeInsert(request, entity);
         }
 
-        public override void BeforeUpdate(KorisnikUpdateRequest request, Korisnik entity)
+        public override void BeforeUpdate(KorisnikUpdateRequest request, Database.Korisnik entity)
         {
             if (request.Lozinka != null)
             {
@@ -88,6 +110,6 @@ namespace eNote.Services.Services
                 entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
             base.BeforeUpdate(request, entity);
-        }                
+        }
     }
 }

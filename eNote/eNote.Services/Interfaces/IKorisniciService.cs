@@ -11,6 +11,6 @@ namespace eNote.Services.Interfaces
 {
     public interface IKorisniciService : ICRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
-
+        Model.Korisnik Login(string korisnickoIme, string lozinka);
     }
 }
