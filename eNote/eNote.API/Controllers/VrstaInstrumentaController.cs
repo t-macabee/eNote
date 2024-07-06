@@ -6,12 +6,9 @@ using eNote.Services.Services;
 
 namespace eNote.API.Controllers
 {
-    public class VrstaInstrumentaController : CRUDController<Model.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>
+    public class VrstaInstrumentaController(IVrstaInstrumentaService service) 
+        : CRUDController<Model.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>(service)
     {
-        public VrstaInstrumentaController(IVrstaInstrumentaService service) : base(service)
-        {
-        }
+      
     }
-
-
 }

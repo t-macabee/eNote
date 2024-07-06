@@ -6,9 +6,9 @@ namespace eNote.Model.Requests.Instrument
 {
     public class InstrumentInsertRequest
     {        
-        public string Model { get; set; }
-        public string Proizvodjac { get; set; }
-        public string Opis { get; set; }
+        public string Model { get; set; } = string.Empty;
+        public string Proizvodjac { get; set; } = string.Empty;
+        public string Opis { get; set; } = string.Empty;
         public int VrstaInstrumentaId { get; set; }
         public int? MusicShopId { get; set; }
     }

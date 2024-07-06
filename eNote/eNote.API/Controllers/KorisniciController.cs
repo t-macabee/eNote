@@ -3,10 +3,7 @@ using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
 namespace eNote.API.Controllers
 {
-    public class KorisniciController : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
+    public class KorisniciController(IKorisniciService service) : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>(service)
     {
-        public KorisniciController(IKorisniciService service) : base(service)
-        {
-        }
     }
 }

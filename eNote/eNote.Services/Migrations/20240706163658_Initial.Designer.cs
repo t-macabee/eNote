@@ -11,8 +11,8 @@ using eNote.Services.Database;
 
 namespace eNote.Services.Migrations
 {
-    [DbContext(typeof(eNoteContext))]
-    [Migration("20240703065759_Initial")]
+    [DbContext(typeof(ENoteContext))]
+    [Migration("20240706163658_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -435,12 +435,12 @@ namespace eNote.Services.Migrations
                         {
                             Id = 1,
                             AdresaId = 1,
-                            DatumRodjenja = new DateTime(2024, 7, 3, 8, 57, 59, 635, DateTimeKind.Local).AddTicks(6430),
+                            DatumRodjenja = new DateTime(2024, 7, 6, 18, 36, 58, 461, DateTimeKind.Local).AddTicks(8065),
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "UyjGKrNo9BMWSgfbwfeinyssbFU=",
-                            LozinkaSalt = "pNyxCLThBwn1CXlP8KtoyA==",
+                            LozinkaHash = "dmjSOdxgn4sh6R+Inzi3OXCLeuMoWSzTIgJILQdST8w=",
+                            LozinkaSalt = "SDg8ILdzWoi1QMiZxRTIhA==",
                             Prezime = "Admin",
                             Telefon = "000000000",
                             UlogaId = 1

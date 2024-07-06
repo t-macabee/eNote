@@ -1,4 +1,5 @@
-﻿using eNote.Model.Requests.MusicShop;
+﻿using eNote.Model.DTOs;
+using eNote.Model.Requests.MusicShop;
 using eNote.Services.Database;
 using Mapster;
 
@@ -14,33 +15,19 @@ namespace eNote.Services.Configurations
                 .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.ToString("d"))
                 .Map(dest => dest.Adresa, src => src.Adresa != null ? $"{src.Adresa.Ulica} {src.Adresa.Broj}, {src.Adresa.Grad}" : null);
 
-            TypeAdapterConfig<Instrumenti, Model.DTOs.Instrumenti>
+            TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
                 .NewConfig()
-                .Map(dest => dest.Model, src => src.Model)
-                .Map(dest => dest.Proizvodjac, src => src.Proizvodjac)
-                .Map(dest => dest.Opis, src => src.Opis)
-                .Map(dest => dest.MusicShop, src => src.MusicShop != null ? src.MusicShop.Naziv : null)
-                .Map(dest => dest.VrstaInstrumenta, src => src.VrstaInstrumenta != null ? src.VrstaInstrumenta.Naziv : null);
-
-            TypeAdapterConfig<MusicShopUpsertRequest, MusicShop>
-                .NewConfig()
-                .Ignore(dest => dest.Adresa);
+                .Map(dest => dest.VrstaInstrumenta, src => src.VrstaInstrumenta != null ? src.VrstaInstrumenta.Naziv : null)
+                .Map(dest => dest.MusicShop, src => src.MusicShop != null ? src.MusicShop.Naziv : null);
 
             TypeAdapterConfig<MusicShop, Model.MusicShop>
-                .NewConfig()
-                .Map(dest => dest.Naziv, src => src.Naziv)
-                .Map(dest => dest.AdresaString, src => src.Adresa != null ? $"{src.Adresa.Ulica} {src.Adresa.Broj}, {src.Adresa.Grad}" : null);
+                .NewConfig()                
+                .Map(dest => dest.Adresa, src => src.Adresa != null ? $"{src.Adresa.Grad}, {src.Adresa.Ulica} {src.Adresa.Broj}" : null);
 
+            TypeAdapterConfig<Database.Adresa, Model.DTOs.Adresa>
+                .NewConfig();
             TypeAdapterConfig<VrstaInstrumenta, Model.VrstaInstrumenta>
-                .NewConfig()
-                .Map(dest => dest.Naziv, src => src.Naziv);
-
-            TypeAdapterConfig<Adresa, Model.DTOs.Adresa>
-                .NewConfig()
-                .Map(dest => dest.Id, src => src.Id)
-                .Map(dest => dest.Grad, src => src.Grad)
-                .Map(dest => dest.Ulica, src => src.Ulica)
-                .Map(dest => dest.Broj, src => src.Broj);
+                .NewConfig();
 
             TypeAdapterConfig.GlobalSettings.Compile();
         }

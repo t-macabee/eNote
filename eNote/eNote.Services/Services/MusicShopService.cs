@@ -11,23 +11,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class MusicShopService : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopUpsertRequest, MusicShopUpsertRequest, Database.MusicShop>, IMusicShopService
+    public class MusicShopService(ENoteContext context, IMapper mapper) 
+        : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopUpsertRequest, MusicShopUpsertRequest, Database.MusicShop>(context, mapper), IMusicShopService
     {
-        public MusicShopService(eNoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
         public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
         {
             query = base.AddFilter(search, query);
 
-            query = query.ApplyFilters(new List<Func<IQueryable<MusicShop>, IQueryable<MusicShop>>>
-            {
-                 x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.Contains(search.Naziv)) : x,
-                 x => !string.IsNullOrWhiteSpace(search?.Adresa) ? x.Include(k => k.Adresa).Where(k => k.Adresa.Grad.Contains(search.Adresa)
-                                                             || k.Adresa.Ulica.Contains(search.Adresa)
-                                                             || k.Adresa.Broj.Contains(search.Adresa)) : x
-            });                    
+            query = query.ApplyFilters(
+            [
+                x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.Contains(search.Naziv)) : x,
+                x => !string.IsNullOrWhiteSpace(search?.Adresa) ? x.Include(k => k.Adresa)
+                    .Where(k => k.Adresa != null && (k.Adresa.Grad.Contains(search.Adresa) ||
+                                                    k.Adresa.Ulica.Contains(search.Adresa) || 
+                                                    k.Adresa.Broj.Contains(search.Adresa))) : x
+            ]);
 
             query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
 
@@ -38,14 +36,14 @@ namespace eNote.Services.Services
 
         public override Model.MusicShop GetById(int id)
         { 
-            var entity = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == id);
+            var entity = QueryBuilder.ApplyChaining(Context.MusicShops).FirstOrDefault(x => x.Id == id);
 
-            return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<Model.MusicShop>(entity);
         }
 
         public override Model.MusicShop Insert(MusicShopUpsertRequest request)
         {
-            var adresa = AddressBuilder.Create(context, request.Adresa);
+            var adresa = AddressBuilder.Create(Context, request.Adresa);
 
             var entity = new MusicShop
             {
@@ -53,31 +51,37 @@ namespace eNote.Services.Services
                 Adresa = adresa,
             };
 
-            context.MusicShops.Add(entity);
-            context.SaveChanges();
+            Context.MusicShops.Add(entity);
+            Context.SaveChanges();
 
-            var result = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
+            var result = QueryBuilder.ApplyChaining(Context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
 
-            return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<Model.MusicShop>(entity);
         }
 
         public override Model.MusicShop Update(int id, MusicShopUpsertRequest request)
         {
-            var entity = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == id);
+            ArgumentNullException.ThrowIfNull(request);
 
-            entity.Naziv = request.Naziv;
+            var entity = QueryBuilder.ApplyChaining(Context.MusicShops).FirstOrDefault(x => x.Id == id)
+                ?? throw new KeyNotFoundException("ID nije pronadjen.");
 
-            if (!string.IsNullOrEmpty(request.Adresa))
+            if (!string.IsNullOrWhiteSpace(request.Naziv))
             {
-                AddressBuilder.Update(context, entity.Adresa, request.Adresa);
-                context.SaveChanges();
+                entity.Naziv = request.Naziv;
             }
 
-            context.SaveChanges();
+            if (!string.IsNullOrWhiteSpace(request.Adresa))
+            {                
+                entity.Adresa ??= new Adresa();
 
-            var result = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
+                AddressBuilder.Update(entity.Adresa, request.Adresa);
+            }
 
-            return entity != null ? mapper.Map<Model.MusicShop>(entity) : null;
+            BeforeUpdate(request, entity);
+            Context.SaveChanges();
+
+            return Mapper.Map<Model.MusicShop>(entity);
         }
     }
 }

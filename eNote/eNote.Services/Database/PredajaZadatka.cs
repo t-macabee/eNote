@@ -11,6 +11,6 @@
         public Zadatak Zadatak { get; set; }
 
         public int StudentId { get; set; }
-        public Korisnik Student { get; set; }
+        public Korisnik Student { get; set; } 
     }
 }

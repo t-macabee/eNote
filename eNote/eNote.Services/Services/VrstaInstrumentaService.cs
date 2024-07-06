@@ -13,20 +13,16 @@ using System.Threading.Tasks;
 
 namespace eNote.Services.Services
 {
-    public class VrstaInstrumentaService : CRUDService<Model.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest, Database.VrstaInstrumenta>, IVrstaInstrumentaService
+    public class VrstaInstrumentaService(ENoteContext context, IMapper mapper) : CRUDService<Model.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest, Database.VrstaInstrumenta>(context, mapper), IVrstaInstrumentaService
     {
-        public VrstaInstrumentaService(eNoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
         public override IQueryable<VrstaInstrumenta> AddFilter(VrstaInstrumentaSearchObject search, IQueryable<VrstaInstrumenta> query)
         {
             query = base.AddFilter(search, query);
 
-            query = query.ApplyFilters(new List<Func<IQueryable<VrstaInstrumenta>, IQueryable<VrstaInstrumenta>>>
-            {
-                x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.StartsWith(search.Naziv)) : x,                
-            });
+            query = query.ApplyFilters(
+            [
+                x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.Contains(search.Naziv)) : x
+            ]);
 
             query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
 

@@ -10,6 +10,6 @@ namespace eNote.Services.Database
     {
         public int Id { get; set; }
         public string Naziv { get; set; }
-        public ICollection<Instrumenti> Instrumenti { get; set; }
+        public ICollection<Instrumenti> Instrumenti { get; set; } = [];
     }
 }

@@ -8,6 +8,6 @@ namespace eNote.Model.Pagination
     {
         public int? Count { get; set; }
         public int? CurrentPage { get; set; }
-        public List<T> ResultList { get; set; }
+        public List<T> ResultList { get; set; } = new List<T>();
     }
 }

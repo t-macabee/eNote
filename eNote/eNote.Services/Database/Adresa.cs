@@ -11,9 +11,9 @@ namespace eNote.Services.Database
         public int Id { get; set; }
         public string Grad {  get; set; }
         public string Ulica { get; set; }
-        public string Broj { get; set; }
+        public string Broj { get; set; } 
 
-        public ICollection<Korisnik> Korisnici { get; set; }
-        public ICollection<MusicShop> MusicShops { get; set; }
+        public ICollection<Korisnik> Korisnici { get; set; } = [];
+        public ICollection<MusicShop> MusicShops { get; set; } = [];
     }
 }

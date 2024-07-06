@@ -7,39 +7,43 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace eNote.Services.Services
 {
-    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity> : BaseService<TModel, TSearch, TDbEntity>
-    where TModel : class
-    where TSearch : BaseSearchObject
-    where TDbEntity : class
+    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper)
+        : BaseService<TModel, TSearch, TDbEntity>(context, mapper) where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
-        public CRUDService(eNoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
         public virtual TModel Insert(TInsert request)
         {
-            TDbEntity entity = mapper.Map<TDbEntity>(request);
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
+            }
+
+            TDbEntity entity = Mapper.Map<TDbEntity>(request);
 
             BeforeInsert(request, entity);
 
-            context.Add(entity);
+            Context.Add(entity);
 
-            context.SaveChanges();
+            Context.SaveChanges();
 
-            return mapper.Map<TModel>(entity);
+            return Mapper.Map<TModel>(entity);
         }
 
         public virtual TModel Update(int id, TUpdate request)
         {
-            var entity = context.Set<TDbEntity>().Find(id);
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
+            }
 
-            mapper.Map(request, entity);
+            var entity = Context.Set<TDbEntity>().Find(id) ?? throw new ArgumentException("ID nije pronadjen.", nameof(id));
+
+            Mapper.Map(request, entity);
 
             BeforeUpdate(request, entity);
 
-            context.SaveChanges();
+            Context.SaveChanges();
 
-            return mapper.Map<TModel>(entity);
+            return Mapper.Map<TModel>(entity);
         }
 
         public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }

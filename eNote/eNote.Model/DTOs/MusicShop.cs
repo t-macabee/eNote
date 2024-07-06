@@ -7,8 +7,7 @@ namespace eNote.Model
 {
     public class MusicShop
     {
-        public int Id;
-        public string Naziv { get; set; }        
-        public string AdresaString { get; set; }
+        public string Naziv { get; set; } 
+        public string Adresa { get; set; } 
     }
 }

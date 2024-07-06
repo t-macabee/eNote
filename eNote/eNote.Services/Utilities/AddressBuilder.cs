@@ -10,35 +10,39 @@ namespace eNote.Services.Helpers
 {
     public static class AddressBuilder
     {
-        public static Adresa Create(eNoteContext context, string adresaString)
+        private static readonly char[] separator = [','];
+        private static readonly char[] separatorArray = [','];
+
+        public static Adresa Create(ENoteContext context, string adresaString)
         {
-            var addressComponents = adresaString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            ArgumentNullException.ThrowIfNull(context);
+
+            if (string.IsNullOrWhiteSpace(adresaString))
+            {
+                throw new ArgumentException("Address string ne može biti null ili empty.", nameof(adresaString));
+            }
+
+            var addressComponents = adresaString.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
             if (addressComponents.Length < 2)
             {
-                throw new Exception("Nevažeći format adrese. Očekivani format: 'Ulica Broj, Grad'.");
+                throw new ArgumentException("Nevažeći format adrese. Očekivani format: 'Ulica Broj, Grad'.", nameof(adresaString));
             }
 
-            var ulicaIBroj = addressComponents[0].Trim().Split(' ');
+            var ulicaIBroj = addressComponents[0].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (ulicaIBroj.Length < 2)
             {
-                throw new Exception("Adresa mora sadržavati ulicu i broj.");
+                throw new ArgumentException("Adresa mora sadržavati ulicu i broj.", nameof(adresaString));
             }
 
-            var ulica = string.Join(' ', ulicaIBroj.Take(ulicaIBroj.Length - 1));
-
-            var broj = ulicaIBroj.Last();
-
-            var grad = addressComponents[1].Trim();
-            
             var adresa = new Database.Adresa
             {
-                Ulica = ulica,
-                Broj = broj,
-                Grad = grad
+                Ulica = string.Join(' ', ulicaIBroj[..^1]),
+                Broj = ulicaIBroj[^1],
+                Grad = addressComponents[1].Trim()
             };
-            
+
             context.Add(adresa);
 
             context.SaveChanges();
@@ -46,16 +50,26 @@ namespace eNote.Services.Helpers
             return adresa;
         }
 
-        public static void Update(eNoteContext context, Database.Adresa adresa, string adresaString)
+        public static void Update(Adresa adresa, string adresaString)
         {
-            var addressComponents = adresaString.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            ArgumentNullException.ThrowIfNull(adresa);
 
-            var ulicaIBroj = addressComponents[0].Trim().Split(' ');           
+            if (string.IsNullOrWhiteSpace(adresaString))
+            {
+                throw new ArgumentException("Address string ne može biti null ili empty.", nameof(adresaString));
+            }
 
-            adresa.Ulica = string.Join(' ', ulicaIBroj.Take(ulicaIBroj.Length - 1));
+            var addressComponents = adresaString.Split(separatorArray, StringSplitOptions.RemoveEmptyEntries);
 
-            adresa.Broj = ulicaIBroj.Last();
+            if (addressComponents.Length < 2)
+            {
+                throw new ArgumentException("Nevažeći format adrese. Očekivani format: 'Ulica Broj, Grad'.", nameof(adresaString));
+            }
 
+            var ulicaIBroj = addressComponents[0].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            adresa.Ulica = string.Join(' ', ulicaIBroj[..^1]);
+            adresa.Broj = ulicaIBroj[^1];
             adresa.Grad = addressComponents[1].Trim();
         }
     }

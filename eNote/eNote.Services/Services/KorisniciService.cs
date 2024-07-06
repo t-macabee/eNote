@@ -11,23 +11,20 @@ using Microsoft.Extensions.Logging;
 
 namespace eNote.Services.Services
 {
-    public class KorisniciService : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>, IKorisniciService
-    {       
-        public KorisniciService(eNoteContext context, IMapper mapper) : base(context, mapper)
-        {            
-        }
-
+    public class KorisniciService(ENoteContext context, IMapper mapper) 
+        : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
+    {
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
             query = base.AddFilter(search, query);
 
-            query = query.ApplyFilters(new List<Func<IQueryable<Database.Korisnik>, IQueryable<Database.Korisnik>>>
-            {
-                x => !string.IsNullOrWhiteSpace(search?.Ime) ? x.Where(k => k.Ime.StartsWith(search.Ime)) : x,
-                x => !string.IsNullOrWhiteSpace(search?.Prezime) ? x.Where(k => k.Prezime.StartsWith(search.Prezime)) : x,
-                x => !string.IsNullOrWhiteSpace(search?.KorisnickoIme) ? x.Where(k => k.KorisnickoIme.StartsWith(search.KorisnickoIme)) : x,
-                x => !string.IsNullOrWhiteSpace(search?.Grad) ? x.Include(k => k.Adresa).Where(k => k.Adresa.Grad.StartsWith(search.Grad)) : x
-            });
+            query = query.ApplyFilters(
+            [
+               x => search?.Ime != null ? x.Where(k => k.Ime.StartsWith(search.Ime)) : x,
+               x => search?.Prezime != null ? x.Where(k => k.Prezime.StartsWith(search.Prezime)) : x,
+               x => search?.KorisnickoIme != null ? x.Where(k => k.KorisnickoIme.StartsWith(search.KorisnickoIme)) : x,
+               x => search?.Grad != null ? x.Include(k => k.Adresa).Where(k => k.Adresa != null && k.Adresa.Grad.StartsWith(search.Grad)) : x
+            ]);
 
             int count = query.Count();
 
@@ -40,46 +37,34 @@ namespace eNote.Services.Services
 
         public override Model.Korisnik GetById(int id)
         {
-            var entity = QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefault(x => x.Id == id);
+            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.Id == id);
 
-            return entity != null ? mapper.Map<Model.Korisnik>(entity) : null;
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<Model.Korisnik>(entity);
         }
 
         public override Model.Korisnik Insert(KorisnikInsertRequest request)
         {
             base.Insert(request);
 
-            var entity = QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
 
-            return mapper.Map<Model.Korisnik>(entity);
+            return entity == null ? throw new Exception("Korisnik nije pronadjen.") : Mapper.Map<Model.Korisnik>(entity);
         }
 
         public override Model.Korisnik Update(int id, KorisnikUpdateRequest request)
         {
             base.Update(id, request);
 
-            var entity = QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefault(x => x.Ime == request.Ime);
+            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.Id == id);
 
-            return mapper.Map<Model.Korisnik>(entity);
+            return entity == null ? throw new Exception("Korisnik nije pronadjen.") : Mapper.Map<Model.Korisnik>(entity);
         }
 
         public Model.Korisnik Login(string korisnickoIme, string lozinka)
         {
-            var entity = context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == korisnickoIme);
+            var entity = Context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == korisnickoIme) ?? throw new Exception("Nevažeće korisničko ime.");
 
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var hash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, lozinka);
-
-            if (hash != entity.LozinkaHash)
-            {
-                return null;
-            }
-
-            return mapper.Map<Model.Korisnik>(entity);
+            return !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, lozinka, entity.LozinkaHash) ? throw new Exception("Nevažeća lozinka.") : Mapper.Map<Model.Korisnik>(entity);
         }
 
         public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
@@ -87,6 +72,20 @@ namespace eNote.Services.Services
             if (request.Lozinka != request.LozinkaPotvrda)
             {
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
+            }
+
+            var existingUsername = Context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+
+            if (existingUsername != null) 
+            {
+                throw new Exception("Korisničko ime već postoji. Molimo odaberite drugo korisničko ime.");
+            }
+
+            var existingEmail = Context.Korisnici.FirstOrDefault(x => x.Email == request.Email);
+
+            if (existingEmail != null)
+            {
+                throw new Exception("Email već postoji. Molimo odaberite drugu email adresu.");
             }
 
             entity.UlogaId = request.UlogaId;            
@@ -106,9 +105,12 @@ namespace eNote.Services.Services
                 {
                     throw new Exception("Lozinka i lozinka potvrda moraju biti iste!");
                 }
+
                 entity.LozinkaSalt = PasswordBuilder.GenerateSalt();
+
                 entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
+
             base.BeforeUpdate(request, entity);
         }
     }

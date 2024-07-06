@@ -6,9 +6,9 @@
         public bool PotvrdaPrisustva { get; set; }
 
         public int StudentId { get; set; }
-        public Korisnik Student { get; set; }
+        public Korisnik Student { get; set; } 
 
         public int PredavanjeId { get; set; }
-        public Predavanje Predavanje { get; set; }
+        public Predavanje Predavanje { get; set; } 
     }
 }

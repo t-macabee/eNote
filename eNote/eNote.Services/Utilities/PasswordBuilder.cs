@@ -11,7 +11,7 @@ namespace eNote.Services.Helpers
     {
         public static string GenerateSalt()
         {
-            byte[] saltBytes = new byte[16];
+            byte[] saltBytes = new byte[16]; 
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(saltBytes);
@@ -21,17 +21,18 @@ namespace eNote.Services.Helpers
 
         public static string GenerateHash(string salt, string password)
         {
-            byte[] src = Convert.FromBase64String(salt);
-            byte[] bytes = Encoding.Unicode.GetBytes(password);
-            byte[] dst = new byte[src.Length + bytes.Length];
+            byte[] saltBytes = Convert.FromBase64String(salt);
+            byte[] passwordBytes = Encoding.Unicode.GetBytes(password);
 
-            System.Buffer.BlockCopy(src, 0, dst, 0, src.Length);
-            System.Buffer.BlockCopy(bytes, 0, dst, src.Length, bytes.Length);
+            using var hmac = new HMACSHA256(saltBytes);
+            byte[] hashBytes = hmac.ComputeHash(passwordBytes);
+            return Convert.ToBase64String(hashBytes);
+        }
 
-            HashAlgorithm algorithm = HashAlgorithm.Create("SHA1");
-            byte[] inArray = algorithm.ComputeHash(dst);
-
-            return Convert.ToBase64String(inArray);
+        public static bool VerifyPassword(string salt, string password, string storedHash)
+        {
+            string hash = GenerateHash(salt, password);
+            return hash == storedHash;
         }
     }
 }

@@ -9,50 +9,71 @@ using System.Text.Encodings.Web;
 
 namespace eNote.API.Security
 {
-    public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService service) 
+        : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
     {
-        private IKorisniciService service;
-
-        public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IKorisniciService service) : base(options, logger, encoder, clock)
-        {
-            this.service = service;
-        }
+        private readonly IKorisniciService service = service;
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if(!Request.Headers.ContainsKey("Authorization"))
+            if (!Request.Headers.TryGetValue("Authorization", out var authorizationHeader))
             {
-                return AuthenticateResult.Fail("Missing header");
+                return AuthenticateResult.Fail("Missing Authorization header");
             }
 
-            var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-            var credentialsBytes = Convert.FromBase64String(authHeader.Parameter);
-            var credentials = Encoding.UTF8.GetString(credentialsBytes).Split(':');
-
-            var username = credentials[0];
-            var password = credentials[1];
-
-            var user = service.Login(username, password);
-
-            if(user == null)
+            var authHeaderVal = authorizationHeader.ToString();
+            if (string.IsNullOrEmpty(authHeaderVal))
             {
-                return AuthenticateResult.Fail("Authentication failed");
-            }            
-            else
+                return AuthenticateResult.Fail("Empty Authorization header");
+            }
+
+            try
             {
-                var claims = new List<Claim>()
+                var authHeader = AuthenticationHeaderValue.Parse(authHeaderVal);
+
+                if (authHeader.Parameter == null)
                 {
-                    new Claim(ClaimTypes.Name, user.Ime),
-                    new Claim(ClaimTypes.NameIdentifier, user.KorisnickoIme)
-                };
+                    return AuthenticateResult.Fail("Invalid Authorization header format");
+                }
 
-                var identity = new ClaimsIdentity(claims, Scheme.Name);
+                var credentialsBytes = Convert.FromBase64String(authHeader.Parameter);
 
-                var principal = new ClaimsPrincipal(identity);
+                var credentials = Encoding.UTF8.GetString(credentialsBytes).Split(':');
 
-                var ticket = new AuthenticationTicket(principal, Scheme.Name);
+                var username = credentials[0];
 
-                return AuthenticateResult.Success(ticket);
+                var password = credentials[1];
+
+                var user = await Task.Run(() => service.Login(username, password));
+
+                if (user == null)
+                {
+                    return AuthenticateResult.Fail("Authentication failed");
+                }
+                else
+                {
+                    var claims = new List<Claim>()
+                    {
+                        new (ClaimTypes.Name, user.Ime),
+                        new (ClaimTypes.NameIdentifier, user.KorisnickoIme)
+                    };
+
+                    var identity = new ClaimsIdentity(claims, Scheme.Name);
+
+                    var principal = new ClaimsPrincipal(identity);
+
+                    var ticket = new AuthenticationTicket(principal, Scheme.Name);
+
+                    return AuthenticateResult.Success(ticket);
+                }
+            }
+            catch (FormatException)
+            {
+                return AuthenticateResult.Fail("Invalid Authorization header format");
+            }
+            catch (Exception ex)
+            {
+                return AuthenticateResult.Fail($"Authentication failed: {ex.Message}");
             }
         }
     }

@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 
 namespace eNote.Services.Database
 {
-    public class eNoteContext : DbContext
+    public class ENoteContext(DbContextOptions<ENoteContext> options) : DbContext(options)
     {
-        public eNoteContext(DbContextOptions<eNoteContext> options) : base(options) { }
-
         public DbSet<Korisnik> Korisnici { get; set; }
         public DbSet<Uloge> Uloge { get; set; }
         public DbSet<Adresa> Adresa { get; set; }

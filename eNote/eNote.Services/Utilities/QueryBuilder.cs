@@ -41,6 +41,7 @@ namespace eNote.Services.Helpers
             {
                 return query.Skip(page.Value * pageSize.Value).Take(pageSize.Value);
             }
+
             return query;
         }       
     }

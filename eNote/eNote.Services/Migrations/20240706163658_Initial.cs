@@ -395,7 +395,7 @@ namespace eNote.Services.Migrations
             migrationBuilder.InsertData(
                 table: "Korisnici",
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Telefon", "UlogaId" },
-                values: new object[] { 1, 1, new DateTime(2024, 7, 3, 8, 57, 59, 635, DateTimeKind.Local).AddTicks(6430), "admin@outlook.com", "Admin", "admin", "UyjGKrNo9BMWSgfbwfeinyssbFU=", "pNyxCLThBwn1CXlP8KtoyA==", "Admin", null, null, "000000000", 1 });
+                values: new object[] { 1, 1, new DateTime(2024, 7, 6, 18, 36, 58, 461, DateTimeKind.Local).AddTicks(8065), "admin@outlook.com", "Admin", "admin", "dmjSOdxgn4sh6R+Inzi3OXCLeuMoWSzTIgJILQdST8w=", "SDg8ILdzWoi1QMiZxRTIhA==", "Admin", null, null, "000000000", 1 });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",

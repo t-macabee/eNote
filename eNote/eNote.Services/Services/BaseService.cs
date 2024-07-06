@@ -3,35 +3,26 @@ using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace eNote.Services.Services
 {
-    public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch>
-    where TSearch : BaseSearchObject
-    where TDbEntity : class
-    where TModel : class
+    public abstract class BaseService<TModel, TSearch, TDbEntity>(ENoteContext context, IMapper mapper) 
+        : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
-        public eNoteContext context { get; set; }
-        public IMapper mapper { get; set; }
-
-        public BaseService(eNoteContext context, IMapper mapper)
-        {
-            this.context = context;
-            this.mapper = mapper;
-        }
+        public ENoteContext Context { get; set; } = context;
+        public IMapper Mapper { get; set; } = mapper;
 
         public virtual TModel GetById(int id)
         {
-            var entity = context.Set<TDbEntity>().Find(id);
+            var entity = Context.Set<TDbEntity>().Find(id);
 
-            return entity != null ? mapper.Map<TModel>(entity) : null;
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<TModel>(entity);
         }
 
         public virtual PagedResult<TModel> GetPaged(TSearch search)
         {
-            var query = context.Set<TDbEntity>().AsQueryable();
+            var query = Context.Set<TDbEntity>().AsQueryable();
 
             query = AddFilter(search, query);
 
@@ -45,13 +36,13 @@ namespace eNote.Services.Services
 
             var list = query.ToList();
 
-            var result = mapper.Map<List<TModel>>(list);  
+            var result = Mapper.Map<List<TModel>>(list);  
 
             return new PagedResult<TModel>
             {
                 ResultList = result,
                 Count = count,
-                CurrentPage = list.Count()
+                CurrentPage = list.Count
             };
         }
         
