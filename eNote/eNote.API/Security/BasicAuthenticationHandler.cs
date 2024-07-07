@@ -1,4 +1,4 @@
-﻿using eNote.Services.Interfaces;
+﻿    using eNote.Services.Interfaces;
 using eNote.Services.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
@@ -55,8 +55,9 @@ namespace eNote.API.Security
                     var claims = new List<Claim>()
                     {
                         new (ClaimTypes.Name, user.Ime),
-                        new (ClaimTypes.NameIdentifier, user.KorisnickoIme)
-                    };
+                        new (ClaimTypes.NameIdentifier, user.KorisnickoIme),
+                        new (ClaimTypes.Role, user.Uloga)
+                    };                    
 
                     var identity = new ClaimsIdentity(claims, Scheme.Name);
 

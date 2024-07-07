@@ -12,13 +12,13 @@ namespace eNote.API.Controllers
         protected new ICRUDService<TModel, TSearch, TInsert, TUpdate> service = service;
 
         [HttpPost]
-        public TModel Insert(TInsert request)
+        public virtual TModel Insert(TInsert request)
         {
             return service.Insert(request);
         }
 
         [HttpPut("{id}")]
-        public TModel Update(int id, TUpdate request)
+        public virtual TModel Update(int id, TUpdate request)
         {
             return service.Update(id, request);
         }

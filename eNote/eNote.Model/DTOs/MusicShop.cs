@@ -7,7 +7,7 @@ namespace eNote.Model
 {
     public class MusicShop
     {
-        public string Naziv { get; set; } 
-        public string Adresa { get; set; } 
+        public string Naziv { get; set; } = string.Empty;
+        public string Adresa { get; set; } = string.Empty;
     }
 }

@@ -11,8 +11,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IInstrumentService, InstrumentService>();
 builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
@@ -23,7 +21,6 @@ MapsterConfig.RegisterMappings();
 
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x => {
     x.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme()

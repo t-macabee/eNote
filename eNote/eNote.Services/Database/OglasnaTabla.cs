@@ -3,8 +3,8 @@
     public class OglasnaTabla
     {
         public int Id { get; set; }
-        public string Naziv { get; set; }
-        public string Sadrzaj { get; set; } 
+        public string Naziv { get; set; } = string.Empty;
+        public string Sadrzaj { get; set; } = string.Empty;
         public DateTime DatumPostavljanja { get; set; }
 
         public int AutorId { get; set; }

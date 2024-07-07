@@ -9,7 +9,7 @@ namespace eNote.Services.Database
     public class VrstaInstrumenta
     {
         public int Id { get; set; }
-        public string Naziv { get; set; }
+        public string Naziv { get; set; } = string.Empty;
         public ICollection<Instrumenti> Instrumenti { get; set; } = [];
     }
 }

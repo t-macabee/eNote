@@ -1,4 +1,6 @@
-﻿using eNote.Model.Pagination;
+﻿using EasyNetQ;
+using eNote.Model.Pagination;
+using eNote.Model.RabbitMQMessages;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using MapsterMapper;
@@ -25,7 +27,15 @@ namespace eNote.Services.Services
 
             Context.SaveChanges();
 
-            return Mapper.Map<TModel>(entity);
+            //var bus = RabbitHutch.CreateBus("host=localhost");
+
+            var mappedEntity = Mapper.Map<TModel>(entity);
+
+            //var message = new EntityCreated<TModel> { Entity = mappedEntity };
+
+            //bus.PubSub.Publish(message);
+
+            return mappedEntity;
         }
 
         public virtual TModel Update(int id, TUpdate request)

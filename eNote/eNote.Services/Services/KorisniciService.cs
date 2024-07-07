@@ -62,7 +62,7 @@ namespace eNote.Services.Services
 
         public Model.Korisnik Login(string korisnickoIme, string lozinka)
         {
-            var entity = Context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == korisnickoIme) ?? throw new Exception("Nevažeće korisničko ime.");
+            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == korisnickoIme) ?? throw new Exception("Nevažeće korisničko ime.");
 
             return !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, lozinka, entity.LozinkaHash) ? throw new Exception("Nevažeća lozinka.") : Mapper.Map<Model.Korisnik>(entity);
         }

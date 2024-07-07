@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eNote.API", "eNote.API\eNot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eNote.Services", "eNote.Services\eNote.Services.csproj", "{C55AF952-5A23-4977-87D2-464796C2DCE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eNote.Model", "eNote.Model\eNote.Model.csproj", "{3D52EDB2-AED4-496C-9B0F-5CB93FAA370E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eNote.Model", "eNote.Model\eNote.Model.csproj", "{3D52EDB2-AED4-496C-9B0F-5CB93FAA370E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eNote.Subscriber", "eNote.Subscriber\eNote.Subscriber.csproj", "{B9595568-D3FF-472F-ABDF-900E5E5BD597}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{3D52EDB2-AED4-496C-9B0F-5CB93FAA370E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D52EDB2-AED4-496C-9B0F-5CB93FAA370E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D52EDB2-AED4-496C-9B0F-5CB93FAA370E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9595568-D3FF-472F-ABDF-900E5E5BD597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9595568-D3FF-472F-ABDF-900E5E5BD597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9595568-D3FF-472F-ABDF-900E5E5BD597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9595568-D3FF-472F-ABDF-900E5E5BD597}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

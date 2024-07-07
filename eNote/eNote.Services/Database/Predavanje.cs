@@ -3,10 +3,10 @@
     public class Predavanje
     { 
         public int Id { get; set; }
-        public string Naziv { get; set; } 
-        public string Vrijeme { get; set; }
-        public string Lokacija { get; set; }
-
+        public string Naziv { get; set; } = string.Empty;
+        public string Vrijeme { get; set; } = string.Empty;
+        public string Lokacija { get; set; } = string.Empty;
+        
         public int KursId { get; set; }
         public Kurs Kurs { get; set; } 
 

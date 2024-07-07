@@ -3,8 +3,8 @@
     public class Kurs
     {
         public int Id { get; set; }
-        public string Naziv { get; set; }
-        public string Opis { get; set; } 
+        public string Naziv { get; set; } = string.Empty;
+        public string Opis { get; set; } = string.Empty;
 
         public int InstruktorId { get; set; }
         public Korisnik Instruktor { get; set; }
