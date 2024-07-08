@@ -13,7 +13,7 @@ namespace eNote.Services.Helpers
         private static readonly char[] separator = [','];
         private static readonly char[] separatorArray = [','];
 
-        public static Adresa Create(ENoteContext context, string adresaString)
+        public static async Task<Adresa> Create(ENoteContext context, string adresaString)
         {
             ArgumentNullException.ThrowIfNull(context);
 
@@ -43,14 +43,14 @@ namespace eNote.Services.Helpers
                 Grad = addressComponents[1].Trim()
             };
 
-            context.Add(adresa);
-
-            context.SaveChanges();
+            await context.AddAsync(adresa);
+            
+            await context.SaveChangesAsync();
 
             return adresa;
         }
 
-        public static void Update(Adresa adresa, string adresaString)
+        public static async Task Update(ENoteContext context, Adresa adresa, string adresaString)
         {
             ArgumentNullException.ThrowIfNull(adresa);
 
@@ -71,6 +71,8 @@ namespace eNote.Services.Helpers
             adresa.Ulica = string.Join(' ', ulicaIBroj[..^1]);
             adresa.Broj = ulicaIBroj[^1];
             adresa.Grad = addressComponents[1].Trim();
+
+            await context.SaveChangesAsync();
         }
     }
 }

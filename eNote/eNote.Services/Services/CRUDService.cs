@@ -1,59 +1,61 @@
-﻿using EasyNetQ;
-using eNote.Model.Pagination;
-using eNote.Model.RabbitMQMessages;
-using eNote.Model.SearchObjects;
+﻿using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace eNote.Services.Services
 {
-    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper)
+    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper) 
         : BaseService<TModel, TSearch, TDbEntity>(context, mapper) where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
-        public virtual TModel Insert(TInsert request)
+        public virtual async Task<TModel> Insert(TInsert request)
         {
             if(request == null)
             {
                 throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
             }
 
-            TDbEntity entity = Mapper.Map<TDbEntity>(request);
+            TDbEntity entity = mapper.Map<TDbEntity>(request);
 
             BeforeInsert(request, entity);
 
-            Context.Add(entity);
+            await context.AddAsync(entity);
 
-            Context.SaveChanges();
+            await context.SaveChangesAsync();
 
-            //var bus = RabbitHutch.CreateBus("host=localhost");
-
-            var mappedEntity = Mapper.Map<TModel>(entity);
-
-            //var message = new EntityCreated<TModel> { Entity = mappedEntity };
-
-            //bus.PubSub.Publish(message);
+            var mappedEntity = mapper.Map<TModel>(entity);
 
             return mappedEntity;
         }
 
-        public virtual TModel Update(int id, TUpdate request)
+        public virtual async Task<TModel> Update(int id, TUpdate request)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
             }
 
-            var entity = Context.Set<TDbEntity>().Find(id) ?? throw new ArgumentException("ID nije pronadjen.", nameof(id));
+            var entity = await context.Set<TDbEntity>().FindAsync(id) ?? throw new ArgumentException("ID nije pronadjen.", nameof(id));
 
-            Mapper.Map(request, entity);
+            mapper.Map(request, entity);
 
             BeforeUpdate(request, entity);
 
-            Context.SaveChanges();
+            await context.SaveChangesAsync();
 
-            return Mapper.Map<TModel>(entity);
+            return mapper.Map<TModel>(entity);
+        }
+
+        public virtual async Task<TModel> Delete(int id)
+        {
+            var entity = await context.Set<TDbEntity>().FindAsync(id) ?? throw new ArgumentException("ID nije pronađen.", nameof(id));
+
+            var temp = mapper.Map<TModel>(entity);
+
+            context.Set<TDbEntity>().Remove(entity);
+
+            await context.SaveChangesAsync();            
+
+            return temp;
         }
 
         public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }

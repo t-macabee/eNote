@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eNote.Model.Pagination
+namespace eNote.Model
 {
-    public class PagedResult<T> 
+    public class PagedResult<T>
     {
         public int? Count { get; set; }
         public int? CurrentPage { get; set; }

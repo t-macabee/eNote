@@ -19,7 +19,7 @@
         public Adresa? Adresa { get; set; } 
 
         public int UlogaId { get; set; }
-        public Uloge Uloga { get; set; }
+        public Uloge Uloga { get; set; } = null!;
 
         public ICollection<Kurs>? Kurs { get; set; } // Instruktori
         public ICollection<OglasnaTabla>? PostavljeneObavijesti { get; set; } // Instruktori

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace eNote.Model.Errors
+namespace eNote.Model
 {
     public class ErrorDetails
     {

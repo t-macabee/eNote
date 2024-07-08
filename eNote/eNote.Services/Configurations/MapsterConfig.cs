@@ -9,9 +9,17 @@ namespace eNote.Services.Configurations
     {
         public static void RegisterMappings()
         {
+            TypeAdapterConfig<Database.Uloge, Model.DTOs.Uloge>
+                .NewConfig()
+                .Map(dest => dest.Naziv, src => src.NazivString);
+
             TypeAdapterConfig<Korisnik, Model.Korisnik>
                 .NewConfig()
-                .Map(dest => dest.Uloga, src => src.Uloga != null ? src.Uloga.Naziv : null)
+                .Map(dest => dest.Uloga, src => new Model.DTOs.Uloge 
+                {
+                    Id = src.Uloga.Id,
+                    Naziv = src.Uloga.NazivString
+                })
                 .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.ToString("d"))
                 .Map(dest => dest.Adresa, src => src.Adresa != null ? $"{src.Adresa.Ulica} {src.Adresa.Broj}, {src.Adresa.Grad}" : null);
 

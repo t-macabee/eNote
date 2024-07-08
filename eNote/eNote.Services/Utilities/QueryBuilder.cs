@@ -10,39 +10,23 @@ namespace eNote.Services.Helpers
     {
         public static IQueryable<T> ApplyChaining<T>(this IQueryable<T> query) where T : class
         {
-            if (typeof(T) == typeof(Korisnik))
+            return query switch
             {
-                return (IQueryable<T>)((IQueryable<Korisnik>)query).Include(x => x.Uloga).Include(x => x.Adresa);
-            }
-            else if (typeof(T) == typeof(MusicShop))
-            {
-                return (IQueryable<T>)((IQueryable<MusicShop>)query).Include(x => x.Adresa);
-            }
-            else if (typeof(T) == typeof(Instrumenti))
-            {
-                return (IQueryable<T>)((IQueryable<Instrumenti>)query).Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop);
-            }
-            return query;
+                IQueryable<Korisnik> korisnikQuery => (IQueryable<T>)(korisnikQuery.Include(x => x.Uloga).Include(x => x.Adresa)),
+                IQueryable<MusicShop> musicShopQuery => (IQueryable<T>)(musicShopQuery.Include(x => x.Adresa)),
+                IQueryable<Instrumenti> instrumentiQuery => (IQueryable<T>)(instrumentiQuery.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop)),
+                _ => query
+            };
         }
 
         public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, IEnumerable<Func<IQueryable<T>, IQueryable<T>>> filters)
         {
-            foreach (var filter in filters)
-            {
-                query = filter(query);
-            }
-
-            return query;
+            return filters.Aggregate(query, (current, filter) => filter(current));
         }
 
         public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, int? page, int? pageSize)
         {
-            if (page.HasValue && pageSize.HasValue)
-            {
-                return query.Skip(page.Value * pageSize.Value).Take(pageSize.Value);
-            }
-
-            return query;
+            return page.HasValue && pageSize.HasValue ? query.Skip(page.Value * pageSize.Value).Take(pageSize.Value) : query;
         }       
     }
 }

@@ -14,6 +14,6 @@ namespace eNote.Model
         public string? Telefon { get; set; }
         public string? Adresa { get; set; }
         public string KorisnickoIme { get; set; } = string.Empty;
-        public string Uloga { get; set; } = string.Empty;
+        public Uloge Uloga { get; set; } = null!;
     }
 }

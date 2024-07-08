@@ -1,7 +1,4 @@
-﻿using eNote.Model.Pagination;
-using eNote.Model.Requests.Instrument;
-using eNote.Model.Requests.Korisnik;
-using eNote.Model.Requests.MusicShop;
+﻿using eNote.Model.Requests.MusicShop;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Helpers;
@@ -11,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class MusicShopService(ENoteContext context, IMapper mapper) 
+    public class MusicShopService(ENoteContext context, IMapper mapper)
         : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopUpsertRequest, MusicShopUpsertRequest, Database.MusicShop>(context, mapper), IMusicShopService
     {
         public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
@@ -34,16 +31,18 @@ namespace eNote.Services.Services
             return query;
         }
 
-        public override Model.MusicShop GetById(int id)
+        public override async Task<Model.MusicShop> GetById(int id)
         { 
-            var entity = QueryBuilder.ApplyChaining(Context.MusicShops).FirstOrDefault(x => x.Id == id);
+            var entity = await QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefaultAsync(x => x.Id == id);
 
-            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<Model.MusicShop>(entity);
+            return entity == null ?
+                throw new KeyNotFoundException("ID nije pronadjen.") 
+                : mapper.Map<Model.MusicShop>(entity);
         }
 
-        public override Model.MusicShop Insert(MusicShopUpsertRequest request)
+        public override async Task<Model.MusicShop> Insert(MusicShopUpsertRequest request)
         {
-            var adresa = AddressBuilder.Create(Context, request.Adresa);
+            var adresa = await AddressBuilder.Create(context, request.Adresa);
 
             var entity = new MusicShop
             {
@@ -51,19 +50,19 @@ namespace eNote.Services.Services
                 Adresa = adresa,
             };
 
-            Context.MusicShops.Add(entity);
-            Context.SaveChanges();
+            await context.MusicShops.AddAsync(entity);
+            await context.SaveChangesAsync();
 
-            var result = QueryBuilder.ApplyChaining(Context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
+            var result = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
 
-            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<Model.MusicShop>(entity);
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.MusicShop>(entity);
         }
 
-        public override Model.MusicShop Update(int id, MusicShopUpsertRequest request)
+        public override async Task<Model.MusicShop> Update(int id, MusicShopUpsertRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            var entity = QueryBuilder.ApplyChaining(Context.MusicShops).FirstOrDefault(x => x.Id == id)
+            var entity = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == id)
                 ?? throw new KeyNotFoundException("ID nije pronadjen.");
 
             if (!string.IsNullOrWhiteSpace(request.Naziv))
@@ -75,13 +74,14 @@ namespace eNote.Services.Services
             {                
                 entity.Adresa ??= new Adresa();
 
-                AddressBuilder.Update(entity.Adresa, request.Adresa);
+                await AddressBuilder.Update(context, entity.Adresa, request.Adresa);
             }
 
             BeforeUpdate(request, entity);
-            Context.SaveChanges();
 
-            return Mapper.Map<Model.MusicShop>(entity);
+            await context.SaveChangesAsync();
+
+            return mapper.Map<Model.MusicShop>(entity);
         }
     }
 }

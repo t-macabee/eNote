@@ -34,7 +34,7 @@ namespace eNote.Services.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Naziv = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -87,7 +87,7 @@ namespace eNote.Services.Migrations
                     Telefon = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Slika = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     SlikaThumb = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    KorisnickoIme = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    KorisnickoIme = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LozinkaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LozinkaSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdresaId = table.Column<int>(type: "int", nullable: false),
@@ -367,7 +367,9 @@ namespace eNote.Services.Migrations
                 {
                     { 1, "11", "Gradacac", "7. bataljon" },
                     { 2, "15", "Sarajevo", "Ferhadija" },
-                    { 3, "45", "Sarajevo", "Maršala Tita" }
+                    { 3, "45", "Sarajevo", "Maršala Tita" },
+                    { 4, "17A", "Mostar", "Mazoljice" },
+                    { 5, "7C", "Mostar", "Muje Pašića" }
                 });
 
             migrationBuilder.InsertData(
@@ -375,9 +377,9 @@ namespace eNote.Services.Migrations
                 columns: new[] { "Id", "Naziv" },
                 values: new object[,]
                 {
-                    { 1, "Administrator" },
-                    { 2, "Instruktor" },
-                    { 3, "Učenik" }
+                    { 1, 1 },
+                    { 2, 2 },
+                    { 3, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -395,7 +397,12 @@ namespace eNote.Services.Migrations
             migrationBuilder.InsertData(
                 table: "Korisnici",
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Telefon", "UlogaId" },
-                values: new object[] { 1, 1, new DateTime(2024, 7, 6, 18, 36, 58, 461, DateTimeKind.Local).AddTicks(8065), "admin@outlook.com", "Admin", "admin", "dmjSOdxgn4sh6R+Inzi3OXCLeuMoWSzTIgJILQdST8w=", "SDg8ILdzWoi1QMiZxRTIhA==", "Admin", null, null, "000000000", 1 });
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6609), "admin@outlook.com", "Admin", "admin", "sNXxntBVxkDuUE++CzUJ3OfMQuZ9gcVNFb+R6xpTfeI=", "TL4XiiFP4aoMqmrJaptqKg==", "Admin", null, null, "000000000", 1 },
+                    { 2, 4, new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6668), "john.doe@outlook.com", "John", "johnDoe", "2kao4ft1sZDeoreJk96v2kawjkDi+pfk/KOrQN2GyjU=", "7IC81WP1cvHRhdyy2OSLjw==", "Doe", null, null, "111111111", 2 },
+                    { 3, 5, new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6816), "jane.doe@outlook.com", "Jane", "janeDoe", "ORCGYNr2YSFyhI1ukdMMl4ELyvikhOH0FOfZps+7LsA=", "nUAKr3pJP/YbcvGzPSM2Bw==", "Doe", null, null, "222222222", 3 }
+                });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",
@@ -462,6 +469,12 @@ namespace eNote.Services.Migrations
                 name: "IX_Korisnici_AdresaId",
                 table: "Korisnici",
                 column: "AdresaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Korisnici_KorisnickoIme",
+                table: "Korisnici",
+                column: "KorisnickoIme",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Korisnici_UlogaId",

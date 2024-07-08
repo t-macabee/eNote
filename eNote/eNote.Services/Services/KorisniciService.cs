@@ -35,36 +35,36 @@ namespace eNote.Services.Services
             return query;
         }
 
-        public override Model.Korisnik GetById(int id)
+        public override async Task<Model.Korisnik> GetById(int id)
         {
-            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.Id == id);
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.Id == id);
 
-            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<Model.Korisnik>(entity);
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public override Model.Korisnik Insert(KorisnikInsertRequest request)
+        public override async Task<Model.Korisnik> Insert(KorisnikInsertRequest request)
         {
-            base.Insert(request);
+            await base.Insert(request);
 
-            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == request.KorisnickoIme);
 
-            return entity == null ? throw new Exception("Korisnik nije pronadjen.") : Mapper.Map<Model.Korisnik>(entity);
+            return entity == null ? throw new Exception("Korisnik nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public override Model.Korisnik Update(int id, KorisnikUpdateRequest request)
+        public override async Task<Model.Korisnik> Update(int id, KorisnikUpdateRequest request)
         {
-            base.Update(id, request);
+            await base.Update(id, request);
 
-            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.Id == id);
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.Id == id);
 
-            return entity == null ? throw new Exception("Korisnik nije pronadjen.") : Mapper.Map<Model.Korisnik>(entity);
+            return entity == null ? throw new Exception("Korisnik nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public Model.Korisnik Login(string korisnickoIme, string lozinka)
+        public async Task<Model.Korisnik> Login(string korisnickoIme, string lozinka)
         {
-            var entity = QueryBuilder.ApplyChaining(Context.Korisnici).FirstOrDefault(x => x.KorisnickoIme == korisnickoIme) ?? throw new Exception("Nevažeće korisničko ime.");
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == korisnickoIme) ?? throw new Exception("Nevažeće korisničko ime.");
 
-            return !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, lozinka, entity.LozinkaHash) ? throw new Exception("Nevažeća lozinka.") : Mapper.Map<Model.Korisnik>(entity);
+            return !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, lozinka, entity.LozinkaHash) ? throw new Exception("Nevažeća lozinka.") : mapper.Map<Model.Korisnik>(entity);
         }
 
         public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
@@ -74,14 +74,14 @@ namespace eNote.Services.Services
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
             }
 
-            var existingUsername = Context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
+            var existingUsername = context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
 
             if (existingUsername != null) 
             {
                 throw new Exception("Korisničko ime već postoji. Molimo odaberite drugo korisničko ime.");
             }
 
-            var existingEmail = Context.Korisnici.FirstOrDefault(x => x.Email == request.Email);
+            var existingEmail = context.Korisnici.FirstOrDefault(x => x.Email == request.Email);
 
             if (existingEmail != null)
             {

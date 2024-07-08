@@ -1,8 +1,9 @@
-﻿using eNote.Model.Pagination;
+﻿using eNote.Model;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace eNote.Services.Services
@@ -10,23 +11,23 @@ namespace eNote.Services.Services
     public abstract class BaseService<TModel, TSearch, TDbEntity>(ENoteContext context, IMapper mapper) 
         : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
-        public ENoteContext Context { get; set; } = context;
-        public IMapper Mapper { get; set; } = mapper;
+        public ENoteContext context { get; set; } = context;
+        public IMapper mapper { get; set; } = mapper;
 
-        public virtual TModel GetById(int id)
+        public virtual async Task<TModel> GetById(int id)
         {
-            var entity = Context.Set<TDbEntity>().Find(id);
+            var entity = await context.Set<TDbEntity>().FindAsync(id);
 
-            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : Mapper.Map<TModel>(entity);
+            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<TModel>(entity);
         }
 
-        public virtual PagedResult<TModel> GetPaged(TSearch search)
+        public virtual async Task<PagedResult<TModel>> GetPaged(TSearch search)
         {
-            var query = Context.Set<TDbEntity>().AsQueryable();
+            var query = context.Set<TDbEntity>().AsQueryable();
 
             query = AddFilter(search, query);
 
-            int count = query.Count();
+            int count = await query.CountAsync();
 
             if (search?.Page.HasValue == true && search.PageSize.HasValue == true)
             {
@@ -34,9 +35,9 @@ namespace eNote.Services.Services
                     .Take(search.PageSize.Value);
             }
 
-            var list = query.ToList();
+            var list = await query.ToListAsync();
 
-            var result = Mapper.Map<List<TModel>>(list);  
+            var result = mapper.Map<List<TModel>>(list);  
 
             return new PagedResult<TModel>
             {
@@ -46,6 +47,6 @@ namespace eNote.Services.Services
             };
         }
         
-        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;        
+        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;     
     }
 }

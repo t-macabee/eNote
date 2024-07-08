@@ -29,6 +29,16 @@ namespace eNote.Services.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Uloge
+            modelBuilder.Entity<Uloge>()
+                .Property(u => u.Naziv)
+                .HasConversion<int>();
+
+            //Korisnik
+            modelBuilder.Entity<Korisnik>()
+                .HasIndex(k => k.KorisnickoIme)
+                .IsUnique();
+
             //Korisnik-uloge
             modelBuilder.Entity<Korisnik>()
                 .HasOne(k => k.Uloga)
@@ -45,7 +55,7 @@ namespace eNote.Services.Database
 
             //Upis
             modelBuilder.Entity<Upis>()
-                .HasOne(u => u.Studenti)
+                .HasOne(u => u.Student)
                 .WithMany(k => k.Upis)
                 .HasForeignKey(u => u.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);

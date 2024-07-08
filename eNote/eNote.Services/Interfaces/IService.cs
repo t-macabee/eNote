@@ -1,4 +1,4 @@
-﻿using eNote.Model.Pagination;
+﻿using eNote.Model;
 using eNote.Model.SearchObjects;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace eNote.Services.Interfaces
 {
     public interface IService<TModel, TSearch> where TSearch : BaseSearchObject
     {
-        public TModel GetById(int id);
-        public PagedResult<TModel> GetPaged(TSearch search);
+        public Task<TModel> GetById(int id);
+        public Task<PagedResult<TModel>> GetPaged(TSearch search);
     }
 }

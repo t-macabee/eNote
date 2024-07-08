@@ -1,5 +1,4 @@
-﻿    using eNote.Services.Interfaces;
-using eNote.Services.Services;
+﻿using eNote.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
@@ -9,8 +8,7 @@ using System.Text.Encodings.Web;
 
 namespace eNote.API.Security
 {
-    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService service) 
-        : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService service) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
     {
         private readonly IKorisniciService service = service;
 
@@ -44,7 +42,7 @@ namespace eNote.API.Security
 
                 var password = credentials[1];
 
-                var user = await Task.Run(() => service.Login(username, password));
+                var user = await service.Login(username, password);
 
                 if (user == null)
                 {
@@ -56,7 +54,7 @@ namespace eNote.API.Security
                     {
                         new (ClaimTypes.Name, user.Ime),
                         new (ClaimTypes.NameIdentifier, user.KorisnickoIme),
-                        new (ClaimTypes.Role, user.Uloga)
+                        new (ClaimTypes.Role, user.Uloga.Naziv)
                     };                    
 
                     var identity = new ClaimsIdentity(claims, Scheme.Name);

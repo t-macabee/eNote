@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Runtime.InteropServices;
+﻿using System.Net;
 using eNote.Model;
-using eNote.Model.Errors;
 
 namespace eNote.API.Middleware
 {

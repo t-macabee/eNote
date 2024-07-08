@@ -67,6 +67,20 @@ namespace eNote.Services.Migrations
                             Broj = "45",
                             Grad = "Sarajevo",
                             Ulica = "Maršala Tita"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Broj = "17A",
+                            Grad = "Mostar",
+                            Ulica = "Mazoljice"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Broj = "7C",
+                            Grad = "Mostar",
+                            Ulica = "Muje Pašića"
                         });
                 });
 
@@ -393,7 +407,7 @@ namespace eNote.Services.Migrations
 
                     b.Property<string>("KorisnickoIme")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LozinkaHash")
                         .IsRequired()
@@ -423,6 +437,9 @@ namespace eNote.Services.Migrations
 
                     b.HasIndex("AdresaId");
 
+                    b.HasIndex("KorisnickoIme")
+                        .IsUnique();
+
                     b.HasIndex("UlogaId");
 
                     b.ToTable("Korisnici");
@@ -432,15 +449,43 @@ namespace eNote.Services.Migrations
                         {
                             Id = 1,
                             AdresaId = 1,
-                            DatumRodjenja = new DateTime(2024, 7, 6, 18, 36, 58, 461, DateTimeKind.Local).AddTicks(8065),
+                            DatumRodjenja = new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6609),
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "dmjSOdxgn4sh6R+Inzi3OXCLeuMoWSzTIgJILQdST8w=",
-                            LozinkaSalt = "SDg8ILdzWoi1QMiZxRTIhA==",
+                            LozinkaHash = "sNXxntBVxkDuUE++CzUJ3OfMQuZ9gcVNFb+R6xpTfeI=",
+                            LozinkaSalt = "TL4XiiFP4aoMqmrJaptqKg==",
                             Prezime = "Admin",
                             Telefon = "000000000",
                             UlogaId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AdresaId = 4,
+                            DatumRodjenja = new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6668),
+                            Email = "john.doe@outlook.com",
+                            Ime = "John",
+                            KorisnickoIme = "johnDoe",
+                            LozinkaHash = "2kao4ft1sZDeoreJk96v2kawjkDi+pfk/KOrQN2GyjU=",
+                            LozinkaSalt = "7IC81WP1cvHRhdyy2OSLjw==",
+                            Prezime = "Doe",
+                            Telefon = "111111111",
+                            UlogaId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AdresaId = 5,
+                            DatumRodjenja = new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6816),
+                            Email = "jane.doe@outlook.com",
+                            Ime = "Jane",
+                            KorisnickoIme = "janeDoe",
+                            LozinkaHash = "ORCGYNr2YSFyhI1ukdMMl4ELyvikhOH0FOfZps+7LsA=",
+                            LozinkaSalt = "nUAKr3pJP/YbcvGzPSM2Bw==",
+                            Prezime = "Doe",
+                            Telefon = "222222222",
+                            UlogaId = 3
                         });
                 });
 
@@ -657,9 +702,8 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Naziv")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Naziv")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -669,17 +713,17 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 1,
-                            Naziv = "Administrator"
+                            Naziv = 1
                         },
                         new
                         {
                             Id = 2,
-                            Naziv = "Instruktor"
+                            Naziv = 2
                         },
                         new
                         {
                             Id = 3,
-                            Naziv = "Učenik"
+                            Naziv = 3
                         });
                 });
 
@@ -937,7 +981,7 @@ namespace eNote.Services.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eNote.Services.Database.Korisnik", "Studenti")
+                    b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("Upis")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -945,7 +989,7 @@ namespace eNote.Services.Migrations
 
                     b.Navigation("Kurs");
 
-                    b.Navigation("Studenti");
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>

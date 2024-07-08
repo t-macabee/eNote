@@ -1,4 +1,4 @@
-﻿using eNote.Model.Pagination;
+﻿using eNote.Model;
 using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -14,15 +14,15 @@ namespace eNote.API.Controllers
         protected IService<TModel, TSearch> service = service;
 
         [HttpGet]
-        public virtual PagedResult<TModel> GetAll([FromQuery]TSearch searchObject)         
+        public virtual async Task<PagedResult<TModel>> GetAll([FromQuery]TSearch searchObject)         
         {
-            return service.GetPaged(searchObject);
+            return await service.GetPaged(searchObject);
         }
 
         [HttpGet("{id}")]
-        public virtual TModel GetById(int id)
+        public virtual async Task<TModel> GetById(int id)
         {
-            return service.GetById(id);
+            return await service.GetById(id);
         }
     }
 }
