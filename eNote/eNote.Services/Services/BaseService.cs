@@ -8,11 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public abstract class BaseService<TModel, TSearch, TDbEntity>(ENoteContext context, IMapper mapper) 
-        : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
+    public abstract class BaseService<TModel, TSearch, TDbEntity> : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
-        public ENoteContext context { get; set; } = context;
-        public IMapper mapper { get; set; } = mapper;
+        public ENoteContext context { get; set; }
+        public IMapper mapper { get; set; }
+
+        public BaseService(ENoteContext context, IMapper mapper)
+        {
+            this.context = context;
+            this.mapper = mapper;
+        }
 
         public virtual async Task<TModel> GetById(int id)
         {

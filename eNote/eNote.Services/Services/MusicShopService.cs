@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class MusicShopService(ENoteContext context, IMapper mapper)
-        : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopUpsertRequest, MusicShopUpsertRequest, Database.MusicShop>(context, mapper), IMusicShopService
+    public class MusicShopService : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopUpsertRequest, MusicShopUpsertRequest, Database.MusicShop>, IMusicShopService
     {
+        public MusicShopService(ENoteContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
+
         public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
         {
             query = base.AddFilter(search, query);
@@ -77,7 +80,7 @@ namespace eNote.Services.Services
                 await AddressBuilder.Update(context, entity.Adresa, request.Adresa);
             }
 
-            BeforeUpdate(request, entity);
+            await BeforeUpdate(request, entity);
 
             await context.SaveChangesAsync();
 

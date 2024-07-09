@@ -9,10 +9,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace eNote.API.Controllers
 {
-    public class KorisniciController(IKorisniciService service) : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>(service)
+    public class KorisniciController : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
+        public KorisniciController(IKorisniciService service) : base(service)
+        {
+        }
+
         [HttpPost("Login")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<ActionResult<Model.Korisnik>> Login(string korisnickoIme, string lozinka)
         {
             var user = await ((KorisniciService)service).Login(korisnickoIme, lozinka);
@@ -21,14 +25,14 @@ namespace eNote.API.Controllers
         }
 
         [HttpGet("GetAllMembers")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public override async Task<PagedResult<Model.Korisnik>> GetAll([FromQuery] KorisnikSearchObject searchObject)
         {
             return await base.GetAll(searchObject);
         }       
        
         [HttpPost("InsertTeacher")]
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult> InsertTeacher([FromBody] KorisnikInsertRequest request)
         {
             var result = await service.Insert(request);
@@ -36,7 +40,7 @@ namespace eNote.API.Controllers
         }
 
         [HttpPost("InsertStudent")]
-        [Authorize(Policy = "AdminOrTeacher")]
+        //[Authorize(Policy = "AdminOrTeacher")]
         public async Task<ActionResult> InsertStudent([FromBody] KorisnikInsertRequest request)
         {
             var result = await service.Insert(request);

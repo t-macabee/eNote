@@ -15,7 +15,7 @@ namespace eNote.Services.Configurations
 
             TypeAdapterConfig<Korisnik, Model.Korisnik>
                 .NewConfig()
-                .Map(dest => dest.Uloga, src => new Model.DTOs.Uloge 
+                .Map(dest => dest.Uloga, src => src.Uloga == null ? null : new Model.DTOs.Uloge 
                 {
                     Id = src.Uloga.Id,
                     Naziv = src.Uloga.NazivString

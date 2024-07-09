@@ -1,0 +1,37 @@
+version: '3'
+services:
+  # SQL Server Docker container
+  enote-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Undert0w29+
+      - MSSQL_PID=Developer
+    ports:
+      - 1401:1433
+    expose:
+      - 1433
+    networks:
+      - enote
+
+  # API Docker container
+  enote-api:
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      - ConnectionStrings:ENoteConnection=Server=enote-sql,1433;Database=ib150057;User=sa;Password=Undert0w29+;ConnectRetryCount=0;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 5256:5256
+    networks:
+      - enote
+    links:
+      - enote-sql
+    depends_on:
+      - enote-sql
+
+networks:
+  enote:
+    driver: bridge   

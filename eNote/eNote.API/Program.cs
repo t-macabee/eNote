@@ -17,21 +17,22 @@ builder.Services.AddTransient<IInstrumentService, InstrumentService>();
 builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 
-builder.Services.AddMapster();
-MapsterConfig.RegisterMappings();
-
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x => {
+builder.Services.AddSwaggerGen(x =>
+{
     x.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme()
     {
         Type = SecuritySchemeType.Http,
-        Scheme = "basic"
+        Scheme = "basic",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Basic Authentication header using the Basic scheme."
     });
-    x.AddSecurityRequirement(new OpenApiSecurityRequirement 
-    { 
-        { 
+    x.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
             new OpenApiSecurityScheme
             {
                 Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "basicAuth" }
@@ -40,7 +41,7 @@ builder.Services.AddSwaggerGen(x => {
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("ENoteConnection");
 builder.Services.AddDbContext<ENoteContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddAuthentication("BasicAuthentication").AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", options =>
@@ -52,9 +53,13 @@ builder.Services.AddAuthorizationBuilder()
     .AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Admin.ToString()))
     .AddPolicy("AdminOrTeacher", policy => policy.RequireRole(Roles.Admin.ToString(), Roles.Instructor.ToString()));
 
+builder.Services.AddMapster();
+MapsterConfig.RegisterMappings();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -68,8 +73,14 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseMiddleware<ExceptionHandlerMiddleware>();
-
 app.MapControllers();
+
+/*
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<ENoteContext>();
+    dataContext.Database.Migrate();
+}
+*/
 
 app.Run();

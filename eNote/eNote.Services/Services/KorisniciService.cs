@@ -11,9 +11,12 @@ using Microsoft.Extensions.Logging;
 
 namespace eNote.Services.Services
 {
-    public class KorisniciService(ENoteContext context, IMapper mapper) 
-        : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
+    public class KorisniciService : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>, IKorisniciService
     {
+        public KorisniciService(ENoteContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
+
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
             query = base.AddFilter(search, query);
@@ -44,9 +47,9 @@ namespace eNote.Services.Services
 
         public override async Task<Model.Korisnik> Insert(KorisnikInsertRequest request)
         {
-            await base.Insert(request);
+            var insertedEntity = await base.Insert(request);
 
-            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == request.KorisnickoIme);
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.Id == insertedEntity.Id);
 
             return entity == null ? throw new Exception("Korisnik nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
@@ -67,13 +70,8 @@ namespace eNote.Services.Services
             return !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, lozinka, entity.LozinkaHash) ? throw new Exception("Nevažeća lozinka.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public override void BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
-        {            
-            if (request.Lozinka != request.LozinkaPotvrda)
-            {
-                throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
-            }
-
+        public override async Task BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
+        {                        
             var existingUsername = context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
 
             if (existingUsername != null) 
@@ -88,16 +86,23 @@ namespace eNote.Services.Services
                 throw new Exception("Email već postoji. Molimo odaberite drugu email adresu.");
             }
 
-            entity.UlogaId = request.UlogaId;            
+            if (request.Lozinka != request.LozinkaPotvrda)
+            {
+                throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
+            }
+
+            entity.UlogaId = request.UlogaId;
+
+            entity.AdresaId = request.AdresaId ?? 0;
 
             entity.LozinkaSalt = PasswordBuilder.GenerateSalt();
 
             entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
 
-            base.BeforeInsert(request, entity);
+            await base.BeforeInsert(request, entity);
         }
 
-        public override void BeforeUpdate(KorisnikUpdateRequest request, Database.Korisnik entity)
+        public override async Task BeforeUpdate(KorisnikUpdateRequest request, Database.Korisnik entity)
         {
             if (request.Lozinka != null)
             {
@@ -111,7 +116,7 @@ namespace eNote.Services.Services
                 entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
             }
 
-            base.BeforeUpdate(request, entity);
+            await base.BeforeUpdate(request, entity);
         }
     }
 }

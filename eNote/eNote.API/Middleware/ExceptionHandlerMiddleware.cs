@@ -1,38 +1,42 @@
 ﻿using System.Net;
 using eNote.Model;
+using Newtonsoft.Json;
 
 namespace eNote.API.Middleware
 {
-    public class ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger, RequestDelegate next)
+    public class ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)
     {
-        private readonly ILogger<ExceptionHandlerMiddleware> logger = logger;
-        private readonly RequestDelegate next = next;
+        private readonly RequestDelegate _next = next;
+        private readonly ILogger<ExceptionHandlerMiddleware> _logger = logger;
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
-                await next(httpContext);
+                await _next(httpContext);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An unhandled exception has occurred.");
+
                 await HandleExceptionAsync(httpContext, ex);
             }
         }
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            logger.LogError(exception, exception.Message);
-
             context.Response.ContentType = "application/json";
-
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            return context.Response.WriteAsync(new ErrorDetails
+
+            var errorDetails = new ErrorDetails
             {
                 StatusCode = context.Response.StatusCode,
-                Message = "Server side error, check log files."
-            }
-            .ToString());
+                Message = "An unexpected error occurred."
+            };
+
+            _logger.LogError(exception, "Exception details: {Message}", exception.Message);
+
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(errorDetails));
         }
     }
 }

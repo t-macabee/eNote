@@ -12,7 +12,7 @@ using eNote.Services.Database;
 namespace eNote.Services.Migrations
 {
     [DbContext(typeof(ENoteContext))]
-    [Migration("20240708154507_Initial")]
+    [Migration("20240709164327_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -452,12 +452,12 @@ namespace eNote.Services.Migrations
                         {
                             Id = 1,
                             AdresaId = 1,
-                            DatumRodjenja = new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6609),
+                            DatumRodjenja = new DateTime(2024, 7, 9, 18, 43, 27, 240, DateTimeKind.Local).AddTicks(7561),
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "sNXxntBVxkDuUE++CzUJ3OfMQuZ9gcVNFb+R6xpTfeI=",
-                            LozinkaSalt = "TL4XiiFP4aoMqmrJaptqKg==",
+                            LozinkaHash = "dsmR736th+Q86aPrHJHiJlV4FGci99tFBhco/8wz2vE=",
+                            LozinkaSalt = "7/S9Nm6cqq5V3RUW4QGsiw==",
                             Prezime = "Admin",
                             Telefon = "000000000",
                             UlogaId = 1
@@ -466,12 +466,12 @@ namespace eNote.Services.Migrations
                         {
                             Id = 2,
                             AdresaId = 4,
-                            DatumRodjenja = new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6668),
+                            DatumRodjenja = new DateTime(2024, 7, 9, 18, 43, 27, 240, DateTimeKind.Local).AddTicks(7611),
                             Email = "john.doe@outlook.com",
                             Ime = "John",
                             KorisnickoIme = "johnDoe",
-                            LozinkaHash = "2kao4ft1sZDeoreJk96v2kawjkDi+pfk/KOrQN2GyjU=",
-                            LozinkaSalt = "7IC81WP1cvHRhdyy2OSLjw==",
+                            LozinkaHash = "ScwdlxpXEg6jpPxPNnUNeq9f3Cw5tL+VAWze/d/SYEo=",
+                            LozinkaSalt = "/KzcMEiAAhQ2jjz2hVxrZg==",
                             Prezime = "Doe",
                             Telefon = "111111111",
                             UlogaId = 2
@@ -480,12 +480,12 @@ namespace eNote.Services.Migrations
                         {
                             Id = 3,
                             AdresaId = 5,
-                            DatumRodjenja = new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6816),
+                            DatumRodjenja = new DateTime(2024, 7, 9, 18, 43, 27, 240, DateTimeKind.Local).AddTicks(7615),
                             Email = "jane.doe@outlook.com",
                             Ime = "Jane",
                             KorisnickoIme = "janeDoe",
-                            LozinkaHash = "ORCGYNr2YSFyhI1ukdMMl4ELyvikhOH0FOfZps+7LsA=",
-                            LozinkaSalt = "nUAKr3pJP/YbcvGzPSM2Bw==",
+                            LozinkaHash = "Mggal5RCWymUaNjuF7Y8fCefwa0Oe73qjkmWpYPFod4=",
+                            LozinkaSalt = "ezk4pmhTprXCqHqxnDw7Xg==",
                             Prezime = "Doe",
                             Telefon = "222222222",
                             UlogaId = 3

@@ -399,9 +399,9 @@ namespace eNote.Services.Migrations
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Telefon", "UlogaId" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6609), "admin@outlook.com", "Admin", "admin", "sNXxntBVxkDuUE++CzUJ3OfMQuZ9gcVNFb+R6xpTfeI=", "TL4XiiFP4aoMqmrJaptqKg==", "Admin", null, null, "000000000", 1 },
-                    { 2, 4, new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6668), "john.doe@outlook.com", "John", "johnDoe", "2kao4ft1sZDeoreJk96v2kawjkDi+pfk/KOrQN2GyjU=", "7IC81WP1cvHRhdyy2OSLjw==", "Doe", null, null, "111111111", 2 },
-                    { 3, 5, new DateTime(2024, 7, 8, 17, 45, 7, 119, DateTimeKind.Local).AddTicks(6816), "jane.doe@outlook.com", "Jane", "janeDoe", "ORCGYNr2YSFyhI1ukdMMl4ELyvikhOH0FOfZps+7LsA=", "nUAKr3pJP/YbcvGzPSM2Bw==", "Doe", null, null, "222222222", 3 }
+                    { 1, 1, new DateTime(2024, 7, 9, 18, 43, 27, 240, DateTimeKind.Local).AddTicks(7561), "admin@outlook.com", "Admin", "admin", "dsmR736th+Q86aPrHJHiJlV4FGci99tFBhco/8wz2vE=", "7/S9Nm6cqq5V3RUW4QGsiw==", "Admin", null, null, "000000000", 1 },
+                    { 2, 4, new DateTime(2024, 7, 9, 18, 43, 27, 240, DateTimeKind.Local).AddTicks(7611), "john.doe@outlook.com", "John", "johnDoe", "ScwdlxpXEg6jpPxPNnUNeq9f3Cw5tL+VAWze/d/SYEo=", "/KzcMEiAAhQ2jjz2hVxrZg==", "Doe", null, null, "111111111", 2 },
+                    { 3, 5, new DateTime(2024, 7, 9, 18, 43, 27, 240, DateTimeKind.Local).AddTicks(7615), "jane.doe@outlook.com", "Jane", "janeDoe", "Mggal5RCWymUaNjuF7Y8fCefwa0Oe73qjkmWpYPFod4=", "ezk4pmhTprXCqHqxnDw7Xg==", "Doe", null, null, "222222222", 3 }
                 });
 
             migrationBuilder.InsertData(

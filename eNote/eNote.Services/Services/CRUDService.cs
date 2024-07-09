@@ -4,9 +4,12 @@ using MapsterMapper;
 
 namespace eNote.Services.Services
 {
-    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper) 
-        : BaseService<TModel, TSearch, TDbEntity>(context, mapper) where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
+    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity> : BaseService<TModel, TSearch, TDbEntity> where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
+        public CRUDService(ENoteContext context, IMapper mapper) : base(context, mapper)
+        {
+        }
+
         public virtual async Task<TModel> Insert(TInsert request)
         {
             if(request == null)
@@ -16,15 +19,15 @@ namespace eNote.Services.Services
 
             TDbEntity entity = mapper.Map<TDbEntity>(request);
 
-            BeforeInsert(request, entity);
+            await BeforeInsert(request, entity);
 
             await context.AddAsync(entity);
 
             await context.SaveChangesAsync();
 
-            var mappedEntity = mapper.Map<TModel>(entity);
+            await context.Entry(entity).ReloadAsync();
 
-            return mappedEntity;
+            return mapper.Map<TModel>(entity);
         }
 
         public virtual async Task<TModel> Update(int id, TUpdate request)
@@ -38,7 +41,7 @@ namespace eNote.Services.Services
 
             mapper.Map(request, entity);
 
-            BeforeUpdate(request, entity);
+            await BeforeUpdate(request, entity);
 
             await context.SaveChangesAsync();
 
@@ -58,8 +61,8 @@ namespace eNote.Services.Services
             return temp;
         }
 
-        public virtual void BeforeInsert(TInsert request, TDbEntity entity) { }
+        public virtual Task BeforeInsert(TInsert request, TDbEntity entity) => Task.CompletedTask;
 
-        public virtual void BeforeUpdate(TUpdate request, TDbEntity entity) { }               
+        public virtual Task BeforeUpdate(TUpdate request, TDbEntity entity) => Task.CompletedTask;
     }
 }

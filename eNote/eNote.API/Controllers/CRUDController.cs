@@ -6,11 +6,17 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace eNote.API.Controllers
 {
-    public class CRUDController<TModel, TSearch, TInsert, TUpdate>(ICRUDService<TModel, TSearch, TInsert, TUpdate> service) : BaseController<TModel, TSearch>(service) where TSearch : BaseSearchObject where TModel : class
+    public class CRUDController<TModel, TSearch, TInsert, TUpdate> : BaseController<TModel, TSearch> where TSearch : BaseSearchObject where TModel : class
     {
-        protected new ICRUDService<TModel, TSearch, TInsert, TUpdate> service = service;
+        protected new ICRUDService<TModel, TSearch, TInsert, TUpdate> service;
+
+        public CRUDController(ICRUDService<TModel, TSearch, TInsert, TUpdate> service) : base(service)
+        {
+            this.service = service;
+        }
 
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public virtual async Task<TModel> Insert(TInsert request)
         {
             return await service.Insert(request);
