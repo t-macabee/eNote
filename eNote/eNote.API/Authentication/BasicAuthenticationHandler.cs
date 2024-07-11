@@ -8,9 +8,19 @@ using System.Text.Encodings.Web;
 
 namespace eNote.API.Security
 {
-    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService service) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        private readonly IKorisniciService service = service;
+        private readonly IKorisniciService _service;
+
+        public BasicAuthenticationHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            IKorisniciService service)
+            : base(options, logger, encoder)
+        {
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+        }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -35,36 +45,35 @@ namespace eNote.API.Security
                 }
 
                 var credentialsBytes = Convert.FromBase64String(authHeader.Parameter);
-
                 var credentials = Encoding.UTF8.GetString(credentialsBytes).Split(':');
 
-                var username = credentials[0];
+                if (credentials.Length != 2)
+                {
+                    return AuthenticateResult.Fail("Invalid Authorization header format");
+                }
 
+                var username = credentials[0];
                 var password = credentials[1];
 
-                var user = await service.Login(username, password);
+                var user = await _service.Login(username, password);
 
                 if (user == null)
                 {
                     return AuthenticateResult.Fail("Authentication failed");
                 }
-                else
+
+                var claims = new List<Claim>
                 {
-                    var claims = new List<Claim>()
-                    {
-                        new (ClaimTypes.Name, user.Ime),
-                        new (ClaimTypes.NameIdentifier, user.KorisnickoIme),
-                        new (ClaimTypes.Role, user.Uloga.Naziv)
-                    };                    
+                    new (ClaimTypes.Name, user.Ime),
+                    new (ClaimTypes.NameIdentifier, user.KorisnickoIme),
+                    new (ClaimTypes.Role, user.Uloga.Naziv)
+                };
 
-                    var identity = new ClaimsIdentity(claims, Scheme.Name);
+                var identity = new ClaimsIdentity(claims, Scheme.Name);
+                var principal = new ClaimsPrincipal(identity);
+                var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
-                    var principal = new ClaimsPrincipal(identity);
-
-                    var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
-                    return AuthenticateResult.Success(ticket);
-                }
+                return AuthenticateResult.Success(ticket);
             }
             catch (FormatException)
             {

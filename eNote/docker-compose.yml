@@ -1,4 +1,3 @@
-version: '3'
 services:
   # SQL Server Docker container
   enote-sql:
