@@ -8,12 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class InstrumentService : CRUDService<Model.DTOs.Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest, Instrumenti>, IInstrumentService
+    public class InstrumentService(ENoteContext context, IMapper mapper) 
+        : CRUDService<Model.DTOs.Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest, Instrumenti>(context, mapper), IInstrumentService
     {
-        public InstrumentService(ENoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
         public override IQueryable<Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Instrumenti> query)
         {
             query = base.AddFilter(search, query);
@@ -30,7 +27,6 @@ namespace eNote.Services.Services
 
             return query;
         }
-
       
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {

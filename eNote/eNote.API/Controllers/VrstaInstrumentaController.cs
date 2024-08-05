@@ -9,10 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eNote.API.Controllers
 {
-    public class VrstaInstrumentaController : CRUDController<Model.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>
+    public class VrstaInstrumentaController(IVrstaInstrumentaService service) : CRUDController<Model.VrstaInstrumenta, NazivSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>(service)
     {
-        public VrstaInstrumentaController(IVrstaInstrumentaService service) : base(service)
-        {
-        }
     }
 }

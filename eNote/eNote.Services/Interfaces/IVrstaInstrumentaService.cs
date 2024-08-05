@@ -4,8 +4,7 @@ using eNote.Services.Interfaces;
 
 namespace eNote.Services.Services
 {
-    public interface IVrstaInstrumentaService : ICRUDService<Model.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>
+    public interface IVrstaInstrumentaService : ICRUDService<Model.VrstaInstrumenta, NazivSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>
     {
-
     }
 }

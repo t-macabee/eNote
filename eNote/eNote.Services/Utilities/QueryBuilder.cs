@@ -13,7 +13,7 @@ namespace eNote.Services.Helpers
             return query switch
             {
                 IQueryable<Korisnik> korisnikQuery => (IQueryable<T>)(korisnikQuery.Include(x => x.Uloga).Include(x => x.Adresa)),
-                IQueryable<MusicShop> musicShopQuery => (IQueryable<T>)(musicShopQuery.Include(x => x.Adresa)),
+                IQueryable<MusicShop> musicShopQuery => (IQueryable<T>)(musicShopQuery.Include(x => x.Uloga).Include(x => x.Adresa)),
                 IQueryable<Instrumenti> instrumentiQuery => (IQueryable<T>)(instrumentiQuery.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop)),
                 _ => query
             };

@@ -1,4 +1,5 @@
-﻿using eNote.Model.Requests.MusicShop;
+﻿using eNote.Model;
+using eNote.Model.Requests.MusicShop;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Helpers;
@@ -8,13 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class MusicShopService : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopUpsertRequest, MusicShopUpsertRequest, Database.MusicShop>, IMusicShopService
+    public class MusicShopService(ENoteContext context, IMapper mapper) 
+        : CRUDService<Model.MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest, Database.MusicShop>(context, mapper), IMusicShopService
     {
-        public MusicShopService(ENoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
-        public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
+        public override IQueryable<Database.MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<Database.MusicShop> query)
         {
             query = base.AddFilter(search, query);
 
@@ -33,7 +31,7 @@ namespace eNote.Services.Services
 
             return query;
         }
-
+        
         public override async Task<Model.MusicShop> GetById(int id)
         { 
             var entity = await QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefaultAsync(x => x.Id == id);
@@ -43,25 +41,38 @@ namespace eNote.Services.Services
                 : mapper.Map<Model.MusicShop>(entity);
         }
 
-        public override async Task<Model.MusicShop> Insert(MusicShopUpsertRequest request)
+        public override Task<Model.MusicShop> Insert(MusicShopInsertRequest request)
         {
-            var adresa = await AddressBuilder.Create(context, request.Adresa);
-
-            var entity = new MusicShop
-            {
-                Naziv = request.Naziv,
-                Adresa = adresa,
-            };
-
-            await context.MusicShops.AddAsync(entity);
-            await context.SaveChangesAsync();
-
-            var result = QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefault(x => x.Id == entity.Id);
-
-            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.MusicShop>(entity);
+            return base.Insert(request);
         }
 
-        public override async Task<Model.MusicShop> Update(int id, MusicShopUpsertRequest request)
+        public async Task<Model.MusicShop> Login(string username, string password)
+        {
+            var entity = await QueryBuilder.ApplyChaining(context.MusicShops).FirstOrDefaultAsync(x => x.KorisnickoIme == username);
+
+            if (entity == null || !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, password, entity.LozinkaHash))
+            {
+                throw new Exception("Invalid username or password.");
+            }
+
+            return mapper.Map<Model.MusicShop>(entity);
+        }
+
+        /*
+         *  public async Task<Model.Korisnik> Login(string username, string password)
+        {
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == username);
+
+            if (entity == null || !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, password, entity.LozinkaHash))
+            {
+                throw new Exception("Invalid username or password.");
+            }
+
+            return mapper.Map<Model.Korisnik>(entity);
+        }
+         */
+
+        public override async Task<Model.MusicShop> Update(int id, MusicShopUpdateRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 

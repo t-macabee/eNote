@@ -29,8 +29,17 @@ namespace eNote.Services.Configurations
                 .Map(dest => dest.MusicShop, src => src.MusicShop != null ? src.MusicShop.Naziv : null);
 
             TypeAdapterConfig<MusicShop, Model.MusicShop>
-                .NewConfig()                
+                .NewConfig()
+                 .Map(dest => dest.Uloga, src => src.Uloga == null ? null : new Model.DTOs.Uloge
+                 {
+                     Id = src.Uloga.Id,
+                     Naziv = src.Uloga.NazivString
+                 })
                 .Map(dest => dest.Adresa, src => src.Adresa != null ? $"{src.Adresa.Grad}, {src.Adresa.Ulica} {src.Adresa.Broj}" : null);
+
+            TypeAdapterConfig<Database.Kurs, Model.DTOs.Kurs>
+                .NewConfig()
+                .Map(dest => dest.InstruktorIme, src => src.Instruktor.Ime.ToString());
 
             TypeAdapterConfig<Database.Adresa, Model.DTOs.Adresa>
                 .NewConfig();

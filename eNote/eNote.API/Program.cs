@@ -16,6 +16,7 @@ builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IInstrumentService, InstrumentService>();
 builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();
+builder.Services.AddTransient<IKursService, KursService>();
 
 builder.Services.AddControllers();
 
@@ -49,13 +50,10 @@ builder.Services.AddAuthentication("BasicAuthentication").AddScheme<Authenticati
     options.TimeProvider = TimeProvider.System;
 });
 
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("AdminOnly", policy => policy.RequireRole(Roles.Admin.ToString()))
-    .AddPolicy("AdminOrTeacher", policy => policy.RequireRole(Roles.Admin.ToString(), Roles.Instructor.ToString()));
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddMapster();
 MapsterConfig.RegisterMappings();
-builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -74,13 +72,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-/*
-using (var scope = app.Services.CreateScope())
-{
-    var dataContext = scope.ServiceProvider.GetRequiredService<ENoteContext>();
-    dataContext.Database.Migrate();
-}
-*/
 
 app.Run();

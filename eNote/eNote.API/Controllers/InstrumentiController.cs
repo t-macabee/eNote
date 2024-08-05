@@ -8,10 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eNote.API.Controllers
 {
-    public class InstrumentiController : CRUDController<Model.DTOs.Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest>
+    public class InstrumentiController(IInstrumentService service) : CRUDController<Model.DTOs.Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest>(service)
     {
-        public InstrumentiController(IInstrumentService service) : base(service)
-        {
-        }
     }
 }

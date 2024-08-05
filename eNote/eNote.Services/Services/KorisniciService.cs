@@ -11,12 +11,9 @@ using Microsoft.Extensions.Logging;
 
 namespace eNote.Services.Services
 {
-    public class KorisniciService : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>, IKorisniciService
+    public class KorisniciService(ENoteContext context, IMapper mapper) 
+        : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
     {
-        public KorisniciService(ENoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
         public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
             query = base.AddFilter(search, query);
@@ -63,11 +60,16 @@ namespace eNote.Services.Services
             return entity == null ? throw new Exception("Korisnik nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public async Task<Model.Korisnik> Login(string korisnickoIme, string lozinka)
+        public async Task<Model.Korisnik> Login(string username, string password)
         {
-            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == korisnickoIme) ?? throw new Exception("Nevažeće korisničko ime.");
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == username);
 
-            return !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, lozinka, entity.LozinkaHash) ? throw new Exception("Nevažeća lozinka.") : mapper.Map<Model.Korisnik>(entity);
+            if (entity == null || !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, password, entity.LozinkaHash))
+            {
+                throw new Exception("Invalid username or password.");
+            }
+
+            return mapper.Map<Model.Korisnik>(entity);
         }
 
         public override async Task BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)

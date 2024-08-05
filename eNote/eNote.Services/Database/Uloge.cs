@@ -5,9 +5,10 @@ namespace eNote.Services.Database
     public class Uloge
     {
         public int Id { get; set; }
-        public UserRoles Naziv { get; set; } 
+        public string Naziv { get; set; } = string.Empty;
         public string NazivString => Naziv.ToString();
 
-        public ICollection<Korisnik> Korisnici { get; set; } = [];
+        public ICollection<Korisnik> Korisnici { get; set; } = new List<Korisnik>();
+        public ICollection<MusicShop> MusicShops { get; set; } = new List<MusicShop>();
     }
 }

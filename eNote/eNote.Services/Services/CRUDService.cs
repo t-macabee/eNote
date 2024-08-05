@@ -4,12 +4,9 @@ using MapsterMapper;
 
 namespace eNote.Services.Services
 {
-    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity> : BaseService<TModel, TSearch, TDbEntity> where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
+    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper) 
+        : BaseService<TModel, TSearch, TDbEntity>(context, mapper) where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
-        public CRUDService(ENoteContext context, IMapper mapper) : base(context, mapper)
-        {
-        }
-
         public virtual async Task<TModel> Insert(TInsert request)
         {
             if(request == null)
