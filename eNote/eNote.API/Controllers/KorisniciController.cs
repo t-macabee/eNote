@@ -1,35 +1,35 @@
-﻿using eNote.Model;
+﻿using EasyNetQ.Events;
+using eNote.Model;
+using eNote.Model.DTOs;
 using eNote.Model.Requests.Korisnik;
 using eNote.Model.SearchObjects;
+using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using eNote.Services.Services;
+using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 namespace eNote.API.Controllers
 {
-    public class KorisniciController(IKorisniciService service) : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>(service)
+    public class KorisniciController(IKorisniciService korisniciService) : CRUDController<BaseKorisnik, BaseKorisnikSearchObject, BaseKorisnikInsertRequest, BaseKorisnikUpdateRequest>(korisniciService)
     {
-        
-        [HttpGet("GetAllMembers")]
-        //[AllowAnonymous]
-        public override async Task<PagedResult<Model.Korisnik>> GetAll([FromQuery] KorisnikSearchObject searchObject)
-        {
-            return await base.GetAll(searchObject);
-        }       
-       
-        [HttpPost("InsertTeacher")]
-        //[Authorize(Policy = "AdminOnly")]
-        public async Task<ActionResult> InsertTeacher([FromBody] KorisnikInsertRequest request)
-        {
-            var result = await service.Insert(request);
-            return Ok(result);
-        }
 
-        [HttpPost("InsertStudent")]
-        //[Authorize(Policy = "AdminOrTeacher")]
-        public async Task<ActionResult> InsertStudent([FromBody] KorisnikInsertRequest request)
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login([FromBody] LoginModel model)
         {
-            var result = await service.Insert(request);
-            return Ok(result);
-        }
+            if (model == null || string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Password))
+            {
+                return BadRequest("Invalid login request.");
+            }
+
+            var user = await korisniciService.Login(model);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            return Ok(user);
+        }   
+             
     }
 }

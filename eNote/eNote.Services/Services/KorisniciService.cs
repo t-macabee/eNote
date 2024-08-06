@@ -1,48 +1,60 @@
 ﻿using eNote.Model;
+using eNote.Model.DTOs;
 using eNote.Model.Requests.Korisnik;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
+using eNote.Services.Utilities;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 namespace eNote.Services.Services
 {
     public class KorisniciService(ENoteContext context, IMapper mapper) 
-        : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
+        : CRUDService<BaseKorisnik, BaseKorisnikSearchObject, BaseKorisnikInsertRequest, BaseKorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
     {
-        public override IQueryable<Database.Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Database.Korisnik> query)
+        public override IQueryable<Database.Korisnik> AddFilter(BaseKorisnikSearchObject search, IQueryable<Database.Korisnik> query)
         {
             query = base.AddFilter(search, query);
 
-            query = query.ApplyFilters(
-            [
-               x => search?.Ime != null ? x.Where(k => k.Ime.StartsWith(search.Ime)) : x,
-               x => search?.Prezime != null ? x.Where(k => k.Prezime.StartsWith(search.Prezime)) : x,
-               x => search?.KorisnickoIme != null ? x.Where(k => k.KorisnickoIme.StartsWith(search.KorisnickoIme)) : x,
-               x => search?.Grad != null ? x.Include(k => k.Adresa).Where(k => k.Adresa != null && k.Adresa.Grad.StartsWith(search.Grad)) : x
-            ]);
-
-            int count = query.Count();
-
-            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
+            query = QueryBuilder.ApplyFilters(query, builder =>
+            {
+                builder.Add("Ime", search.Ime)
+                       .Add("Prezime", search.Prezime)
+                       .Add("KorisnickoIme", search.KorisnickoIme)
+                       .Add("Naziv", search.Naziv)
+                       .AddNavigation("Adresa", "Grad", search.Grad, k => k.Adresa);
+            });
 
             query = QueryBuilder.ApplyChaining(query);
 
             return query;
         }
 
-        public override async Task<Model.Korisnik> GetById(int id)
+        public override async Task<BaseKorisnik> GetById(int id)
         {
             var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.Id == id);
 
-            return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
+            if (entity == null)
+            {
+                return null;
+            }
+            else
+            {
+                if (entity.Uloga.Naziv == "Shop")
+                {
+                    return (BaseKorisnik)mapper.Map<MusicShop>(entity);
+                }
+                else
+                {
+                    return (BaseKorisnik)mapper.Map<Model.Korisnik>(entity);
+                }
+            }
         }
 
-        public override async Task<Model.Korisnik> Insert(KorisnikInsertRequest request)
+        public override async Task<BaseKorisnik> Insert(BaseKorisnikInsertRequest request)
         {
             var insertedEntity = await base.Insert(request);
 
@@ -51,7 +63,7 @@ namespace eNote.Services.Services
             return entity == null ? throw new Exception("Korisnik nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public override async Task<Model.Korisnik> Update(int id, KorisnikUpdateRequest request)
+        public override async Task<BaseKorisnik> Update(int id, BaseKorisnikUpdateRequest request)
         {
             await base.Update(id, request);
 
@@ -60,23 +72,32 @@ namespace eNote.Services.Services
             return entity == null ? throw new Exception("Korisnik nije pronadjen.") : mapper.Map<Model.Korisnik>(entity);
         }
 
-        public async Task<Model.Korisnik> Login(string username, string password)
+        public async Task<BaseKorisnik> Login(LoginModel model)
         {
-            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == username);
+            var entity = await QueryBuilder.ApplyChaining(context.Korisnici).FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
 
-            if (entity == null || !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, password, entity.LozinkaHash))
+            if (entity == null || !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, model.Password, entity.LozinkaHash))
             {
-                throw new Exception("Invalid username or password.");
+                return null;
             }
-
-            return mapper.Map<Model.Korisnik>(entity);
+            else
+            {
+                if (entity.Uloga.Naziv == "Shop")
+                {
+                    return (BaseKorisnik)mapper.Map<MusicShop>(entity);
+                }
+                else
+                {
+                    return (BaseKorisnik)mapper.Map<Model.Korisnik>(entity);
+                }
+            }
         }
 
-        public override async Task BeforeInsert(KorisnikInsertRequest request, Database.Korisnik entity)
-        {                        
+        public override async Task BeforeInsert(BaseKorisnikInsertRequest request, Database.Korisnik entity)
+        {
             var existingUsername = context.Korisnici.FirstOrDefault(x => x.KorisnickoIme == request.KorisnickoIme);
 
-            if (existingUsername != null) 
+            if (existingUsername != null)
             {
                 throw new Exception("Korisničko ime već postoji. Molimo odaberite drugo korisničko ime.");
             }
@@ -104,7 +125,7 @@ namespace eNote.Services.Services
             await base.BeforeInsert(request, entity);
         }
 
-        public override async Task BeforeUpdate(KorisnikUpdateRequest request, Database.Korisnik entity)
+        public override async Task BeforeUpdate(BaseKorisnikUpdateRequest request, Database.Korisnik entity)
         {
             if (request.Lozinka != null)
             {
@@ -119,6 +140,29 @@ namespace eNote.Services.Services
             }
 
             await base.BeforeUpdate(request, entity);
-        }
+        }        
     }
 }
+
+/*
+ public override IQueryable<BaseKorisnik> AddFilter(BaseKorisnikSearchObject search, IQueryable<Database.Korisnik> query)
+        {
+            query = base.AddFilter(search, query);
+
+            query = query.ApplyFilters(
+            [
+               x => search?.Ime != null ? x.Where(k => k.Ime.StartsWith(search.Ime)) : x,
+               x => search?.Prezime != null ? x.Where(k => k.Prezime.StartsWith(search.Prezime)) : x,
+               x => search?.KorisnickoIme != null ? x.Where(k => k.KorisnickoIme.StartsWith(search.KorisnickoIme)) : x,
+               x => search?.Grad != null ? x.Include(k => k.Adresa).Where(k => k.Adresa != null && k.Adresa.Grad.StartsWith(search.Grad)) : x
+            ]);
+
+            int count = query.Count();
+
+            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
+
+            query = QueryBuilder.ApplyChaining(query);
+
+            return query;
+        }
+ */

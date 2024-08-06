@@ -1,4 +1,4 @@
-﻿using eNote.Model;
+﻿    using eNote.Model;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;

@@ -9,18 +9,13 @@ namespace eNote.Services.Services
     public class VrstaInstrumentaService(ENoteContext context, IMapper mapper) 
         : CRUDService<Model.VrstaInstrumenta, NazivSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest, Database.VrstaInstrumenta>(context, mapper), IVrstaInstrumentaService
     {
+        
         public override IQueryable<VrstaInstrumenta> AddFilter(NazivSearchObject search, IQueryable<VrstaInstrumenta> query)
         {
             query = base.AddFilter(search, query);
 
-            query = query.ApplyFilters(
-            [
-                x => !string.IsNullOrWhiteSpace(search?.Naziv) ? x.Where(k => k.Naziv.Contains(search.Naziv)) : x
-            ]);
-
-            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
-
             return query;
         }
+        
     }       
 }

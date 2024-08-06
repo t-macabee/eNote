@@ -9,8 +9,8 @@
         public byte[]? Slika { get; set; } 
         public byte[]? SlikaThumb { get; set; }
 
-        public int MusicShopId { get; set; }
-        public MusicShop MusicShop { get; set; } 
+        public int KorisnikId { get; set; }
+        public Korisnik MusicShop { get; set; } 
 
         public int VrstaInstrumentaId { get; set; } 
         public VrstaInstrumenta VrstaInstrumenta { get; set; } 

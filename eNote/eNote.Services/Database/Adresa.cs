@@ -14,6 +14,5 @@ namespace eNote.Services.Database
         public string Broj { get; set; } = string.Empty;
 
         public ICollection<Korisnik> Korisnici { get; set; } = new List<Korisnik>();
-        public ICollection<MusicShop> MusicShops { get; set; } = new List<MusicShop>();
     }
 }

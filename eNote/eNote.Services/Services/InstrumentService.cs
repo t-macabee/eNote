@@ -5,6 +5,7 @@ using eNote.Services.Interfaces;
 using MapsterMapper;
 using eNote.Services.Helpers;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace eNote.Services.Services
 {
@@ -14,16 +15,6 @@ namespace eNote.Services.Services
         public override IQueryable<Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Instrumenti> query)
         {
             query = base.AddFilter(search, query);
-
-            query = query.ApplyFilters(
-            [
-                x => !string.IsNullOrWhiteSpace(search?.Model) ? x.Where(k => k.Model.StartsWith(search.Model)) : x,
-                x => !string.IsNullOrWhiteSpace(search?.Proizvodjac) ? x.Where(k => k.Proizvodjac.StartsWith(search.Proizvodjac)) : x,
-            ]);
-
-            query = QueryBuilder.ApplyPaging(query, search?.Page, search?.PageSize);
-
-            query = QueryBuilder.ApplyChaining(query);
 
             return query;
         }

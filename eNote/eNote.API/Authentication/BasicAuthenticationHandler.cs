@@ -1,4 +1,5 @@
-﻿using eNote.Services.Database;
+﻿using eNote.Model;
+using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using eNote.Services.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -10,17 +11,9 @@ using System.Text.Encodings.Web;
 
 namespace eNote.API.Security
 {
-    public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService korisniciService) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
     {
-        private readonly IKorisniciService korisniciService;
-        private readonly IMusicShopService musicShopService;
-
-        public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService korisniciService, IMusicShopService musicShopService)
-            : base(options, logger, encoder)
-        {
-            this.korisniciService = korisniciService;
-            this.musicShopService = musicShopService;
-        }
+        private IKorisniciService korisniciService = korisniciService;
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -31,26 +24,23 @@ namespace eNote.API.Security
 
             try
             {
-                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers.Authorization);
                 var credentialsBytes = Convert.FromBase64String(authHeader.Parameter);
                 var credentials = Encoding.UTF8.GetString(credentialsBytes).Split(':');
-                var username = credentials[0];
-                var password = credentials[1];
+
+                var loginRequest = new LoginModel
+                {
+                    Username = credentials[0],
+                    Password = credentials[1],
+                };
 
                 ClaimsIdentity identity = null;
 
-                var korisnik = await korisniciService.Login(username, password);
+                var korisnik = await korisniciService.Login(loginRequest);
+
                 if (korisnik != null)
                 {
                     identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, korisnik.Uloga.Naziv.ToString());
-                }
-                else
-                {
-                    var musicShop = await musicShopService.Login(username, password);
-                    if (musicShop != null)
-                    {
-                        identity = CreateIdentity(musicShop.Id.ToString(), musicShop.KorisnickoIme, musicShop.Uloga.Naziv.ToString());
-                    }
                 }
 
                 if (identity == null)

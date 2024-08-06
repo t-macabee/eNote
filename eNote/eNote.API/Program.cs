@@ -1,6 +1,5 @@
 using eNote.API.Middleware;
 using eNote.API.Security;
-using eNote.Model;
 using eNote.Services.Configurations;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
@@ -12,7 +11,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IInstrumentService, InstrumentService>();
 builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();

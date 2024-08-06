@@ -11,11 +11,12 @@
         public int UlogaId { get; set; }
         public Uloge Uloga { get; set; }
 
-        public string Ime { get; set; } = string.Empty;
-        public string Prezime { get; set; } = string.Empty;
-        public DateTime DatumRodjenja { get; set; }
+        public string? Ime { get; set; } 
+        public string? Prezime { get; set; } 
+        public DateTime? DatumRodjenja { get; set; }
         public string? Email { get; set; }
         public string? Telefon { get; set; }
+        public string? Naziv { get; set; }
         public byte[]? Slika { get; set; }
         public byte[]? SlikaThumb { get; set; }
 
@@ -25,5 +26,6 @@
         public ICollection<IznajmljivanjeInstrumenta>? IznajmljivanjeInstrumenta { get; set; } // Učenik
         public ICollection<PredajaZadatka>? PredajaZadatka { get; set; } // Učenik
         public ICollection<Prisustvo>? Prisustvo { get; set; } // Učenik
+        public ICollection<Instrumenti>? Instrumenti { get; set; } // Music shop
     }
 }
