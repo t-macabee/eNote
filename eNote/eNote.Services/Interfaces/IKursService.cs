@@ -10,6 +10,6 @@ namespace eNote.Services.Interfaces
 {
     public interface IKursService : ICRUDService<Model.DTOs.Kurs, NazivSearchObject, KursInsertRequest, KursUpdateRequest>
     {
-        
+
     }
 }

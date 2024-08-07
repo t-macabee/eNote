@@ -6,6 +6,6 @@ using System.Runtime.CompilerServices;
 namespace eNote.Services.Interfaces
 {
     public interface IInstrumentService : ICRUDService<Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest>
-    {        
+    {
     }
 }

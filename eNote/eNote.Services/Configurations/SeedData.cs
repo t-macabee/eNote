@@ -57,8 +57,8 @@ namespace eNote.Services.Configurations
                 new Korisnik { Id = 3, KorisnickoIme = "ucenik", Email = "jane.doe@outlook.com", Telefon = "222222222", LozinkaHash = ucenikHash, LozinkaSalt = ucenikSalt, UlogaId = 3, AdresaId = 5, Ime = "Jane", Prezime = "Doe", DatumRodjenja = DateTime.Now },
                 new Korisnik { Id = 4, KorisnickoIme = "shop1", Email = "shop1@outlook.com", Telefon = "333333333", LozinkaHash = musicShopHash, LozinkaSalt = musicShopSalt, UlogaId = 4, AdresaId = 2, Naziv = "Bonemeal Music Shop" }
             );
-            
-        }      
+
+        }
 
         public static void SeedInstrumentType(ModelBuilder modelBuilder)
         {
@@ -106,7 +106,7 @@ namespace eNote.Services.Configurations
                new Instrumenti { Id = 24, Model = "Stradivarius", Proizvodjac = "Bach", Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.", KorisnikId = 4, VrstaInstrumentaId = 2 },
                new Instrumenti { Id = 25, Model = "YSL-354", Proizvodjac = "Yamaha", Opis = "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.", KorisnikId = 4, VrstaInstrumentaId = 2 }
             );
-        }     
-                      
+        }
+
     }
 }

@@ -16,7 +16,10 @@ builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>
 builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 builder.Services.AddTransient<IKursService, KursService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new BaseKorisnikConverter());
+}); 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>

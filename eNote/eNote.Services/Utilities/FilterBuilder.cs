@@ -1,42 +1,47 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq.Expressions;
-using System.Reflection;
-
 
 namespace eNote.Services.Utilities
 {
-    public static class FilterBuilder
+    public class FilterBuilder<T>(IQueryable<T> query) where T : class
+    {
+        private readonly IQueryable<T> query = query;
+        private readonly List<Func<IQueryable<T>, IQueryable<T>>> filters = [];
+
+        public FilterBuilder<T> Add(string propertyName, string? value)
+        {
+            filters.Add(q => q.FilterBy(propertyName, value));
+            return this;
+        }
+
+        public FilterBuilder<T> AddNavigation<TProperty>(string navigationProperty, string propertyName, string? value)
+        {
+            filters.Add(q => q.FilterByNavigation<T, TProperty>(navigationProperty, propertyName, value));
+            return this;
+        }
+        public IQueryable<T> Build()
+        {
+            return filters.Aggregate(query, (current, filter) => filter(current));
+        }
+    }
+
+    public static class FilterBuilderExtensions
     {
         public static IQueryable<T> FilterBy<T>(this IQueryable<T> query, string propertyName, string? value) where T : class
         {
             if (string.IsNullOrEmpty(value))
                 return query;
 
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var property = Expression.Property(parameter, propertyName);
-            var stringValue = Expression.Constant(value);
-            var startsWith = Expression.Call(property, "StartsWith", null, stringValue);
-            var lambda = Expression.Lambda<Func<T, bool>>(startsWith, parameter);
-
-            return query.Where(lambda);
+            return query.Where(x => EF.Property<string>(x, propertyName).StartsWith(value));
         }
 
-        public static IQueryable<T> FilterByNavigation<T, TProperty>(this IQueryable<T> query, string navigationProperty, string propertyName, string? value, Expression<Func<T, TProperty>> navigationExpression) where T : class
+        public static IQueryable<T> FilterByNavigation<T, TProperty>(this IQueryable<T> query, string navigationProperty, string propertyName, string? value) where T : class
         {
             if (string.IsNullOrEmpty(value))
                 return query;
 
-            var parameter = Expression.Parameter(typeof(T), "x");
-            var navigation = Expression.Property(parameter, navigationProperty);
-            var property = Expression.Property(navigation, propertyName);
-            var nullCheck = Expression.NotEqual(navigation, Expression.Constant(null, navigation.Type));
-            var stringValue = Expression.Constant(value);
-            var startsWith = Expression.Call(property, "StartsWith", null, stringValue);
-            var combinedExpression = Expression.AndAlso(nullCheck, startsWith);
-            var lambda = Expression.Lambda<Func<T, bool>>(combinedExpression, parameter);
-
-            return query.Include(navigationExpression).Where(lambda);
+            return query.Where(x => EF.Property<TProperty>(EF.Property<object>(x, navigationProperty), propertyName) != null
+                                     && EF.Property<string>(EF.Property<object>(x, navigationProperty), propertyName).StartsWith(value));
         }
     }
 }

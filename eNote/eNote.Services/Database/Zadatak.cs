@@ -8,7 +8,7 @@
         public DateTime RokPredaje { get; set; }
 
         public int PredavanjeId { get; set; }
-        public Predavanje Predavanje { get; set; } 
+        public Predavanje Predavanje { get; set; }
 
         public ICollection<PredajaZadatka>? PredajaZadatka { get; set; }
     }

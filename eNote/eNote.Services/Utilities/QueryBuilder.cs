@@ -2,8 +2,6 @@
 using eNote.Services.Database;
 using eNote.Services.Utilities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 
 namespace eNote.Services.Helpers
 {
@@ -21,32 +19,16 @@ namespace eNote.Services.Helpers
             return query switch
             {
                 IQueryable<Database.Korisnik> korisnikQuery => (IQueryable<T>)(korisnikQuery.Include(x => x.Uloga).Include(x => x.Adresa)),
-                IQueryable<Database.Instrumenti> instrumentiQuery => (IQueryable<T>)(instrumentiQuery.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop)),
+                IQueryable<Instrumenti> instrumentiQuery => (IQueryable<T>)(instrumentiQuery.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop)),
                 _ => query
             };
         }
-    }
 
-    public class FilterBuilder<T>(IQueryable<T> query) where T : class
-    {
-        private readonly IQueryable<T> _query = query;
-        private readonly List<Func<IQueryable<T>, IQueryable<T>>> _filters = [];
 
-        public FilterBuilder<T> Add(string propertyName, string? value)
+
+        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, int? page, int? pageSize)
         {
-            _filters.Add(q => q.FilterBy(propertyName, value));
-            return this;
-        }
-
-        public FilterBuilder<T> AddNavigation<TProperty>(string navigationProperty, string propertyName, string? value, Expression<Func<T, TProperty>> navigationExpression)
-        {
-            _filters.Add(q => q.FilterByNavigation(navigationProperty, propertyName, value, navigationExpression));
-            return this;
-        }
-
-        public IQueryable<T> Build()
-        {
-            return _filters.Aggregate(_query, (current, filter) => filter(current));
+            return page.HasValue && pageSize.HasValue ? query.Skip(page.Value * pageSize.Value).Take(pageSize.Value) : query;
         }
     }
 }

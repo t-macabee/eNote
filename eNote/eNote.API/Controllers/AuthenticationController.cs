@@ -20,7 +20,7 @@ namespace eNote.API.Controllers
                 {
                     return Ok(user);
                 }
-               
+
                 return Unauthorized("Invalid username or password");
             }
             catch (Exception ex)

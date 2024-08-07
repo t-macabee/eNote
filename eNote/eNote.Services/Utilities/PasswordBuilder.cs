@@ -11,7 +11,7 @@ namespace eNote.Services.Helpers
     {
         public static string GenerateSalt()
         {
-            byte[] saltBytes = new byte[16]; 
+            byte[] saltBytes = new byte[16];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(saltBytes);

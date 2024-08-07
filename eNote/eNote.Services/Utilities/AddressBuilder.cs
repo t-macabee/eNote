@@ -44,7 +44,7 @@ namespace eNote.Services.Helpers
             };
 
             await context.AddAsync(adresa);
-            
+
             await context.SaveChangesAsync();
 
             return adresa;

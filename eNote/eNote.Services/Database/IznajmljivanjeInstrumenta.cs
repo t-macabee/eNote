@@ -10,7 +10,7 @@ namespace eNote.Services.Database
         public bool Vracen { get; set; }
 
         public int StudentId { get; set; }
-        public Korisnik Student { get; set; } 
+        public Korisnik Student { get; set; }
 
         public int InstrumentId { get; set; }
         public Instrumenti Instrument { get; set; }

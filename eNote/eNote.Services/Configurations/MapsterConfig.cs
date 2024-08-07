@@ -9,34 +9,31 @@ namespace eNote.Services.Configurations
     {
         public static void RegisterMappings()
         {
+            TypeAdapterConfig<Database.VrstaInstrumenta, Model.VrstaInstrumenta>
+               .NewConfig();
+
+            TypeAdapterConfig<Database.Adresa, Model.DTOs.Adresa>
+                .NewConfig();
+
             TypeAdapterConfig<Database.Uloge, Model.DTOs.Uloge>
                 .NewConfig()
                 .Map(dest => dest.Naziv, src => src.NazivString);
 
+            TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
+               .NewConfig()
+               .Map(dest => dest.MusicShop, src => src.MusicShop.Naziv);
+            
+            TypeAdapterConfig<Database.Kurs, Model.DTOs.Kurs>
+               .NewConfig()
+               .Map(dest => dest.InstruktorIme, src => src.Instruktor.Ime.ToString());
+
+            TypeAdapterConfig<Database.Korisnik, Model.MusicShop>
+             .NewConfig();
+
             TypeAdapterConfig<Database.Korisnik, Model.Korisnik>
                 .NewConfig()
-                .Map(dest => dest.Uloga, src => src.Uloga == null ? null : new Model.DTOs.Uloge
-                {
-                    Id = src.Uloga.Id,
-                    Naziv = src.Uloga.Naziv
-                })
-                .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.HasValue ? src.DatumRodjenja.Value.ToString("d") : null)
-                .Map(dest => dest.Adresa, src => src.Adresa != null ? $"{src.Adresa.Ulica} {src.Adresa.Broj}, {src.Adresa.Grad}" : null);
-
-            TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
-                .NewConfig()
-                .Map(dest => dest.VrstaInstrumenta, src => src.VrstaInstrumenta != null ? src.VrstaInstrumenta.Naziv : null)
-                .Map(dest => dest.MusicShop, src => src.MusicShop != null ? src.MusicShop.Naziv : null);          
-
-            TypeAdapterConfig<Database.Kurs, Model.DTOs.Kurs>
-                .NewConfig()
-                .Map(dest => dest.InstruktorIme, src => src.Instruktor.Ime.ToString());
-
-            TypeAdapterConfig<Database.Adresa, Model.DTOs.Adresa>
-                .NewConfig();
-            TypeAdapterConfig<Database.VrstaInstrumenta, Model.VrstaInstrumenta>
-                .NewConfig();
-
+                .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.HasValue ? src.DatumRodjenja.Value.ToString("d") : null);
+                                                     
             TypeAdapterConfig.GlobalSettings.Compile();
         }
     }

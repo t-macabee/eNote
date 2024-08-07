@@ -1,12 +1,8 @@
-﻿using EasyNetQ.Events;
-using eNote.Model;
+﻿using eNote.Model;
 using eNote.Model.DTOs;
 using eNote.Model.Requests.Korisnik;
 using eNote.Model.SearchObjects;
-using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
-using eNote.Services.Services;
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 namespace eNote.API.Controllers
 {
@@ -29,7 +25,20 @@ namespace eNote.API.Controllers
             }
 
             return Ok(user);
-        }   
-             
+        }
+
+        [HttpPost("InsertKorisnik")]
+        public async Task<ActionResult> InsertKorisnik([FromBody] KorisnikInsertRequest request)
+        {
+            var result = await service.Insert(request);
+            return Ok(result);
+        }
+
+        [HttpPost("InsertShop")]
+        public async Task<ActionResult> InsertShop([FromBody] KorisnikInsertRequest request)
+        {
+            var result = await service.Insert(request);
+            return Ok(result);
+        }
     }
 }

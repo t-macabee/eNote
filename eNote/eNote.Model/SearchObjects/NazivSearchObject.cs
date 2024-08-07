@@ -6,6 +6,6 @@ namespace eNote.Model.SearchObjects
 {
     public class NazivSearchObject : BaseSearchObject
     {
-        public string? Naziv {  get; set; }
+        public string? Naziv { get; set; }
     }
 }

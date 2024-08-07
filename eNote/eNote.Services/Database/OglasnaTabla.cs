@@ -8,6 +8,6 @@
         public DateTime DatumPostavljanja { get; set; }
 
         public int AutorId { get; set; }
-        public Korisnik Autor { get; set; } 
+        public Korisnik Autor { get; set; }
     }
 }

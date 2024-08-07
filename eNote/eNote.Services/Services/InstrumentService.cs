@@ -9,16 +9,24 @@ using System.Linq.Expressions;
 
 namespace eNote.Services.Services
 {
-    public class InstrumentService(ENoteContext context, IMapper mapper) 
+    public class InstrumentService(ENoteContext context, IMapper mapper)
         : CRUDService<Model.DTOs.Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest, Instrumenti>(context, mapper), IInstrumentService
     {
         public override IQueryable<Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Instrumenti> query)
         {
             query = base.AddFilter(search, query);
 
+            query = QueryBuilder.ApplyFilters(query, builder =>
+            {
+                builder.Add("Model", search.Model)
+                       .Add("Proizvodjac", search.Proizvodjac);
+            });
+
+            query = QueryBuilder.ApplyChaining(query);
+
             return query;
         }
-      
+
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {
             var entity = await QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefaultAsync(x => x.Id == id);

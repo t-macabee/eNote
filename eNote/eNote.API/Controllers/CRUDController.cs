@@ -8,7 +8,7 @@ namespace eNote.API.Controllers
     {
         protected new ICRUDService<TModel, TSearch, TInsert, TUpdate> service = service;
 
-        [HttpPost]        
+        [HttpPost]
         public virtual async Task<TModel> Insert(TInsert request)
         {
             return await service.Insert(request);
@@ -21,9 +21,9 @@ namespace eNote.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<TModel> DeleteAsync(int id) 
-        { 
-            return await service.Delete(id); 
+        public virtual async Task<TModel> DeleteAsync(int id)
+        {
+            return await service.Delete(id);
         }
     }
 }

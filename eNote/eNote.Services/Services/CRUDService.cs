@@ -4,12 +4,12 @@ using MapsterMapper;
 
 namespace eNote.Services.Services
 {
-    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper) 
+    public abstract class CRUDService<TModel, TSearch, TInsert, TUpdate, TDbEntity>(ENoteContext context, IMapper mapper)
         : BaseService<TModel, TSearch, TDbEntity>(context, mapper) where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
         public virtual async Task<TModel> Insert(TInsert request)
         {
-            if(request == null)
+            if (request == null)
             {
                 throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
             }
@@ -53,7 +53,7 @@ namespace eNote.Services.Services
 
             context.Set<TDbEntity>().Remove(entity);
 
-            await context.SaveChangesAsync();            
+            await context.SaveChangesAsync();
 
             return temp;
         }

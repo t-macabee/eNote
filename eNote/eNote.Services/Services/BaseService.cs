@@ -1,4 +1,4 @@
-﻿    using eNote.Model;
+﻿using eNote.Model;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public abstract class BaseService<TModel, TSearch, TDbEntity>(ENoteContext context, IMapper mapper) 
+    public abstract class BaseService<TModel, TSearch, TDbEntity>(ENoteContext context, IMapper mapper)
         : IService<TModel, TSearch> where TSearch : BaseSearchObject where TDbEntity : class where TModel : class
     {
         public ENoteContext context { get; set; } = context;
@@ -37,7 +37,7 @@ namespace eNote.Services.Services
 
             var list = await query.ToListAsync();
 
-            var result = mapper.Map<List<TModel>>(list);  
+            var result = mapper.Map<List<TModel>>(list);
 
             return new PagedResult<TModel>
             {
@@ -46,7 +46,7 @@ namespace eNote.Services.Services
                 CurrentPage = list.Count
             };
         }
-        
-        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;     
+
+        public virtual IQueryable<TDbEntity> AddFilter(TSearch search, IQueryable<TDbEntity> query) => query;
     }
 }

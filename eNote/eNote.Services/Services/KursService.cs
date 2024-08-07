@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace eNote.Services.Services
 {
-    public class KursService(ENoteContext context, IMapper mapper, IHttpContextAccessor accessor) 
+    public class KursService(ENoteContext context, IMapper mapper, IHttpContextAccessor accessor)
         : CRUDService<Model.DTOs.Kurs, NazivSearchObject, KursInsertRequest, KursUpdateRequest, Kurs>(context, mapper), IKursService
     {
         private readonly IHttpContextAccessor accessor = accessor;
@@ -27,6 +27,6 @@ namespace eNote.Services.Services
             request.Id = userId;
 
             return await base.Insert(request);
-        }       
+        }
     }
 }

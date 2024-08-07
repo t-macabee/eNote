@@ -8,6 +8,6 @@
         public Korisnik Student { get; set; }
 
         public int KursId { get; set; }
-        public Kurs Kurs { get; set; } 
+        public Kurs Kurs { get; set; }
     }
 }
