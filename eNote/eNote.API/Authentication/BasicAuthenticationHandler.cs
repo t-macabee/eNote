@@ -11,9 +11,10 @@ using System.Text.Encodings.Web;
 
 namespace eNote.API.Security
 {
-    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IKorisniciService korisniciService) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IAuthService authService) 
+        : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
     {
-        private IKorisniciService korisniciService = korisniciService;
+        private readonly IAuthService authService = authService;
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -36,7 +37,7 @@ namespace eNote.API.Security
 
                 ClaimsIdentity identity = null;
 
-                var korisnik = await korisniciService.Login(loginRequest);
+                var korisnik = await authService.Login(loginRequest);
 
                 if (korisnik != null)
                 {

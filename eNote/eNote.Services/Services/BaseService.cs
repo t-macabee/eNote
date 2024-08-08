@@ -5,7 +5,6 @@ using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace eNote.Services.Services
 {
     public abstract class BaseService<TModel, TSearch, TDbEntity>(ENoteContext context, IMapper mapper)
@@ -23,7 +22,7 @@ namespace eNote.Services.Services
 
         public virtual async Task<PagedResult<TModel>> GetPaged(TSearch search)
         {
-            var query = context.Set<TDbEntity>().AsQueryable();
+            var query = context.Set<TDbEntity>().AsQueryable();           
 
             query = AddFilter(search, query);
 

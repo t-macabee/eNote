@@ -16,19 +16,27 @@ namespace eNote.Services.Helpers
 
         public static IQueryable<T> ApplyChaining<T>(IQueryable<T> query) where T : class
         {
-            return query switch
+            if (typeof(T) == typeof(Database.Korisnik))
             {
-                IQueryable<Database.Korisnik> korisnikQuery => (IQueryable<T>)(korisnikQuery.Include(x => x.Uloga).Include(x => x.Adresa)),
-                IQueryable<Instrumenti> instrumentiQuery => (IQueryable<T>)(instrumentiQuery.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop)),
-                _ => query
-            };
+                return query.Include("Uloga").Include("Adresa");
+            }
+            if (typeof(T) == typeof(Instrumenti))
+            {
+                return query.Include("VrstaInstrumenta").Include("MusicShop");
+            }
+            return query;
         }
-
-
 
         public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, int? page, int? pageSize)
         {
-            return page.HasValue && pageSize.HasValue ? query.Skip(page.Value * pageSize.Value).Take(pageSize.Value) : query;
+            return page.HasValue && pageSize.HasValue
+                ? query.Skip(page.Value * pageSize.Value).Take(pageSize.Value)
+                : query;
+        }
+
+        public static IQueryable<Database.Korisnik> ApplyRole(this IQueryable<Database.Korisnik> query, string roleName)
+        {
+            return query.Where(k => k.Uloga.Naziv == roleName);
         }
     }
 }

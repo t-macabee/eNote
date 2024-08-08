@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\eNote.Model\eNote.Model.csproj" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <ProjectReference Include="..\eNote.Model\eNote.Model.csproj" />
   </ItemGroup>
 
 </Project>

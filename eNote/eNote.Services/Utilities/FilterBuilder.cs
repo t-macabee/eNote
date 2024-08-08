@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using eNote.Services.Database;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace eNote.Services.Utilities
@@ -39,6 +40,11 @@ namespace eNote.Services.Utilities
         {
             if (string.IsNullOrEmpty(value))
                 return query;
+
+            if (navigationProperty == "Uloga" && propertyName == "Naziv")
+            {
+                return query.Where(x => EF.Property<Uloge>(x, navigationProperty).Naziv.StartsWith(value));
+            }
 
             return query.Where(x => EF.Property<TProperty>(EF.Property<object>(x, navigationProperty), propertyName) != null
                                      && EF.Property<string>(EF.Property<object>(x, navigationProperty), propertyName).StartsWith(value));

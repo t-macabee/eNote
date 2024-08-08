@@ -15,5 +15,6 @@ namespace eNote.Services.Services
 
             return query;
         }
+        
     }
 }

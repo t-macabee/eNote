@@ -1,5 +1,6 @@
 ﻿using eNote.Model;
 using eNote.Model.DTOs;
+using eNote.Model.Requests.Korisnik;
 using eNote.Services.Database;
 using Mapster;
 
@@ -19,6 +20,7 @@ namespace eNote.Services.Configurations
                 .NewConfig()
                 .Map(dest => dest.Naziv, src => src.NazivString);
 
+
             TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
                .NewConfig()
                .Map(dest => dest.MusicShop, src => src.MusicShop.Naziv);
@@ -27,14 +29,19 @@ namespace eNote.Services.Configurations
                .NewConfig()
                .Map(dest => dest.InstruktorIme, src => src.Instruktor.Ime.ToString());
 
-            TypeAdapterConfig<Database.Korisnik, Model.MusicShop>
-             .NewConfig();
+            TypeAdapterConfig<Database.Korisnik, MusicShop>
+               .NewConfig()
+               .Map(dest => dest.Adresa, src => src.Adresa != null ? src.Adresa.Adapt<Model.DTOs.Adresa>() : null)
+               .Map(dest => dest.Uloga, src => src.Uloga != null ? src.Uloga.Adapt<Model.DTOs.Uloge>() : null);
 
             TypeAdapterConfig<Database.Korisnik, Model.Korisnik>
                 .NewConfig()
-                .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.HasValue ? src.DatumRodjenja.Value.ToString("d") : null);
-                                                     
+                .Map(dest => dest.DatumRodjenja, src => src.DatumRodjenja.HasValue ? src.DatumRodjenja.Value.ToString("d") : null)
+                .Map(dest => dest.Adresa, src => src.Adresa != null ? src.Adresa.Adapt<Model.DTOs.Adresa>() : null)
+                .Map(dest => dest.Uloga, src => src.Uloga != null ? src.Uloga.Adapt<Model.DTOs.Uloge>() : null);
+
+
             TypeAdapterConfig.GlobalSettings.Compile();
-        }
+        }        
     }
 }

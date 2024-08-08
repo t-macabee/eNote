@@ -381,10 +381,10 @@ namespace eNote.Services.Migrations
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Naziv", "Prezime", "Slika", "SlikaThumb", "Telefon", "UlogaId" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2024, 8, 7, 13, 5, 34, 878, DateTimeKind.Local).AddTicks(7292), "admin@outlook.com", "Admin", "admin", "ZkI1kU9URV5MZIBNEVSHhZxgTI2t0YfDFxsOoN8yAC0=", "FzxxZCGOpeSbzl1KWRh2nQ==", null, "Admin", null, null, "000000000", 1 },
-                    { 2, 4, new DateTime(2024, 8, 7, 13, 5, 34, 878, DateTimeKind.Local).AddTicks(7342), "john.doe@outlook.com", "John", "instruktor", "uGhnS1nkRnlbGV0zHuRARDejLQhZAJfptE8OchoySWk=", "NPnpNRwx/B7lGXDm76t65A==", null, "Doe", null, null, "111111111", 2 },
-                    { 3, 5, new DateTime(2024, 8, 7, 13, 5, 34, 878, DateTimeKind.Local).AddTicks(7345), "jane.doe@outlook.com", "Jane", "ucenik", "FWb3dXVmidxXQpnHIYyZgTsUiKvJqsnY38S0qlNNGXU=", "OhoavcXsFYSCK4lcxUrVAw==", null, "Doe", null, null, "222222222", 3 },
-                    { 4, 2, null, "shop1@outlook.com", null, "shop1", "Oznr28cszd7J0By2QxYLvB4ZEZUFrxsdSg7WuI5x94Q=", "i2gF+/z6F2mk553YqtdMTA==", "Bonemeal Music Shop", null, null, null, "333333333", 4 }
+                    { 1, 1, new DateTime(2024, 8, 7, 22, 48, 37, 330, DateTimeKind.Local).AddTicks(3716), "admin@outlook.com", "Admin", "admin", "S6Am/GcIgLEOSKRYuJAzx7jQRj3pXksuWVntHs8y2ZY=", "K9Hjw25QuUR3P9wObLihwA==", null, "Admin", null, null, "000000000", 1 },
+                    { 2, 4, new DateTime(2024, 8, 7, 22, 48, 37, 330, DateTimeKind.Local).AddTicks(3770), "john.doe@outlook.com", "John", "instruktor", "BvBeZLNQQAzSxjyYJW5W7uM8pcGoVRZ7c7iOkrmkDf0=", "f0ExeVY0OkIBTaJmGPjqAA==", null, "Doe", null, null, "111111111", 2 },
+                    { 3, 5, new DateTime(2024, 8, 7, 22, 48, 37, 330, DateTimeKind.Local).AddTicks(3773), "jane.doe@outlook.com", "Jane", "ucenik", "/rQuT6ol5/8TkO0Lg+1l2r1s1sJBJqVZYqK9OWa7hzE=", "5Vv5tyi0K4w14VmNjRABMQ==", null, "Doe", null, null, "222222222", 3 },
+                    { 4, 2, null, "shop1@outlook.com", null, "shop1", "Ay+AGhg0jOgLvjFBuXQygID52VajzLW/AsqQXWFJsKQ=", "E+thHmY6wnvabOvXdOcALg==", "Bonemeal Music Shop", null, null, null, "333333333", 4 }
                 });
 
             migrationBuilder.InsertData(

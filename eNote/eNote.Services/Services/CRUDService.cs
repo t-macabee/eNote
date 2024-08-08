@@ -19,13 +19,15 @@ namespace eNote.Services.Services
             await BeforeInsert(request, entity);
 
             await context.AddAsync(entity);
-
             await context.SaveChangesAsync();
 
             await context.Entry(entity).ReloadAsync();
 
-            return mapper.Map<TModel>(entity);
+            var mappedModel = mapper.Map<TModel>(entity);
+
+            return mappedModel;
         }
+
 
         public virtual async Task<TModel> Update(int id, TUpdate request)
         {
