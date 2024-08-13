@@ -3,7 +3,7 @@
     public class PredajaZadatka
     {
         public int Id { get; set; }
-        public DateTime DatumPredaje { get; set; }
+        public DateTime DatumVrijemePredaje { get; set; }        
         public int? Ocjena { get; set; }
         //public string FilePath { get; set; } 
 

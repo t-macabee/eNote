@@ -21,9 +21,9 @@ namespace eNote.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<TModel> DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
-            return await service.Delete(id);
+            await service.Delete(id);
         }
     }
 }

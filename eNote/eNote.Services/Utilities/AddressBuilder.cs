@@ -1,78 +1,44 @@
-﻿using Azure.Core;
+﻿using eNote.Model.Requests.Base;
 using eNote.Services.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Helpers
 {
     public static class AddressBuilder
     {
-        private static readonly char[] separator = [','];
-        private static readonly char[] separatorArray = [','];
-
-        public static async Task<Adresa> Create(ENoteContext context, string adresaString)
+        public static async Task<Adresa> GetOrCreateAdresa(ENoteContext context, BaseMembersInsertRequest request)
         {
-            ArgumentNullException.ThrowIfNull(context);
-
-            if (string.IsNullOrWhiteSpace(adresaString))
+            if (request.AdresaId.HasValue && request.AdresaId.Value > 0)
             {
-                throw new ArgumentException("Address string ne može biti null ili empty.", nameof(adresaString));
+                var adresa = await context.Adresa.FindAsync(request.AdresaId.Value) ?? throw new Exception($"Adresa sa Id-em {request.AdresaId.Value} ne postoji.");
+
+                return adresa;
             }
-
-            var addressComponents = adresaString.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-
-            if (addressComponents.Length < 2)
+            else if (request.Adresa != null)
             {
-                throw new ArgumentException("Nevažeći format adrese. Očekivani format: 'Ulica Broj, Grad'.", nameof(adresaString));
+                var existingAdresa = await context.Adresa.FirstOrDefaultAsync(a => a.Ulica == request.Adresa.Ulica && a.Broj == request.Adresa.Broj);
+
+                if (existingAdresa != null)
+                {
+                    throw new Exception("Adresa sa istom ulicom i brojem već postoji.");
+                }
+
+                var newAdresa = new Adresa
+                {
+                    Grad = request.Adresa.Grad,
+                    Ulica = request.Adresa.Ulica,
+                    Broj = request.Adresa.Broj
+                };
+
+                context.Adresa.Add(newAdresa);
+                await context.SaveChangesAsync();
+
+                return newAdresa;
             }
-
-            var ulicaIBroj = addressComponents[0].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            if (ulicaIBroj.Length < 2)
+            else
             {
-                throw new ArgumentException("Adresa mora sadržavati ulicu i broj.", nameof(adresaString));
+                throw new Exception("AdresaId ili Adresa mora biti navedena.");
             }
-
-            var adresa = new Database.Adresa
-            {
-                Ulica = string.Join(' ', ulicaIBroj[..^1]),
-                Broj = ulicaIBroj[^1],
-                Grad = addressComponents[1].Trim()
-            };
-
-            await context.AddAsync(adresa);
-
-            await context.SaveChangesAsync();
-
-            return adresa;
-        }
-
-        public static async Task Update(ENoteContext context, Adresa adresa, string adresaString)
-        {
-            ArgumentNullException.ThrowIfNull(adresa);
-
-            if (string.IsNullOrWhiteSpace(adresaString))
-            {
-                throw new ArgumentException("Address string ne može biti null ili empty.", nameof(adresaString));
-            }
-
-            var addressComponents = adresaString.Split(separatorArray, StringSplitOptions.RemoveEmptyEntries);
-
-            if (addressComponents.Length < 2)
-            {
-                throw new ArgumentException("Nevažeći format adrese. Očekivani format: 'Ulica Broj, Grad'.", nameof(adresaString));
-            }
-
-            var ulicaIBroj = addressComponents[0].Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            adresa.Ulica = string.Join(' ', ulicaIBroj[..^1]);
-            adresa.Broj = ulicaIBroj[^1];
-            adresa.Grad = addressComponents[1].Trim();
-
-            await context.SaveChangesAsync();
         }
     }
 }

@@ -11,6 +11,6 @@ namespace eNote.Services.Interfaces
     {
         Task<TModel> Insert(TInsert request);
         Task<TModel> Update(int id, TUpdate request);
-        Task<TModel> Delete(int id);
+        Task Delete(int id);
     }
 }

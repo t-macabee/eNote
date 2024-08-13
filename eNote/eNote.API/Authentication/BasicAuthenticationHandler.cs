@@ -41,7 +41,8 @@ namespace eNote.API.Security
 
                 if (korisnik != null)
                 {
-                    identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, korisnik.Uloga.Naziv.ToString());
+                    var uloga = korisnik.Uloga.ToString();
+                    identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, uloga);
                 }
 
                 if (identity == null)

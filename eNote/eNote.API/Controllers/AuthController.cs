@@ -9,7 +9,7 @@ namespace eNote.API.Controllers
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [HttpPost("Login")]
-        public async Task<ActionResult<IKorisnik>> Login(LoginModel model)
+        public async Task<ActionResult<Korisnik>> Login(LoginModel model)
         {
             var result = await authService.Login(model);
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eNote.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace eNote.Model.Requests.Instrument
         public string Model { get; set; } = string.Empty;
         public string Proizvodjac { get; set; } = string.Empty;
         public string Opis { get; set; } = string.Empty;
-        public int VrstaInstrumentaId { get; set; }
+        public VrstaInstrumenta VrstaInstrumenta { get; set; }
         public int? MusicShopId { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace eNote.Services.Database
     {
         public int Id { get; set; }
         public DateTime DatumIznajmljivanja { get; set; }
-        public DateTime DatumVracanja { get; set; }
+        public DateTime DatumPovratka { get; set; }
         public bool Vracen { get; set; }
 
         public int StudentId { get; set; }

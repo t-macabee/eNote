@@ -6,6 +6,8 @@ using MapsterMapper;
 using eNote.Services.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Azure.Core;
+using eNote.Model.Enums;
 
 namespace eNote.Services.Services
 {
@@ -14,22 +16,18 @@ namespace eNote.Services.Services
     {
         public override IQueryable<Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Instrumenti> query)
         {
-            query = base.AddFilter(search, query);
+            query = base.AddFilter(search, query).Include(x => x.MusicShop)
+                .Where(x =>
+                    (string.IsNullOrEmpty(search.Model) || x.Model.StartsWith(search.Model)) &&
+                    (string.IsNullOrEmpty(search.Proizvodjac) || x.Proizvodjac.StartsWith(search.Proizvodjac))
+                );         
 
-            query = QueryBuilder.ApplyFilters(query, builder =>
-            {
-                builder.Add("Model", search.Model)
-                       .Add("Proizvodjac", search.Proizvodjac);
-            });
-
-            query = QueryBuilder.ApplyChaining(query);
-
-            return query;
+            return query; 
         }
 
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {
-            var entity = await QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await context.Instrumenti.Include(x => x.MusicShop).FirstOrDefaultAsync(x => x.Id == id);
 
             return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
@@ -38,7 +36,7 @@ namespace eNote.Services.Services
         {
             await base.Insert(request);
 
-            var entity = await QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefaultAsync(x => x.Model == request.Model);
+            var entity = await context.Instrumenti.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop).FirstOrDefaultAsync(x => x.Model == request.Model);
 
             return entity == null ? throw new Exception("Model nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
@@ -47,7 +45,7 @@ namespace eNote.Services.Services
         {
             await base.Update(id, request);
 
-            var entity = QueryBuilder.ApplyChaining(context.Instrumenti).FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await context.Instrumenti.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop).FirstOrDefaultAsync(x => x.Id == id);
 
             return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
         }

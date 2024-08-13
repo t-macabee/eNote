@@ -4,7 +4,6 @@ using eNote.Services.Interfaces;
 using eNote.Services.Services;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace eNote.API.Extensions
 {
@@ -17,19 +16,14 @@ namespace eNote.API.Extensions
                 opt.UseSqlServer(configuration.GetConnectionString("ENoteConnection"));
             });
 
-            services.AddControllers().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            });
-
+            services.AddControllers();
             services.AddEndpointsApiExplorer();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInstrumentService, InstrumentService>();
-            services.AddScoped<IVrstaInstrumentaService, VrstaInstrumentaService>();
             services.AddScoped<IKursService, KursService>();
-            services.AddScoped<IMusicShopService, MusicShopService>();
             services.AddScoped<IKorisniciService, KorisniciService>();
+            services.AddScoped<IMusicShopService, MusicShopService>();            
 
             services.AddMapster();
             MapsterConfig.RegisterMappings();

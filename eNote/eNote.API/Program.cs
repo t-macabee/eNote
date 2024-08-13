@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddAuthenticationServices(builder.Configuration);
 
-
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

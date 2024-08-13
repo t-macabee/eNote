@@ -8,56 +8,45 @@ namespace eNote.Services.Services
         : BaseService<TModel, TSearch, TDbEntity>(context, mapper) where TModel : class where TSearch : BaseSearchObject where TDbEntity : class
     {
         public virtual async Task<TModel> Insert(TInsert request)
-        {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
-            }
-
+        {           
             TDbEntity entity = mapper.Map<TDbEntity>(request);
 
             await BeforeInsert(request, entity);
 
             await context.AddAsync(entity);
+
             await context.SaveChangesAsync();
 
-            await context.Entry(entity).ReloadAsync();
+            if (entity is Korisnik korisnik)
+            {
+                await context.Entry(korisnik).Reference(k => k.Adresa).LoadAsync();
+            }
 
-            var mappedModel = mapper.Map<TModel>(entity);
-
-            return mappedModel;
+            return mapper.Map<TModel>(entity);
         }
-
 
         public virtual async Task<TModel> Update(int id, TUpdate request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request), "Unos ne može biti null.");
-            }
+            var set = context.Set<TDbEntity>();
 
-            var entity = await context.Set<TDbEntity>().FindAsync(id) ?? throw new ArgumentException("ID nije pronadjen.", nameof(id));
+            var entity = set.Find(id);
 
             mapper.Map(request, entity);
 
-            await BeforeUpdate(request, entity);
+            await BeforeUpdate(request, entity);      
 
             await context.SaveChangesAsync();
 
             return mapper.Map<TModel>(entity);
         }
 
-        public virtual async Task<TModel> Delete(int id)
+        public virtual async Task Delete(int id)
         {
             var entity = await context.Set<TDbEntity>().FindAsync(id) ?? throw new ArgumentException("ID nije pronađen.", nameof(id));
-
-            var temp = mapper.Map<TModel>(entity);
 
             context.Set<TDbEntity>().Remove(entity);
 
             await context.SaveChangesAsync();
-
-            return temp;
         }
 
         public virtual Task BeforeInsert(TInsert request, TDbEntity entity) => Task.CompletedTask;

@@ -4,6 +4,6 @@ namespace eNote.Services.Interfaces
 {
     public interface IAuthService 
     {
-        Task<IKorisnik> Login(LoginModel model);
+        Task<Korisnik> Login(LoginModel model);
     }
 }

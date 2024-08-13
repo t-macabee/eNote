@@ -1,5 +1,6 @@
 ﻿using eNote.Model.DTOs;
 using eNote.Model.Requests.Korisnik;
+using eNote.Model.Requests.MusicShop;
 using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
 using eNote.Services.Services;
@@ -7,13 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace eNote.API.Controllers
 {
-    public class KorisniciController(IKorisniciService korisniciService) : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>(korisniciService)
+    public class MusicShopController(IMusicShopService musicShopService) : CRUDController<MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest>(musicShopService)
     {
         [HttpGet("Adrese")]
         public async Task<ActionResult<List<Adresa>>> GetAddresses()
-        {           
-            var addresses = await korisniciService.GetAddresses();
-            return Ok(addresses);          
+        {
+            var addresses = await musicShopService.GetAddresses();
+            return Ok(addresses);
         }
     }
 }

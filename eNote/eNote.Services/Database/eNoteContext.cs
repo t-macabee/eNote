@@ -1,4 +1,5 @@
-﻿using eNote.Services.Configurations;
+﻿using eNote.Model.Enums;
+using eNote.Services.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Database
@@ -6,9 +7,9 @@ namespace eNote.Services.Database
     public class ENoteContext(DbContextOptions<ENoteContext> options) : DbContext(options)
     {
         public DbSet<Korisnik> Korisnici { get; set; }
-        public DbSet<Uloge> Uloge { get; set; }
+        public DbSet<MusicShop> MusicShops { get; set; }
         public DbSet<Adresa> Adresa { get; set; }
-        public DbSet<Kurs> Kursevi { get; set; }
+        public DbSet<Kurs> Kurs { get; set; }
         public DbSet<Predavanje> Predavanja { get; set; }
         public DbSet<Upis> Upisi { get; set; }
         public DbSet<Instrumenti> Instrumenti { get; set; }
@@ -21,12 +22,19 @@ namespace eNote.Services.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Korisnik-uloga
+            // Uloge
             modelBuilder.Entity<Korisnik>()
-                .HasOne(k => k.Uloga)
-                .WithMany(u => u.Korisnici)
-                .HasForeignKey(k => k.UlogaId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .Property(k => k.Uloga)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (Uloge)Enum.Parse(typeof(Uloge), v));
+
+            // Vrsta instrumenta
+            modelBuilder.Entity<Instrumenti>()
+                .Property(k => k.VrstaInstrumenta)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (VrstaInstrumenta)Enum.Parse(typeof(VrstaInstrumenta), v));
 
             // Korisnik-adresa
             modelBuilder.Entity<Korisnik>()
@@ -34,6 +42,20 @@ namespace eNote.Services.Database
                 .WithMany(a => a.Korisnici)
                 .HasForeignKey(k => k.AdresaId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // MusicShop-adresa
+            modelBuilder.Entity<MusicShop>()
+                .HasOne(k => k.Adresa)
+                .WithMany(a => a.MusicShops)
+                .HasForeignKey(k => k.AdresaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // MusicShop-instrumenti
+            modelBuilder.Entity<Instrumenti>()
+                .HasOne(i => i.MusicShop)
+                .WithMany(ms => ms.Instrumenti)
+                .HasForeignKey(i => i.MusicShopId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Upis
             modelBuilder.Entity<Upis>()
@@ -54,6 +76,14 @@ namespace eNote.Services.Database
                 .WithMany(i => i.Kurs)
                 .HasForeignKey(k => k.InstruktorId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Kurs>()
+                .Property(k => k.Cijena)
+                .HasColumnType("decimal(8, 2)");
+
+            modelBuilder.Entity<Kurs>()
+               .Property(k => k.CijenaPretplata)
+               .HasColumnType("decimal(8, 2)");
 
             // Kurs-predavanje
             modelBuilder.Entity<Predavanje>()
@@ -101,21 +131,7 @@ namespace eNote.Services.Database
                 .WithMany(s => s.PredajaZadatka)
                 .HasForeignKey(p => p.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // MusicShop-instrument
-            modelBuilder.Entity<Instrumenti>()
-                .HasOne(i => i.MusicShop)
-                .WithMany(ms => ms.Instrumenti)
-                .HasForeignKey(i => i.KorisnikId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Instrument-tipInstrumenta
-            modelBuilder.Entity<Instrumenti>()
-                .HasOne(i => i.VrstaInstrumenta)
-                .WithMany(v => v.Instrumenti)
-                .HasForeignKey(i => i.VrstaInstrumentaId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+          
             // Iznajmljivanje
             modelBuilder.Entity<IznajmljivanjeInstrumenta>()
                 .HasOne(r => r.Student)
