@@ -60,10 +60,10 @@ namespace eNote.Services.Services
                 throw new Exception("Kurs ne postoji.");
             }
 
-            if (request.DatumPocetka.HasValue && request.DatumPocetka.Value < DateTime.Today)
+            if (request.DatumPocetka < DateTime.Today)
                 throw new ArgumentException("Početni datum ne može biti manji od trenutnog datuma.");
 
-            if (request.DatumZavrsetka.HasValue && request.DatumPocetka.HasValue && request.DatumZavrsetka.Value < request.DatumPocetka.Value)
+            if (request.DatumZavrsetka < request.DatumPocetka)
                 throw new ArgumentException("Datum završetka ne može biti manji od početnog datuma.");            
 
             await base.BeforeUpdate(request, entity);

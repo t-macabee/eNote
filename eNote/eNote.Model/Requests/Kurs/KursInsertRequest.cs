@@ -13,7 +13,7 @@ namespace eNote.Model.Requests.Kurs
         public NivoTezine NivoTezine { get; set; }
         public DateTime DatumPocetka { get; set; }
         public DateTime DatumZavrsetka { get; set; }
-        public int? BrojPolaznika { get; set; }
+        public int BrojPolaznika { get; set; }
         public decimal Cijena { get; set; }
         public decimal CijenaPretplata { get; set; }
         public bool DostupanNaPretplati { get; set; }
