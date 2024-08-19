@@ -12,7 +12,7 @@ using eNote.Services.Database;
 namespace eNote.Services.Migrations
 {
     [DbContext(typeof(ENoteContext))]
-    [Migration("20240819134313_Initial")]
+    [Migration("20240819185251_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace eNote.Services.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -456,8 +456,8 @@ namespace eNote.Services.Migrations
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "Iz3ih58P6Rh3y1oujvU5HP3LbmxWOPGecrh7u9Q39Ds=",
-                            LozinkaSalt = "k5RUjpx7jQ1cCt5zYMdF/A==",
+                            LozinkaHash = "4oiJ4z12BSIFE69TRa+2A43zrbz4YKFxXhgDlkg4eEs=",
+                            LozinkaSalt = "BZJ+ABKjMK0x0bMbYsiYeA==",
                             Prezime = "Admin",
                             Status = true,
                             Telefon = "000000000",
@@ -471,8 +471,8 @@ namespace eNote.Services.Migrations
                             Email = "john.doe@outlook.com",
                             Ime = "John",
                             KorisnickoIme = "instruktor",
-                            LozinkaHash = "g3UKaevjAkSulaqgUbMsYzFHPuELZEHnE727SvP+2XU=",
-                            LozinkaSalt = "lLIeQ6J+VL10o8Z5w+lUNQ==",
+                            LozinkaHash = "NBebhdNUEPZyZ7QurBeaEXZH07438r5GocYir7Ecnzs=",
+                            LozinkaSalt = "4QEfPWhv17FDbzm4VKQwoA==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "111111111",
@@ -486,8 +486,8 @@ namespace eNote.Services.Migrations
                             Email = "jane.doe@outlook.com",
                             Ime = "Jane",
                             KorisnickoIme = "polaznik",
-                            LozinkaHash = "6SD1qtzE+d27PhDUWQUN1IGteSHQ6lmfc2IfyY05Nl8=",
-                            LozinkaSalt = "j2F0xMIX8VItKGJW4wPQzg==",
+                            LozinkaHash = "DuAOl4kD6A5CjFjNlM3XuyEPfCEOEZE7GUF5mB72lVI=",
+                            LozinkaSalt = "R848MRsVSrMLXhoZ32uc1g==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "222222222",
@@ -617,8 +617,8 @@ namespace eNote.Services.Migrations
                             AdresaId = 2,
                             Email = "shop1@outlook.com",
                             KorisnickoIme = "shop1",
-                            LozinkaHash = "Aph85Qf2gbsGJ3HHuMP5m5o+eMVCKjNDWg81EZj5BzI=",
-                            LozinkaSalt = "CGTaYCn2Tind9+AZqJDDkw==",
+                            LozinkaHash = "46Od7VxWVhjUBhi2w06zl3O0kKKtAw94zSdM5SMcA/4=",
+                            LozinkaSalt = "EC1eCt71ivAo8Kcksz2Q0w==",
                             Naziv = "Bonemeal Music Shop",
                             Status = true,
                             Telefon = "333333333",
@@ -712,8 +712,8 @@ namespace eNote.Services.Migrations
                     b.Property<int>("TipPredavanja")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("Trajanje")
-                        .HasColumnType("time");
+                    b.Property<int>("TrajanjeMinute")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

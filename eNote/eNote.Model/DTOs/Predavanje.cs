@@ -1,12 +1,15 @@
 ﻿using eNote.Model.Enums;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace eNote.Services.Database
+namespace eNote.Model.DTOs
 {
     public class Predavanje
     {
         public int Id { get; set; }
         public string Naziv { get; set; }
-        public string Lokacija { get; set; } 
+        public string Lokacija { get; set; }
         public DateTime DatumVrijemePredavanja { get; set; }
         public int TrajanjeMinute { get; set; }
 
@@ -15,9 +18,5 @@ namespace eNote.Services.Database
 
         public TipPredavanja TipPredavanja { get; set; }
         public StatusPredavanja StatusPredavanja { get; set; }
-
-        public ICollection<Prisustvo> Prisustvo { get; set; } = new List<Prisustvo>();
-        public ICollection<Obavijest> Napomena { get; set; } = new List<Obavijest>();
-        public ICollection<Zadatak> Zadaci { get; set; } = new List<Zadatak>();
     }
 }

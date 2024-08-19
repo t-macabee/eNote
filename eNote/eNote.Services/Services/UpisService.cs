@@ -26,7 +26,7 @@ namespace eNote.Services.Services
         {
             var entity = await context.Upisi.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (entity == null )
+            if (entity == null)
             {
                 return null;
             }

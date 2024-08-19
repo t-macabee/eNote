@@ -147,7 +147,7 @@ namespace eNote.Services.Migrations
                     Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Lokacija = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DatumVrijemePredavanja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Trajanje = table.Column<TimeSpan>(type: "time", nullable: false),
+                    TrajanjeMinute = table.Column<int>(type: "int", nullable: false),
                     KursId = table.Column<int>(type: "int", nullable: false),
                     TipPredavanja = table.Column<int>(type: "int", nullable: false),
                     StatusPredavanja = table.Column<int>(type: "int", nullable: false)
@@ -335,15 +335,15 @@ namespace eNote.Services.Migrations
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "Iz3ih58P6Rh3y1oujvU5HP3LbmxWOPGecrh7u9Q39Ds=", "k5RUjpx7jQ1cCt5zYMdF/A==", "Admin", null, null, true, "000000000", "Administrator" },
-                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "g3UKaevjAkSulaqgUbMsYzFHPuELZEHnE727SvP+2XU=", "lLIeQ6J+VL10o8Z5w+lUNQ==", "Doe", null, null, true, "111111111", "Instruktor" },
-                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "6SD1qtzE+d27PhDUWQUN1IGteSHQ6lmfc2IfyY05Nl8=", "j2F0xMIX8VItKGJW4wPQzg==", "Doe", null, null, true, "222222222", "Polaznik" }
+                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "4oiJ4z12BSIFE69TRa+2A43zrbz4YKFxXhgDlkg4eEs=", "BZJ+ABKjMK0x0bMbYsiYeA==", "Admin", null, null, true, "000000000", "Administrator" },
+                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "NBebhdNUEPZyZ7QurBeaEXZH07438r5GocYir7Ecnzs=", "4QEfPWhv17FDbzm4VKQwoA==", "Doe", null, null, true, "111111111", "Instruktor" },
+                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "DuAOl4kD6A5CjFjNlM3XuyEPfCEOEZE7GUF5mB72lVI=", "R848MRsVSrMLXhoZ32uc1g==", "Doe", null, null, true, "222222222", "Polaznik" }
                 });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",
                 columns: new[] { "Id", "AdresaId", "Email", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Naziv", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
-                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "Aph85Qf2gbsGJ3HHuMP5m5o+eMVCKjNDWg81EZj5BzI=", "CGTaYCn2Tind9+AZqJDDkw==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
+                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "46Od7VxWVhjUBhi2w06zl3O0kKKtAw94zSdM5SMcA/4=", "EC1eCt71ivAo8Kcksz2Q0w==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
 
             migrationBuilder.InsertData(
                 table: "Instrumenti",

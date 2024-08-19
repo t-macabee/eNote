@@ -25,6 +25,7 @@ namespace eNote.API.Extensions
             services.AddScoped<IKorisniciService, KorisniciService>();
             services.AddScoped<IMusicShopService, MusicShopService>();
             services.AddScoped<IUpisService, UpisService>();
+            services.AddScoped<IPredavanjeService, PredavanjeService>();
 
             services.AddMapster();
             MapsterConfig.RegisterMappings();

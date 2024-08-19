@@ -1,5 +1,6 @@
 ﻿using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Utilities;
 using MapsterMapper;
 
 namespace eNote.Services.Services
@@ -17,10 +18,7 @@ namespace eNote.Services.Services
 
             await context.SaveChangesAsync();
 
-            if (entity is Korisnik korisnik)
-            {
-                await context.Entry(korisnik).Reference(k => k.Adresa).LoadAsync();
-            }
+            await EntityBuilder.LoadEntities(context, entity);
 
             return mapper.Map<TModel>(entity);
         }

@@ -29,9 +29,9 @@ namespace eNote.Services.Services
 
         public override async Task BeforeInsert(KursInsertRequest request, Kurs entity)
         {          
-            var existingCourse = await context.Kurs.FirstOrDefaultAsync(x => x.Naziv == request.Naziv);
+            var existing = await context.Kurs.FirstOrDefaultAsync(x => x.Naziv == request.Naziv);
 
-            if (existingCourse != null)
+            if (existing != null)
             {
                 throw new Exception("Kurs pod tim imenom već postoji. Molimo odaberite drugo ime za kurs.");
             }
