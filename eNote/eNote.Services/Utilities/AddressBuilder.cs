@@ -1,4 +1,4 @@
-﻿using eNote.Model.Requests.Base;
+﻿using eNote.Model.Requests.BaseMember;
 using eNote.Services.Database;
 using Microsoft.EntityFrameworkCore;
 

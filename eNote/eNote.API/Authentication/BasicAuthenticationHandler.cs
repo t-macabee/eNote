@@ -1,7 +1,6 @@
 ﻿using eNote.Model;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
-using eNote.Services.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
@@ -9,9 +8,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 
-namespace eNote.API.Security
+namespace eNote.API.Authentication
 {
-    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IAuthService authService) 
+    public class BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IAuthService authService)
         : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
     {
         private readonly IAuthService authService = authService;
@@ -37,12 +36,15 @@ namespace eNote.API.Security
 
                 ClaimsIdentity identity = null;
 
-                var korisnik = await authService.Login(loginRequest);
+                var user = await authService.Login(loginRequest);
 
-                if (korisnik != null)
+                if (user is Services.Database.Korisnik korisnik)
                 {
-                    var uloga = korisnik.Uloga.ToString();
-                    identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, uloga);
+                    identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, korisnik.Uloga.ToString());
+                }
+                else if (user is MusicShop shop)
+                {
+                    identity = CreateIdentity(shop.Id.ToString(), shop.KorisnickoIme, shop.Uloga.ToString());
                 }
 
                 if (identity == null)

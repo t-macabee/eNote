@@ -16,6 +16,12 @@ namespace eNote.Services.Configurations
             TypeAdapterConfig<Database.MusicShop, Model.DTOs.MusicShop>
                 .NewConfig();
 
+            TypeAdapterConfig<Database.Kurs, Model.DTOs.Kurs> 
+                .NewConfig();
+
+            TypeAdapterConfig<Database.Upis, Model.DTOs.Upis>
+                .NewConfig();
+
             TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
                .NewConfig()
                .Map(dest => dest.MusicShop, src => src.MusicShop.Naziv);

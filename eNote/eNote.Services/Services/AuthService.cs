@@ -9,16 +9,27 @@ namespace eNote.Services.Services
 {
     public class AuthService(ENoteContext context, IMapper mapper) : IAuthService
     {
-        public async Task<Model.Korisnik> Login(LoginModel model)
+        public async Task<object> Login(LoginModel model)
         {
-            var entity = await context.Korisnici.Include(x => x.Adresa).FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
+            var korisnikEntity = await context.Korisnici
+                .Include(x => x.Adresa)
+                .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
 
-            if (entity == null || !PasswordBuilder.VerifyPassword(entity.LozinkaSalt, model.Password, entity.LozinkaHash))
+            if (korisnikEntity != null && PasswordBuilder.VerifyPassword(korisnikEntity.LozinkaSalt, model.Password, korisnikEntity.LozinkaHash))
             {
-                return null;
+                return mapper.Map<Model.Korisnik>(korisnikEntity);
             }
-            
-            return mapper.Map<Model.Korisnik>(entity);            
+
+            var musicShopEntity = await context.MusicShops
+                .Include(x => x.Adresa)
+                .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
+
+            if (musicShopEntity != null && PasswordBuilder.VerifyPassword(musicShopEntity.LozinkaSalt, model.Password, musicShopEntity.LozinkaHash))
+            {
+                return mapper.Map<Model.DTOs.MusicShop>(musicShopEntity);
+            }
+
+            return null;
         }
     }
 }

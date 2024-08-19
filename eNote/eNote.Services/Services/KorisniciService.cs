@@ -6,7 +6,6 @@ using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Buffers;
 
 namespace eNote.Services.Services
 {

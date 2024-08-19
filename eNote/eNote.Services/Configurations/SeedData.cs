@@ -59,13 +59,9 @@ namespace eNote.Services.Configurations
                     Id = 1,
                     Naziv = "Osnove teorije muzike",
                     Opis = "Testni opis kursa osnova teorije muzke.",
-                    NivoTezine = NivoTezine.Pocetni,
                     DatumPocetka = new DateTime(2024, 08, 10),
                     DatumZavrsetka = new DateTime(2024, 10, 10),
-                    BrojPolaznika = 10,
-                    DostupanNaPretplati = true,
                     Cijena = 800,
-                    CijenaPretplata = 50,
                     InstruktorId = 2
                 },
 
@@ -74,13 +70,9 @@ namespace eNote.Services.Configurations
                     Id = 2,
                     Naziv = "Napredne tehnike gitare",
                     Opis = "Otkrijte napredne tehnike gitare, uključujući kompleksne akorde, improvizaciju i solo sviranje, kako biste unaprijedili svoje vještine i kreativnost na gitari.",
-                    NivoTezine = NivoTezine.Napredni,
                     DatumPocetka = new DateTime(2024, 09, 12),
                     DatumZavrsetka = new DateTime(2024, 10, 12),
-                    BrojPolaznika = 10,
-                    DostupanNaPretplati = true,
                     Cijena = 800,
-                    CijenaPretplata = 50,
                     InstruktorId = 2
                 }
             );                                   
@@ -89,23 +81,23 @@ namespace eNote.Services.Configurations
         public static void SeedInstruments(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Instrumenti>().HasData(
-               new Instrumenti { Id = 1, Model = "J-45", Proizvodjac = "Gibson", Opis = "Ikonična akustična gitara poznata po bogatom, punom zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 2, Model = "214ce", Proizvodjac = "Taylor", Opis = "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 3, Model = "CD-60S", Proizvodjac = "Fender", Opis = "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
+               new Instrumenti { Id = 1, Model = "J-45", Proizvodjac = "Gibson", Opis = "Ikonična akustična gitara poznata po bogatom, punom zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 2, Model = "214ce", Proizvodjac = "Taylor", Opis = "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 3, Model = "CD-60S", Proizvodjac = "Fender", Opis = "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
 
-               new Instrumenti { Id = 4, Model = "Stratocaster", Proizvodjac = "Fender", Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 5, Model = "Les Paul", Proizvodjac = "Gibson", Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 6, Model = "RG", Proizvodjac = "Ibanez", Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 7, Model = "Custom 24", Proizvodjac = "PRS", Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 8, Model = "Pacifica", Proizvodjac = "Yamaha", Opis = "Svestrana električna gitara pogodna za različite žanrove.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 9, Model = "Dinky", Proizvodjac = "Jackson", Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 10, Model = "C-1", Proizvodjac = "Schecter", Opis = "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
+               new Instrumenti { Id = 4, Model = "Stratocaster", Proizvodjac = "Fender", Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 5, Model = "Les Paul", Proizvodjac = "Gibson", Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 6, Model = "RG", Proizvodjac = "Ibanez", Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 7, Model = "Custom 24", Proizvodjac = "PRS", Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 8, Model = "Pacifica", Proizvodjac = "Yamaha", Opis = "Svestrana električna gitara pogodna za različite žanrove.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 9, Model = "Dinky", Proizvodjac = "Jackson", Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 10, Model = "C-1", Proizvodjac = "Schecter", Opis = "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
 
-               new Instrumenti { Id = 11, Model = "Precision Bass", Proizvodjac = "Fender", Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 12, Model = "SR", Proizvodjac = "Ibanez", Opis = "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 13, Model = "Thunderbird", Proizvodjac = "Gibson", Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 14, Model = "BB", Proizvodjac = "Yamaha", Opis = "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
-               new Instrumenti { Id = 15, Model = "RockBass", Proizvodjac = "Warwick", Opis = "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Žičani },
+               new Instrumenti { Id = 11, Model = "Precision Bass", Proizvodjac = "Fender", Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 12, Model = "SR", Proizvodjac = "Ibanez", Opis = "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 13, Model = "Thunderbird", Proizvodjac = "Gibson", Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 14, Model = "BB", Proizvodjac = "Yamaha", Opis = "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
+               new Instrumenti { Id = 15, Model = "RockBass", Proizvodjac = "Warwick", Opis = "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Zicani },
 
                new Instrumenti { Id = 16, Model = "Export", Proizvodjac = "Pearl", Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Udaraljke },
                new Instrumenti { Id = 17, Model = "Imperialstar", Proizvodjac = "Tama", Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.", MusicShopId = 1, VrstaInstrumenta = VrstaInstrumenta.Udaraljke },

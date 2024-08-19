@@ -1,11 +1,5 @@
-﻿using eNote.API.Security;
-using eNote.Services.Configurations;
-using eNote.Services.Database;
-using eNote.Services.Interfaces;
-using eNote.Services.Services;
-using Mapster;
+﻿using eNote.API.Authentication;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace eNote.API.Extensions

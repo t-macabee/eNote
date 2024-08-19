@@ -14,8 +14,7 @@ namespace eNote.Services.Services
         {
             query = base.AddFilter(search, query).Include(x => x.Instruktor)
                 .Where(x =>
-                    (string.IsNullOrEmpty(search.Naziv) || x.Naziv.StartsWith(search.Naziv)) &&
-                    (!search.NivoTezine.HasValue || x.NivoTezine == search.NivoTezine.Value)
+                    (string.IsNullOrEmpty(search.Naziv) || x.Naziv.StartsWith(search.Naziv)) 
                 );
 
             return query;

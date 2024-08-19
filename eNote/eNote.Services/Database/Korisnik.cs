@@ -5,29 +5,30 @@ namespace eNote.Services.Database
     public class Korisnik
     {
         public int Id { get; set; }
-        public string KorisnickoIme { get; set; } = null!;
-        public string LozinkaHash { get; set; } = null!;
-        public string LozinkaSalt { get; set; } = null!;
+        public string KorisnickoIme { get; set; }
+        public string LozinkaHash { get; set; } 
+        public string LozinkaSalt { get; set; }
         public Uloge Uloga { get; set; }
         public bool Status { get; set; } 
 
         public int AdresaId { get; set; }
         public Adresa Adresa { get; set; }
        
-        public string Ime { get; set; } = string.Empty;
-        public string Prezime { get; set; } = string.Empty;
+        public string Ime { get; set; } 
+        public string Prezime { get; set; } 
         public DateTime DatumRodjenja { get; set; }
-        public string Email { get; set; } = string.Empty;
-        public string Telefon { get; set; } = string.Empty; 
+        public string Email { get; set; }
+        public string Telefon { get; set; } 
         public byte[]? Slika { get; set; }
         public byte[]? SlikaThumb { get; set; }        
 
-        public ICollection<Kurs>? Kurs { get; set; } // Instruktor
-        public ICollection<OglasnaTabla>? PostavljeneObavijesti { get; set; } // Instruktor
-        public ICollection<Upis>? Upis { get; set; } // Učenik
-        public ICollection<IznajmljivanjeInstrumenta>? IznajmljivanjeInstrumenta { get; set; } // Učenik
-        public ICollection<PredajaZadatka>? PredajaZadatka { get; set; } // Učenik
-        public ICollection<Prisustvo>? Prisustvo { get; set; } // Učenik
+        // Instruktor
+        public ICollection<Kurs> Kurs { get; set; } = new List<Kurs>();
 
+        // Učenik
+        public ICollection<Upis> Upis { get; set; } = new List<Upis>();
+        public ICollection<Prisustvo> Prisustvo { get; set; } = new List<Prisustvo>();
+        public ICollection<IznajmljivanjeInstrumenta> IznajmljivanjeInstrumenta { get; set; } = new List<IznajmljivanjeInstrumenta>();
+        public ICollection<PredajaZadatka> PredajaZadatka { get; set; } = new List<PredajaZadatka>(); 
     }
 }

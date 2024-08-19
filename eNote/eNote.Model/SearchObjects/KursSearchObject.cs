@@ -8,6 +8,5 @@ namespace eNote.Model.SearchObjects
     public class KursSearchObject : BaseSearchObject
     {
         public string? Naziv { get; set; }
-        public NivoTezine? NivoTezine { get; set; }
     }
 }

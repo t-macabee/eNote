@@ -12,7 +12,7 @@ using eNote.Services.Database;
 namespace eNote.Services.Migrations
 {
     [DbContext(typeof(ENoteContext))]
-    [Migration("20240813134137_Initial")]
+    [Migration("20240819134313_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -134,7 +134,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Ikonična akustična gitara poznata po bogatom, punom zvuku.",
                             Proizvodjac = "Gibson",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -143,7 +143,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.",
                             Proizvodjac = "Taylor",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -152,7 +152,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.",
                             Proizvodjac = "Fender",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -161,7 +161,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.",
                             Proizvodjac = "Fender",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -170,7 +170,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.",
                             Proizvodjac = "Gibson",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -179,7 +179,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.",
                             Proizvodjac = "Ibanez",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -188,7 +188,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.",
                             Proizvodjac = "PRS",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -197,7 +197,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Svestrana električna gitara pogodna za različite žanrove.",
                             Proizvodjac = "Yamaha",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -206,7 +206,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.",
                             Proizvodjac = "Jackson",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -215,7 +215,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.",
                             Proizvodjac = "Schecter",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -224,7 +224,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.",
                             Proizvodjac = "Fender",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -233,7 +233,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.",
                             Proizvodjac = "Ibanez",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -242,7 +242,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.",
                             Proizvodjac = "Gibson",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -251,7 +251,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.",
                             Proizvodjac = "Yamaha",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -260,7 +260,7 @@ namespace eNote.Services.Migrations
                             MusicShopId = 1,
                             Opis = "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.",
                             Proizvodjac = "Warwick",
-                            VrstaInstrumenta = "Žičani"
+                            VrstaInstrumenta = "Zicani"
                         },
                         new
                         {
@@ -371,11 +371,11 @@ namespace eNote.Services.Migrations
                     b.Property<int>("InstrumentId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("StatusInstrumenta")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Vracen")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -456,8 +456,8 @@ namespace eNote.Services.Migrations
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "apUAvneoRL2OT7O9DYT4BPqZybhAcKE7TxDQuN2XvfQ=",
-                            LozinkaSalt = "6FIBOc9Gbg4aSFJaUeBF0w==",
+                            LozinkaHash = "Iz3ih58P6Rh3y1oujvU5HP3LbmxWOPGecrh7u9Q39Ds=",
+                            LozinkaSalt = "k5RUjpx7jQ1cCt5zYMdF/A==",
                             Prezime = "Admin",
                             Status = true,
                             Telefon = "000000000",
@@ -471,8 +471,8 @@ namespace eNote.Services.Migrations
                             Email = "john.doe@outlook.com",
                             Ime = "John",
                             KorisnickoIme = "instruktor",
-                            LozinkaHash = "iD/HUccx7syVd8JV+yT81KQ0ZeQ+ladOetnOe8utEjk=",
-                            LozinkaSalt = "2runk12c8K4jOZks8zJCgw==",
+                            LozinkaHash = "g3UKaevjAkSulaqgUbMsYzFHPuELZEHnE727SvP+2XU=",
+                            LozinkaSalt = "lLIeQ6J+VL10o8Z5w+lUNQ==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "111111111",
@@ -486,8 +486,8 @@ namespace eNote.Services.Migrations
                             Email = "jane.doe@outlook.com",
                             Ime = "Jane",
                             KorisnickoIme = "polaznik",
-                            LozinkaHash = "LR1+D12KrBdSWd/SUBLyxbf5PxNyMLeAe2sBOCv8nlk=",
-                            LozinkaSalt = "R9pIQrTfJASNradYBYT7KQ==",
+                            LozinkaHash = "6SD1qtzE+d27PhDUWQUN1IGteSHQ6lmfc2IfyY05Nl8=",
+                            LozinkaSalt = "j2F0xMIX8VItKGJW4wPQzg==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "222222222",
@@ -503,13 +503,10 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BrojPolaznika")
+                    b.Property<int>("BrojUpisanih")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Cijena")
-                        .HasColumnType("decimal(8, 2)");
-
-                    b.Property<decimal>("CijenaPretplata")
                         .HasColumnType("decimal(8, 2)");
 
                     b.Property<DateTime>("DatumPocetka")
@@ -518,18 +515,12 @@ namespace eNote.Services.Migrations
                     b.Property<DateTime>("DatumZavrsetka")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("DostupanNaPretplati")
-                        .HasColumnType("bit");
-
                     b.Property<int>("InstruktorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NivoTezine")
-                        .HasColumnType("int");
 
                     b.Property<string>("Opis")
                         .IsRequired()
@@ -545,29 +536,23 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 1,
-                            BrojPolaznika = 10,
+                            BrojUpisanih = 0,
                             Cijena = 800m,
-                            CijenaPretplata = 50m,
                             DatumPocetka = new DateTime(2024, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DatumZavrsetka = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DostupanNaPretplati = true,
                             InstruktorId = 2,
                             Naziv = "Osnove teorije muzike",
-                            NivoTezine = 1,
                             Opis = "Testni opis kursa osnova teorije muzke."
                         },
                         new
                         {
                             Id = 2,
-                            BrojPolaznika = 10,
+                            BrojUpisanih = 0,
                             Cijena = 800m,
-                            CijenaPretplata = 50m,
                             DatumPocetka = new DateTime(2024, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DatumZavrsetka = new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DostupanNaPretplati = true,
                             InstruktorId = 2,
                             Naziv = "Napredne tehnike gitare",
-                            NivoTezine = 3,
                             Opis = "Otkrijte napredne tehnike gitare, uključujući kompleksne akorde, improvizaciju i solo sviranje, kako biste unaprijedili svoje vještine i kreativnost na gitari."
                         });
                 });
@@ -632,8 +617,8 @@ namespace eNote.Services.Migrations
                             AdresaId = 2,
                             Email = "shop1@outlook.com",
                             KorisnickoIme = "shop1",
-                            LozinkaHash = "8SSvWRSIaXR0ogeftoi7ITcZuX2RJSN4o3wBp0cliXY=",
-                            LozinkaSalt = "2q2qEnMTMIdHxK6490Dz1g==",
+                            LozinkaHash = "Aph85Qf2gbsGJ3HHuMP5m5o+eMVCKjNDWg81EZj5BzI=",
+                            LozinkaSalt = "CGTaYCn2Tind9+AZqJDDkw==",
                             Naziv = "Bonemeal Music Shop",
                             Status = true,
                             Telefon = "333333333",
@@ -668,35 +653,6 @@ namespace eNote.Services.Migrations
                     b.HasIndex("PredavanjeId");
 
                     b.ToTable("Obavijesti");
-                });
-
-            modelBuilder.Entity("eNote.Services.Database.OglasnaTabla", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AutorId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DatumVrijemePostavljanja")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Naziv")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sadrzaj")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutorId");
-
-                    b.ToTable("OglasnaTabla");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.PredajaZadatka", b =>
@@ -736,8 +692,8 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("DatumVrijemePredavanja")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DatumVrijemePredavanja")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("KursId")
                         .HasColumnType("int");
@@ -749,6 +705,15 @@ namespace eNote.Services.Migrations
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StatusPredavanja")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipPredavanja")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("Trajanje")
+                        .HasColumnType("time");
 
                     b.HasKey("Id");
 
@@ -794,6 +759,9 @@ namespace eNote.Services.Migrations
                     b.Property<int>("KursId")
                         .HasColumnType("int");
 
+                    b.Property<int>("StatusUpisa")
+                        .HasColumnType("int");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
@@ -814,8 +782,8 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("DatumVrijemePredaje")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DatumVrijemePredaje")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Naziv")
                         .IsRequired()
@@ -901,7 +869,7 @@ namespace eNote.Services.Migrations
             modelBuilder.Entity("eNote.Services.Database.Obavijest", b =>
                 {
                     b.HasOne("eNote.Services.Database.Predavanje", "Predavanje")
-                        .WithMany("Obavijesti")
+                        .WithMany("Napomena")
                         .HasForeignKey("PredavanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -909,23 +877,12 @@ namespace eNote.Services.Migrations
                     b.Navigation("Predavanje");
                 });
 
-            modelBuilder.Entity("eNote.Services.Database.OglasnaTabla", b =>
-                {
-                    b.HasOne("eNote.Services.Database.Korisnik", "Autor")
-                        .WithMany("PostavljeneObavijesti")
-                        .HasForeignKey("AutorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Autor");
-                });
-
             modelBuilder.Entity("eNote.Services.Database.PredajaZadatka", b =>
                 {
                     b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("PredajaZadatka")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("eNote.Services.Database.Zadatak", "Zadatak")
@@ -961,7 +918,7 @@ namespace eNote.Services.Migrations
                     b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("Prisustvo")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Predavanje");
@@ -974,13 +931,13 @@ namespace eNote.Services.Migrations
                     b.HasOne("eNote.Services.Database.Kurs", "Kurs")
                         .WithMany("Upis")
                         .HasForeignKey("KursId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("eNote.Services.Database.Korisnik", "Student")
                         .WithMany("Upis")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Kurs");
@@ -1017,8 +974,6 @@ namespace eNote.Services.Migrations
 
                     b.Navigation("Kurs");
 
-                    b.Navigation("PostavljeneObavijesti");
-
                     b.Navigation("PredajaZadatka");
 
                     b.Navigation("Prisustvo");
@@ -1040,7 +995,7 @@ namespace eNote.Services.Migrations
 
             modelBuilder.Entity("eNote.Services.Database.Predavanje", b =>
                 {
-                    b.Navigation("Obavijesti");
+                    b.Navigation("Napomena");
 
                     b.Navigation("Prisustvo");
 

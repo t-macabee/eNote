@@ -1,6 +1,6 @@
 ﻿using eNote.Model.DTOs;
 using eNote.Model.Enums;
-using eNote.Model.Requests.Base;
+using eNote.Model.Requests.BaseMember;
 using System;
 
 namespace eNote.Model.Requests.Korisnik

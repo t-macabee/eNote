@@ -4,12 +4,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 namespace eNote.Model.Enums
-{ 
+{
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum NivoTezine
+    public enum TipPredavanja
     {
-        Pocetni = 1,
-        Srednji = 2,
-        Napredni = 3
+        Teorija = 1,
+        Praksa = 2,
+        Kombinovano = 3
     }
 }

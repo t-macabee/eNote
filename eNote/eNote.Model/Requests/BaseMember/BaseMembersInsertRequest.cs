@@ -1,14 +1,12 @@
 ﻿using eNote.Model.DTOs;
-using eNote.Model.Enums;
 
-
-namespace eNote.Model.Requests.Base
+namespace eNote.Model.Requests.BaseMember
 {
     public class BaseMembersInsertRequest
     {
-        public string KorisnickoIme { get; set; } = string.Empty;
-        public string Lozinka { get; set; } = string.Empty;
-        public string LozinkaPotvrda { get; set; } = string.Empty;
+        public string KorisnickoIme { get; set; }
+        public string Lozinka { get; set; }
+        public string LozinkaPotvrda { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; }
         public int? AdresaId { get; set; }

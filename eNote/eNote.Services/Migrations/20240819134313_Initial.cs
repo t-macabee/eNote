@@ -96,13 +96,10 @@ namespace eNote.Services.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NivoTezine = table.Column<int>(type: "int", nullable: false),
+                    Cijena = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
+                    BrojUpisanih = table.Column<int>(type: "int", nullable: false),
                     DatumPocetka = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DatumZavrsetka = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BrojPolaznika = table.Column<int>(type: "int", nullable: true),
-                    Cijena = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
-                    CijenaPretplata = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
-                    DostupanNaPretplati = table.Column<bool>(type: "bit", nullable: false),
                     InstruktorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -114,28 +111,6 @@ namespace eNote.Services.Migrations
                         principalTable: "Korisnici",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OglasnaTabla",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sadrzaj = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DatumVrijemePostavljanja = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AutorId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OglasnaTabla", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OglasnaTabla_Korisnici_AutorId",
-                        column: x => x.AutorId,
-                        principalTable: "Korisnici",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,8 +146,11 @@ namespace eNote.Services.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Lokacija = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DatumVrijemePredavanja = table.Column<DateOnly>(type: "date", nullable: false),
-                    KursId = table.Column<int>(type: "int", nullable: false)
+                    DatumVrijemePredavanja = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Trajanje = table.Column<TimeSpan>(type: "time", nullable: false),
+                    KursId = table.Column<int>(type: "int", nullable: false),
+                    TipPredavanja = table.Column<int>(type: "int", nullable: false),
+                    StatusPredavanja = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,6 +169,7 @@ namespace eNote.Services.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    StatusUpisa = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     KursId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -202,13 +181,13 @@ namespace eNote.Services.Migrations
                         column: x => x.StudentId,
                         principalTable: "Korisnici",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Upisi_Kurs_KursId",
                         column: x => x.KursId,
                         principalTable: "Kurs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,7 +198,7 @@ namespace eNote.Services.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DatumIznajmljivanja = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DatumPovratka = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Vracen = table.Column<bool>(type: "bit", nullable: false),
+                    StatusInstrumenta = table.Column<bool>(type: "bit", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     InstrumentId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -280,7 +259,7 @@ namespace eNote.Services.Migrations
                         column: x => x.StudentId,
                         principalTable: "Korisnici",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Prisustva_Predavanja_PredavanjeId",
                         column: x => x.PredavanjeId,
@@ -297,7 +276,7 @@ namespace eNote.Services.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Opis = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DatumVrijemePredaje = table.Column<DateOnly>(type: "date", nullable: false),
+                    DatumVrijemePredaje = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PredavanjeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -330,7 +309,7 @@ namespace eNote.Services.Migrations
                         column: x => x.StudentId,
                         principalTable: "Korisnici",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PredajaZadatka_Zadaci_ZadatakId",
                         column: x => x.ZadatakId,
@@ -356,36 +335,36 @@ namespace eNote.Services.Migrations
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "apUAvneoRL2OT7O9DYT4BPqZybhAcKE7TxDQuN2XvfQ=", "6FIBOc9Gbg4aSFJaUeBF0w==", "Admin", null, null, true, "000000000", "Administrator" },
-                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "iD/HUccx7syVd8JV+yT81KQ0ZeQ+ladOetnOe8utEjk=", "2runk12c8K4jOZks8zJCgw==", "Doe", null, null, true, "111111111", "Instruktor" },
-                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "LR1+D12KrBdSWd/SUBLyxbf5PxNyMLeAe2sBOCv8nlk=", "R9pIQrTfJASNradYBYT7KQ==", "Doe", null, null, true, "222222222", "Polaznik" }
+                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "Iz3ih58P6Rh3y1oujvU5HP3LbmxWOPGecrh7u9Q39Ds=", "k5RUjpx7jQ1cCt5zYMdF/A==", "Admin", null, null, true, "000000000", "Administrator" },
+                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "g3UKaevjAkSulaqgUbMsYzFHPuELZEHnE727SvP+2XU=", "lLIeQ6J+VL10o8Z5w+lUNQ==", "Doe", null, null, true, "111111111", "Instruktor" },
+                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "6SD1qtzE+d27PhDUWQUN1IGteSHQ6lmfc2IfyY05Nl8=", "j2F0xMIX8VItKGJW4wPQzg==", "Doe", null, null, true, "222222222", "Polaznik" }
                 });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",
                 columns: new[] { "Id", "AdresaId", "Email", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Naziv", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
-                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "8SSvWRSIaXR0ogeftoi7ITcZuX2RJSN4o3wBp0cliXY=", "2q2qEnMTMIdHxK6490Dz1g==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
+                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "Aph85Qf2gbsGJ3HHuMP5m5o+eMVCKjNDWg81EZj5BzI=", "CGTaYCn2Tind9+AZqJDDkw==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
 
             migrationBuilder.InsertData(
                 table: "Instrumenti",
                 columns: new[] { "Id", "Model", "MusicShopId", "Opis", "Proizvodjac", "Slika", "SlikaThumb", "VrstaInstrumenta" },
                 values: new object[,]
                 {
-                    { 1, "J-45", 1, "Ikonična akustična gitara poznata po bogatom, punom zvuku.", "Gibson", null, null, "Žičani" },
-                    { 2, "214ce", 1, "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", "Taylor", null, null, "Žičani" },
-                    { 3, "CD-60S", 1, "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", "Fender", null, null, "Žičani" },
-                    { 4, "Stratocaster", 1, "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", "Fender", null, null, "Žičani" },
-                    { 5, "Les Paul", 1, "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", "Gibson", null, null, "Žičani" },
-                    { 6, "RG", 1, "Visokoperformansna električna gitara popularna među rok i metal sviračima.", "Ibanez", null, null, "Žičani" },
-                    { 7, "Custom 24", 1, "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", "PRS", null, null, "Žičani" },
-                    { 8, "Pacifica", 1, "Svestrana električna gitara pogodna za različite žanrove.", "Yamaha", null, null, "Žičani" },
-                    { 9, "Dinky", 1, "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", "Jackson", null, null, "Žičani" },
-                    { 10, "C-1", 1, "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", "Schecter", null, null, "Žičani" },
-                    { 11, "Precision Bass", 1, "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", "Fender", null, null, "Žičani" },
-                    { 12, "SR", 1, "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", "Ibanez", null, null, "Žičani" },
-                    { 13, "Thunderbird", 1, "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", "Gibson", null, null, "Žičani" },
-                    { 14, "BB", 1, "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", "Yamaha", null, null, "Žičani" },
-                    { 15, "RockBass", 1, "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", "Warwick", null, null, "Žičani" },
+                    { 1, "J-45", 1, "Ikonična akustična gitara poznata po bogatom, punom zvuku.", "Gibson", null, null, "Zicani" },
+                    { 2, "214ce", 1, "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", "Taylor", null, null, "Zicani" },
+                    { 3, "CD-60S", 1, "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", "Fender", null, null, "Zicani" },
+                    { 4, "Stratocaster", 1, "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", "Fender", null, null, "Zicani" },
+                    { 5, "Les Paul", 1, "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", "Gibson", null, null, "Zicani" },
+                    { 6, "RG", 1, "Visokoperformansna električna gitara popularna među rok i metal sviračima.", "Ibanez", null, null, "Zicani" },
+                    { 7, "Custom 24", 1, "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", "PRS", null, null, "Zicani" },
+                    { 8, "Pacifica", 1, "Svestrana električna gitara pogodna za različite žanrove.", "Yamaha", null, null, "Zicani" },
+                    { 9, "Dinky", 1, "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", "Jackson", null, null, "Zicani" },
+                    { 10, "C-1", 1, "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", "Schecter", null, null, "Zicani" },
+                    { 11, "Precision Bass", 1, "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", "Fender", null, null, "Zicani" },
+                    { 12, "SR", 1, "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", "Ibanez", null, null, "Zicani" },
+                    { 13, "Thunderbird", 1, "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", "Gibson", null, null, "Zicani" },
+                    { 14, "BB", 1, "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", "Yamaha", null, null, "Zicani" },
+                    { 15, "RockBass", 1, "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", "Warwick", null, null, "Zicani" },
                     { 16, "Export", 1, "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", "Pearl", null, null, "Udaraljke" },
                     { 17, "Imperialstar", 1, "Svestran bubanj set sa izvrsnom izradom i zvukom.", "Tama", null, null, "Udaraljke" },
                     { 18, "Breakbeats", 1, "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.", "Ludwig", null, null, "Udaraljke" },
@@ -400,11 +379,11 @@ namespace eNote.Services.Migrations
 
             migrationBuilder.InsertData(
                 table: "Kurs",
-                columns: new[] { "Id", "BrojPolaznika", "Cijena", "CijenaPretplata", "DatumPocetka", "DatumZavrsetka", "DostupanNaPretplati", "InstruktorId", "Naziv", "NivoTezine", "Opis" },
+                columns: new[] { "Id", "BrojUpisanih", "Cijena", "DatumPocetka", "DatumZavrsetka", "InstruktorId", "Naziv", "Opis" },
                 values: new object[,]
                 {
-                    { 1, 10, 800m, 50m, new DateTime(2024, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), true, 2, "Osnove teorije muzike", 1, "Testni opis kursa osnova teorije muzke." },
-                    { 2, 10, 800m, 50m, new DateTime(2024, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), true, 2, "Napredne tehnike gitare", 3, "Otkrijte napredne tehnike gitare, uključujući kompleksne akorde, improvizaciju i solo sviranje, kako biste unaprijedili svoje vještine i kreativnost na gitari." }
+                    { 1, 0, 800m, new DateTime(2024, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Osnove teorije muzike", "Testni opis kursa osnova teorije muzke." },
+                    { 2, 0, 800m, new DateTime(2024, 9, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2024, 10, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Napredne tehnike gitare", "Otkrijte napredne tehnike gitare, uključujući kompleksne akorde, improvizaciju i solo sviranje, kako biste unaprijedili svoje vještine i kreativnost na gitari." }
                 });
 
             migrationBuilder.CreateIndex(
@@ -441,11 +420,6 @@ namespace eNote.Services.Migrations
                 name: "IX_Obavijesti_PredavanjeId",
                 table: "Obavijesti",
                 column: "PredavanjeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OglasnaTabla_AutorId",
-                table: "OglasnaTabla",
-                column: "AutorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PredajaZadatka_StudentId",
@@ -496,9 +470,6 @@ namespace eNote.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "Obavijesti");
-
-            migrationBuilder.DropTable(
-                name: "OglasnaTabla");
 
             migrationBuilder.DropTable(
                 name: "PredajaZadatka");
