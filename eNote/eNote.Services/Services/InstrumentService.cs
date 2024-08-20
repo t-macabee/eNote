@@ -3,11 +3,8 @@ using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using MapsterMapper;
-using eNote.Services.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using Azure.Core;
-using eNote.Model.Enums;
+
 
 namespace eNote.Services.Services
 {
@@ -19,7 +16,8 @@ namespace eNote.Services.Services
             query = base.AddFilter(search, query).Include(x => x.MusicShop)
                 .Where(x =>
                     (string.IsNullOrEmpty(search.Model) || x.Model.StartsWith(search.Model)) &&
-                    (string.IsNullOrEmpty(search.Proizvodjac) || x.Proizvodjac.StartsWith(search.Proizvodjac))
+                    (string.IsNullOrEmpty(search.Proizvodjac) || x.Proizvodjac.StartsWith(search.Proizvodjac)) &&
+                    (!search.Dostupan.HasValue || x.Dostupan == search.Dostupan)
                 );         
 
             return query; 

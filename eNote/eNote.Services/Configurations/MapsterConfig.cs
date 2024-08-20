@@ -22,6 +22,9 @@ namespace eNote.Services.Configurations
             TypeAdapterConfig<Database.Upis, Model.DTOs.Upis>
                 .NewConfig();
 
+            TypeAdapterConfig<Database.Obavijest, Model.DTOs.Obavijest>
+                .NewConfig();
+
             TypeAdapterConfig<Database.Predavanje, Model.DTOs.Predavanje>
                 .NewConfig()
                 .Map(dest => dest.Kurs, src => src.Kurs);

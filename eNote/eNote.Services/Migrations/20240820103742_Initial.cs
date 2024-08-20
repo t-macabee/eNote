@@ -125,6 +125,7 @@ namespace eNote.Services.Migrations
                     Slika = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     SlikaThumb = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     VrstaInstrumenta = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Dostupan = table.Column<bool>(type: "bit", nullable: false),
                     MusicShopId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -198,7 +199,8 @@ namespace eNote.Services.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DatumIznajmljivanja = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DatumPovratka = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StatusInstrumenta = table.Column<bool>(type: "bit", nullable: false),
+                    CijenaIznajmljivanja = table.Column<decimal>(type: "decimal(8,2)", nullable: false),
+                    StanjeIznajmljivanja = table.Column<int>(type: "int", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     InstrumentId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -335,46 +337,46 @@ namespace eNote.Services.Migrations
                 columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "4oiJ4z12BSIFE69TRa+2A43zrbz4YKFxXhgDlkg4eEs=", "BZJ+ABKjMK0x0bMbYsiYeA==", "Admin", null, null, true, "000000000", "Administrator" },
-                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "NBebhdNUEPZyZ7QurBeaEXZH07438r5GocYir7Ecnzs=", "4QEfPWhv17FDbzm4VKQwoA==", "Doe", null, null, true, "111111111", "Instruktor" },
-                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "DuAOl4kD6A5CjFjNlM3XuyEPfCEOEZE7GUF5mB72lVI=", "R848MRsVSrMLXhoZ32uc1g==", "Doe", null, null, true, "222222222", "Polaznik" }
+                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "O/KVO4/Ob2o5Xy8bK59Q/wOWnINYrjCgsXmkIoAsWws=", "WcsV0mk0aalha+U46IvqmQ==", "Admin", null, null, true, "000000000", "Administrator" },
+                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "PEx5uTH7PDZpzXlV/CWIYy2eJPKdh2hVIBVOYAthrxI=", "y62kGIoIfjOtaGUHBB2PnQ==", "Doe", null, null, true, "111111111", "Instruktor" },
+                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "Rl3usiee5UcS0TNePYA3mQobhAROJu5H1j5GZkWG8xI=", "Th9TrT4mYukjHhxlnPywNA==", "Doe", null, null, true, "222222222", "Polaznik" }
                 });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",
                 columns: new[] { "Id", "AdresaId", "Email", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Naziv", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
-                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "46Od7VxWVhjUBhi2w06zl3O0kKKtAw94zSdM5SMcA/4=", "EC1eCt71ivAo8Kcksz2Q0w==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
+                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "bJr+is/kQziLxkwwekyxc44MOECYuH00mSu5BbvySO8=", "PhF7H7Di57X0pNoyggDTNg==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
 
             migrationBuilder.InsertData(
                 table: "Instrumenti",
-                columns: new[] { "Id", "Model", "MusicShopId", "Opis", "Proizvodjac", "Slika", "SlikaThumb", "VrstaInstrumenta" },
+                columns: new[] { "Id", "Dostupan", "Model", "MusicShopId", "Opis", "Proizvodjac", "Slika", "SlikaThumb", "VrstaInstrumenta" },
                 values: new object[,]
                 {
-                    { 1, "J-45", 1, "Ikonična akustična gitara poznata po bogatom, punom zvuku.", "Gibson", null, null, "Zicani" },
-                    { 2, "214ce", 1, "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", "Taylor", null, null, "Zicani" },
-                    { 3, "CD-60S", 1, "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", "Fender", null, null, "Zicani" },
-                    { 4, "Stratocaster", 1, "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", "Fender", null, null, "Zicani" },
-                    { 5, "Les Paul", 1, "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", "Gibson", null, null, "Zicani" },
-                    { 6, "RG", 1, "Visokoperformansna električna gitara popularna među rok i metal sviračima.", "Ibanez", null, null, "Zicani" },
-                    { 7, "Custom 24", 1, "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", "PRS", null, null, "Zicani" },
-                    { 8, "Pacifica", 1, "Svestrana električna gitara pogodna za različite žanrove.", "Yamaha", null, null, "Zicani" },
-                    { 9, "Dinky", 1, "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", "Jackson", null, null, "Zicani" },
-                    { 10, "C-1", 1, "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", "Schecter", null, null, "Zicani" },
-                    { 11, "Precision Bass", 1, "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", "Fender", null, null, "Zicani" },
-                    { 12, "SR", 1, "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", "Ibanez", null, null, "Zicani" },
-                    { 13, "Thunderbird", 1, "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", "Gibson", null, null, "Zicani" },
-                    { 14, "BB", 1, "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", "Yamaha", null, null, "Zicani" },
-                    { 15, "RockBass", 1, "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", "Warwick", null, null, "Zicani" },
-                    { 16, "Export", 1, "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", "Pearl", null, null, "Udaraljke" },
-                    { 17, "Imperialstar", 1, "Svestran bubanj set sa izvrsnom izradom i zvukom.", "Tama", null, null, "Udaraljke" },
-                    { 18, "Breakbeats", 1, "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.", "Ludwig", null, null, "Udaraljke" },
-                    { 19, "Mark VI", 1, "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.", "Selmer", null, null, "Limeni" },
-                    { 20, "YAS-280", 1, "Popularni saksofon među studentima i srednje naprednim sviračima.", "Yamaha", null, null, "Limeni" },
-                    { 21, "Minilogue", 1, "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.", "Korg", null, null, "Tipke" },
-                    { 22, "Juno-DS", 1, "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.", "Roland", null, null, "Tipke" },
-                    { 23, "Sub Phatty", 1, "Analogni sintisajzer poznat po svom snažnom basu i lead tonovima.", "Moog", null, null, "Tipke" },
-                    { 24, "Stradivarius", 1, "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.", "Bach", null, null, "Limeni" },
-                    { 25, "YSL-354", 1, "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.", "Yamaha", null, null, "Limeni" }
+                    { 1, true, "J-45", 1, "Ikonična akustična gitara poznata po bogatom, punom zvuku.", "Gibson", null, null, "Zicani" },
+                    { 2, true, "214ce", 1, "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.", "Taylor", null, null, "Zicani" },
+                    { 3, true, "CD-60S", 1, "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.", "Fender", null, null, "Zicani" },
+                    { 4, true, "Stratocaster", 1, "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", "Fender", null, null, "Zicani" },
+                    { 5, true, "Les Paul", 1, "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", "Gibson", null, null, "Zicani" },
+                    { 6, true, "RG", 1, "Visokoperformansna električna gitara popularna među rok i metal sviračima.", "Ibanez", null, null, "Zicani" },
+                    { 7, true, "Custom 24", 1, "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", "PRS", null, null, "Zicani" },
+                    { 8, true, "Pacifica", 1, "Svestrana električna gitara pogodna za različite žanrove.", "Yamaha", null, null, "Zicani" },
+                    { 9, true, "Dinky", 1, "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", "Jackson", null, null, "Zicani" },
+                    { 10, true, "C-1", 1, "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.", "Schecter", null, null, "Zicani" },
+                    { 11, true, "Precision Bass", 1, "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", "Fender", null, null, "Zicani" },
+                    { 12, true, "SR", 1, "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.", "Ibanez", null, null, "Zicani" },
+                    { 13, true, "Thunderbird", 1, "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", "Gibson", null, null, "Zicani" },
+                    { 14, true, "BB", 1, "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.", "Yamaha", null, null, "Zicani" },
+                    { 15, true, "RockBass", 1, "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.", "Warwick", null, null, "Zicani" },
+                    { 16, true, "Export", 1, "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", "Pearl", null, null, "Udaraljke" },
+                    { 17, true, "Imperialstar", 1, "Svestran bubanj set sa izvrsnom izradom i zvukom.", "Tama", null, null, "Udaraljke" },
+                    { 18, true, "Breakbeats", 1, "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.", "Ludwig", null, null, "Udaraljke" },
+                    { 19, true, "Mark VI", 1, "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.", "Selmer", null, null, "Limeni" },
+                    { 20, true, "YAS-280", 1, "Popularni saksofon među studentima i srednje naprednim sviračima.", "Yamaha", null, null, "Limeni" },
+                    { 21, true, "Minilogue", 1, "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.", "Korg", null, null, "Tipke" },
+                    { 22, true, "Juno-DS", 1, "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.", "Roland", null, null, "Tipke" },
+                    { 23, true, "Sub Phatty", 1, "Analogni sintisajzer poznat po svom snažnom basu i lead tonovima.", "Moog", null, null, "Tipke" },
+                    { 24, true, "Stradivarius", 1, "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.", "Bach", null, null, "Limeni" },
+                    { 25, true, "YSL-354", 1, "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.", "Yamaha", null, null, "Limeni" }
                 });
 
             migrationBuilder.InsertData(

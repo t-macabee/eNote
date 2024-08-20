@@ -12,7 +12,7 @@ using eNote.Services.Database;
 namespace eNote.Services.Migrations
 {
     [DbContext(typeof(ENoteContext))]
-    [Migration("20240819185251_Initial")]
+    [Migration("20240820103742_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -95,6 +95,9 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Dostupan")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -130,6 +133,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 1,
+                            Dostupan = true,
                             Model = "J-45",
                             MusicShopId = 1,
                             Opis = "Ikonična akustična gitara poznata po bogatom, punom zvuku.",
@@ -139,6 +143,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 2,
+                            Dostupan = true,
                             Model = "214ce",
                             MusicShopId = 1,
                             Opis = "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.",
@@ -148,6 +153,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 3,
+                            Dostupan = true,
                             Model = "CD-60S",
                             MusicShopId = 1,
                             Opis = "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.",
@@ -157,6 +163,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 4,
+                            Dostupan = true,
                             Model = "Stratocaster",
                             MusicShopId = 1,
                             Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.",
@@ -166,6 +173,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 5,
+                            Dostupan = true,
                             Model = "Les Paul",
                             MusicShopId = 1,
                             Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.",
@@ -175,6 +183,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 6,
+                            Dostupan = true,
                             Model = "RG",
                             MusicShopId = 1,
                             Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.",
@@ -184,6 +193,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 7,
+                            Dostupan = true,
                             Model = "Custom 24",
                             MusicShopId = 1,
                             Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.",
@@ -193,6 +203,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 8,
+                            Dostupan = true,
                             Model = "Pacifica",
                             MusicShopId = 1,
                             Opis = "Svestrana električna gitara pogodna za različite žanrove.",
@@ -202,6 +213,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 9,
+                            Dostupan = true,
                             Model = "Dinky",
                             MusicShopId = 1,
                             Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.",
@@ -211,6 +223,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 10,
+                            Dostupan = true,
                             Model = "C-1",
                             MusicShopId = 1,
                             Opis = "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.",
@@ -220,6 +233,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 11,
+                            Dostupan = true,
                             Model = "Precision Bass",
                             MusicShopId = 1,
                             Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.",
@@ -229,6 +243,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 12,
+                            Dostupan = true,
                             Model = "SR",
                             MusicShopId = 1,
                             Opis = "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.",
@@ -238,6 +253,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 13,
+                            Dostupan = true,
                             Model = "Thunderbird",
                             MusicShopId = 1,
                             Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.",
@@ -247,6 +263,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 14,
+                            Dostupan = true,
                             Model = "BB",
                             MusicShopId = 1,
                             Opis = "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.",
@@ -256,6 +273,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 15,
+                            Dostupan = true,
                             Model = "RockBass",
                             MusicShopId = 1,
                             Opis = "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.",
@@ -265,6 +283,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 16,
+                            Dostupan = true,
                             Model = "Export",
                             MusicShopId = 1,
                             Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.",
@@ -274,6 +293,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 17,
+                            Dostupan = true,
                             Model = "Imperialstar",
                             MusicShopId = 1,
                             Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.",
@@ -283,6 +303,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 18,
+                            Dostupan = true,
                             Model = "Breakbeats",
                             MusicShopId = 1,
                             Opis = "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.",
@@ -292,6 +313,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 19,
+                            Dostupan = true,
                             Model = "Mark VI",
                             MusicShopId = 1,
                             Opis = "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.",
@@ -301,6 +323,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 20,
+                            Dostupan = true,
                             Model = "YAS-280",
                             MusicShopId = 1,
                             Opis = "Popularni saksofon među studentima i srednje naprednim sviračima.",
@@ -310,6 +333,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 24,
+                            Dostupan = true,
                             Model = "Stradivarius",
                             MusicShopId = 1,
                             Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.",
@@ -319,6 +343,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 25,
+                            Dostupan = true,
                             Model = "YSL-354",
                             MusicShopId = 1,
                             Opis = "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.",
@@ -328,6 +353,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 21,
+                            Dostupan = true,
                             Model = "Minilogue",
                             MusicShopId = 1,
                             Opis = "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.",
@@ -337,6 +363,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 22,
+                            Dostupan = true,
                             Model = "Juno-DS",
                             MusicShopId = 1,
                             Opis = "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.",
@@ -346,6 +373,7 @@ namespace eNote.Services.Migrations
                         new
                         {
                             Id = 23,
+                            Dostupan = true,
                             Model = "Sub Phatty",
                             MusicShopId = 1,
                             Opis = "Analogni sintisajzer poznat po svom snažnom basu i lead tonovima.",
@@ -362,6 +390,9 @@ namespace eNote.Services.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("CijenaIznajmljivanja")
+                        .HasColumnType("decimal(8, 2)");
+
                     b.Property<DateTime>("DatumIznajmljivanja")
                         .HasColumnType("datetime2");
 
@@ -371,8 +402,8 @@ namespace eNote.Services.Migrations
                     b.Property<int>("InstrumentId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("StatusInstrumenta")
-                        .HasColumnType("bit");
+                    b.Property<int>("StanjeIznajmljivanja")
+                        .HasColumnType("int");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -456,8 +487,8 @@ namespace eNote.Services.Migrations
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "4oiJ4z12BSIFE69TRa+2A43zrbz4YKFxXhgDlkg4eEs=",
-                            LozinkaSalt = "BZJ+ABKjMK0x0bMbYsiYeA==",
+                            LozinkaHash = "O/KVO4/Ob2o5Xy8bK59Q/wOWnINYrjCgsXmkIoAsWws=",
+                            LozinkaSalt = "WcsV0mk0aalha+U46IvqmQ==",
                             Prezime = "Admin",
                             Status = true,
                             Telefon = "000000000",
@@ -471,8 +502,8 @@ namespace eNote.Services.Migrations
                             Email = "john.doe@outlook.com",
                             Ime = "John",
                             KorisnickoIme = "instruktor",
-                            LozinkaHash = "NBebhdNUEPZyZ7QurBeaEXZH07438r5GocYir7Ecnzs=",
-                            LozinkaSalt = "4QEfPWhv17FDbzm4VKQwoA==",
+                            LozinkaHash = "PEx5uTH7PDZpzXlV/CWIYy2eJPKdh2hVIBVOYAthrxI=",
+                            LozinkaSalt = "y62kGIoIfjOtaGUHBB2PnQ==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "111111111",
@@ -486,8 +517,8 @@ namespace eNote.Services.Migrations
                             Email = "jane.doe@outlook.com",
                             Ime = "Jane",
                             KorisnickoIme = "polaznik",
-                            LozinkaHash = "DuAOl4kD6A5CjFjNlM3XuyEPfCEOEZE7GUF5mB72lVI=",
-                            LozinkaSalt = "R848MRsVSrMLXhoZ32uc1g==",
+                            LozinkaHash = "Rl3usiee5UcS0TNePYA3mQobhAROJu5H1j5GZkWG8xI=",
+                            LozinkaSalt = "Th9TrT4mYukjHhxlnPywNA==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "222222222",
@@ -617,8 +648,8 @@ namespace eNote.Services.Migrations
                             AdresaId = 2,
                             Email = "shop1@outlook.com",
                             KorisnickoIme = "shop1",
-                            LozinkaHash = "46Od7VxWVhjUBhi2w06zl3O0kKKtAw94zSdM5SMcA/4=",
-                            LozinkaSalt = "EC1eCt71ivAo8Kcksz2Q0w==",
+                            LozinkaHash = "bJr+is/kQziLxkwwekyxc44MOECYuH00mSu5BbvySO8=",
+                            LozinkaSalt = "PhF7H7Di57X0pNoyggDTNg==",
                             Naziv = "Bonemeal Music Shop",
                             Status = true,
                             Telefon = "333333333",

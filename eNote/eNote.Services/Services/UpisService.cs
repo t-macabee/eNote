@@ -63,12 +63,9 @@ namespace eNote.Services.Services
 
         public override async Task Delete(int id)
         {
-            var entity = await context.Upisi
-                .Include(x => x.Kurs)
-                .FirstOrDefaultAsync(x => x.Id == id)
-                ?? throw new ArgumentException("ID nije pronađen", nameof(id));
+            var entity = await context.Upisi.Include(x => x.Kurs).FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("ID nije pronađen", nameof(id));
 
-            if(entity.Kurs != null && entity.Kurs.BrojUpisanih > 0)
+            if (entity.Kurs != null && entity.Kurs.BrojUpisanih > 0)
             {
                 entity.Kurs.BrojUpisanih--;
             }

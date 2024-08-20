@@ -140,6 +140,10 @@ namespace eNote.Services.Database
                 .HasForeignKey(r => r.InstrumentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<IznajmljivanjeInstrumenta>()
+                .Property(k => k.CijenaIznajmljivanja)
+                .HasColumnType("decimal(8, 2)");
+
             base.OnModelCreating(modelBuilder);
 
             SeedData.Seed(modelBuilder);

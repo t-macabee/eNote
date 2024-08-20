@@ -11,6 +11,7 @@ namespace eNote.Services.Database
         public byte[]? Slika { get; set; }
         public byte[]? SlikaThumb { get; set; }
         public VrstaInstrumenta VrstaInstrumenta { get; set; }
+        public bool Dostupan {  get; set; }
 
         public int MusicShopId { get; set; }
         public MusicShop MusicShop { get; set; }
