@@ -29,6 +29,19 @@ namespace eNote.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Uloge",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Uloge", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Korisnici",
                 columns: table => new
                 {
@@ -37,8 +50,8 @@ namespace eNote.Services.Migrations
                     KorisnickoIme = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LozinkaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LozinkaSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Uloga = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
+                    UlogaId = table.Column<int>(type: "int", nullable: false),
                     AdresaId = table.Column<int>(type: "int", nullable: false),
                     Ime = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Prezime = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -57,6 +70,12 @@ namespace eNote.Services.Migrations
                         principalTable: "Adresa",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Korisnici_Uloge_UlogaId",
+                        column: x => x.UlogaId,
+                        principalTable: "Uloge",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,8 +87,8 @@ namespace eNote.Services.Migrations
                     KorisnickoIme = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LozinkaHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LozinkaSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Uloga = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false),
+                    UlogaId = table.Column<int>(type: "int", nullable: false),
                     AdresaId = table.Column<int>(type: "int", nullable: false),
                     Naziv = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -84,6 +103,12 @@ namespace eNote.Services.Migrations
                         name: "FK_MusicShops_Adresa_AdresaId",
                         column: x => x.AdresaId,
                         principalTable: "Adresa",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MusicShops_Uloge_UlogaId",
+                        column: x => x.UlogaId,
+                        principalTable: "Uloge",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -333,19 +358,30 @@ namespace eNote.Services.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Korisnici",
-                columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
+                table: "Uloge",
+                columns: new[] { "Id", "Naziv" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "O/KVO4/Ob2o5Xy8bK59Q/wOWnINYrjCgsXmkIoAsWws=", "WcsV0mk0aalha+U46IvqmQ==", "Admin", null, null, true, "000000000", "Administrator" },
-                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "PEx5uTH7PDZpzXlV/CWIYy2eJPKdh2hVIBVOYAthrxI=", "y62kGIoIfjOtaGUHBB2PnQ==", "Doe", null, null, true, "111111111", "Instruktor" },
-                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "Rl3usiee5UcS0TNePYA3mQobhAROJu5H1j5GZkWG8xI=", "Th9TrT4mYukjHhxlnPywNA==", "Doe", null, null, true, "222222222", "Polaznik" }
+                    { 1, "Administrator" },
+                    { 2, "Instruktor" },
+                    { 3, "Polaznik" },
+                    { 4, "Shop" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Korisnici",
+                columns: new[] { "Id", "AdresaId", "DatumRodjenja", "Email", "Ime", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Prezime", "Slika", "SlikaThumb", "Status", "Telefon", "UlogaId" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(1996, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@outlook.com", "Admin", "admin", "szscCuh10ehcpvsOIyaAGlgpRuVYxqYbqQKpys6CKyY=", "K1RoXmN03WlUNlIQIkFWQw==", "Admin", null, null, true, "000000000", 1 },
+                    { 2, 4, new DateTime(1997, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "john.doe@outlook.com", "John", "instruktor", "B6Haiy3AuI2llq/S49dqxlVzTCw8Vv23gfsMXIEMHZ0=", "CcwYSrcFSwYp7y42xxg+1g==", "Doe", null, null, true, "111111111", 2 },
+                    { 3, 5, new DateTime(1967, 3, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "jane.doe@outlook.com", "Jane", "polaznik", "Lze5t5qg4XbsG9boqQ9CsyWqhma/GaIjVr9p1pgGtW4=", "9I0Ve42LkphAsHohOlJ/Qg==", "Doe", null, null, true, "222222222", 3 }
                 });
 
             migrationBuilder.InsertData(
                 table: "MusicShops",
-                columns: new[] { "Id", "AdresaId", "Email", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Naziv", "Slika", "SlikaThumb", "Status", "Telefon", "Uloga" },
-                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "bJr+is/kQziLxkwwekyxc44MOECYuH00mSu5BbvySO8=", "PhF7H7Di57X0pNoyggDTNg==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
+                columns: new[] { "Id", "AdresaId", "Email", "KorisnickoIme", "LozinkaHash", "LozinkaSalt", "Naziv", "Slika", "SlikaThumb", "Status", "Telefon", "UlogaId" },
+                values: new object[] { 1, 2, "shop1@outlook.com", "shop1", "sKnmbsMFlvpdhdRQVpgcoflPZMGiqQ3iZoFYX09Vilw=", "Sv/JXST1J06Xi2dxUWMnDg==", "Bonemeal Music Shop", null, null, true, "333333333", 4 });
 
             migrationBuilder.InsertData(
                 table: "Instrumenti",
@@ -409,6 +445,11 @@ namespace eNote.Services.Migrations
                 column: "AdresaId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Korisnici_UlogaId",
+                table: "Korisnici",
+                column: "UlogaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Kurs_InstruktorId",
                 table: "Kurs",
                 column: "InstruktorId");
@@ -417,6 +458,11 @@ namespace eNote.Services.Migrations
                 name: "IX_MusicShops_AdresaId",
                 table: "MusicShops",
                 column: "AdresaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MusicShops_UlogaId",
+                table: "MusicShops",
+                column: "UlogaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Obavijesti_PredavanjeId",
@@ -502,6 +548,9 @@ namespace eNote.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "Adresa");
+
+            migrationBuilder.DropTable(
+                name: "Uloge");
         }
     }
 }

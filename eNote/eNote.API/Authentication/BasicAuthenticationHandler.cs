@@ -38,11 +38,11 @@ namespace eNote.API.Authentication
 
                 var user = await authService.Login(loginRequest);
 
-                if (user is Services.Database.Korisnik korisnik)
+                if (user is Model.Korisnik korisnik)
                 {
                     identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, korisnik.Uloga.ToString());
                 }
-                else if (user is MusicShop shop)
+                else if (user is Model.DTOs.MusicShop shop)
                 {
                     identity = CreateIdentity(shop.Id.ToString(), shop.KorisnickoIme, shop.Uloga.ToString());
                 }

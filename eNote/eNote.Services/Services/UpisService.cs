@@ -38,9 +38,9 @@ namespace eNote.Services.Services
         {
             var student = await context.Korisnici.FindAsync(request.StudentId);
 
-            if (student == null || student.Uloga != Uloge.Polaznik)
+            if (student == null || student.UlogaId != 3)
             {
-                throw new Exception("Samo korisnici sa ulogom 'polaznik' mogu biti upisani na kurs.");
+                throw new Exception("Samo korisnici sa ulogom 'Polaznik' mogu biti upisani na kurs.");
             }
 
             if (await context.Upisi.AnyAsync(x => x.StudentId == request.StudentId && x.KursId == request.KursId))

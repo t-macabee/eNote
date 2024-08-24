@@ -12,6 +12,6 @@ namespace eNote.Model.SearchObjects
         public string? Prezime { get; set; }
         public string? KorisnickoIme { get; set; }
         public string? Grad { get; set; }
-        public Uloge? Uloga { get; set; }
+        public string? Uloga { get; set; }
     }
 }

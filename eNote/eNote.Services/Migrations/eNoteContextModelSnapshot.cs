@@ -465,13 +465,14 @@ namespace eNote.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Uloga")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("UlogaId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AdresaId");
+
+                    b.HasIndex("UlogaId");
 
                     b.ToTable("Korisnici");
 
@@ -484,12 +485,12 @@ namespace eNote.Services.Migrations
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "O/KVO4/Ob2o5Xy8bK59Q/wOWnINYrjCgsXmkIoAsWws=",
-                            LozinkaSalt = "WcsV0mk0aalha+U46IvqmQ==",
+                            LozinkaHash = "szscCuh10ehcpvsOIyaAGlgpRuVYxqYbqQKpys6CKyY=",
+                            LozinkaSalt = "K1RoXmN03WlUNlIQIkFWQw==",
                             Prezime = "Admin",
                             Status = true,
                             Telefon = "000000000",
-                            Uloga = "Administrator"
+                            UlogaId = 1
                         },
                         new
                         {
@@ -499,12 +500,12 @@ namespace eNote.Services.Migrations
                             Email = "john.doe@outlook.com",
                             Ime = "John",
                             KorisnickoIme = "instruktor",
-                            LozinkaHash = "PEx5uTH7PDZpzXlV/CWIYy2eJPKdh2hVIBVOYAthrxI=",
-                            LozinkaSalt = "y62kGIoIfjOtaGUHBB2PnQ==",
+                            LozinkaHash = "B6Haiy3AuI2llq/S49dqxlVzTCw8Vv23gfsMXIEMHZ0=",
+                            LozinkaSalt = "CcwYSrcFSwYp7y42xxg+1g==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "111111111",
-                            Uloga = "Instruktor"
+                            UlogaId = 2
                         },
                         new
                         {
@@ -514,12 +515,12 @@ namespace eNote.Services.Migrations
                             Email = "jane.doe@outlook.com",
                             Ime = "Jane",
                             KorisnickoIme = "polaznik",
-                            LozinkaHash = "Rl3usiee5UcS0TNePYA3mQobhAROJu5H1j5GZkWG8xI=",
-                            LozinkaSalt = "Th9TrT4mYukjHhxlnPywNA==",
+                            LozinkaHash = "Lze5t5qg4XbsG9boqQ9CsyWqhma/GaIjVr9p1pgGtW4=",
+                            LozinkaSalt = "9I0Ve42LkphAsHohOlJ/Qg==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "222222222",
-                            Uloga = "Polaznik"
+                            UlogaId = 3
                         });
                 });
 
@@ -629,12 +630,14 @@ namespace eNote.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Uloga")
+                    b.Property<int>("UlogaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AdresaId");
+
+                    b.HasIndex("UlogaId");
 
                     b.ToTable("MusicShops");
 
@@ -645,12 +648,12 @@ namespace eNote.Services.Migrations
                             AdresaId = 2,
                             Email = "shop1@outlook.com",
                             KorisnickoIme = "shop1",
-                            LozinkaHash = "bJr+is/kQziLxkwwekyxc44MOECYuH00mSu5BbvySO8=",
-                            LozinkaSalt = "PhF7H7Di57X0pNoyggDTNg==",
+                            LozinkaHash = "sKnmbsMFlvpdhdRQVpgcoflPZMGiqQ3iZoFYX09Vilw=",
+                            LozinkaSalt = "Sv/JXST1J06Xi2dxUWMnDg==",
                             Naziv = "Bonemeal Music Shop",
                             Status = true,
                             Telefon = "333333333",
-                            Uloga = 4
+                            UlogaId = 4
                         });
                 });
 
@@ -776,6 +779,45 @@ namespace eNote.Services.Migrations
                     b.ToTable("Prisustva");
                 });
 
+            modelBuilder.Entity("eNote.Services.Database.Uloge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Uloge");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Naziv = "Administrator"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Naziv = "Instruktor"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Naziv = "Polaznik"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Naziv = "Shop"
+                        });
+                });
+
             modelBuilder.Entity("eNote.Services.Database.Upis", b =>
                 {
                     b.Property<int>("Id")
@@ -869,7 +911,15 @@ namespace eNote.Services.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("eNote.Services.Database.Uloge", "Uloga")
+                        .WithMany("Korisnik")
+                        .HasForeignKey("UlogaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Adresa");
+
+                    b.Navigation("Uloga");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Kurs", b =>
@@ -891,7 +941,15 @@ namespace eNote.Services.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("eNote.Services.Database.Uloge", "Uloga")
+                        .WithMany("MusicShop")
+                        .HasForeignKey("UlogaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Adresa");
+
+                    b.Navigation("Uloga");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Obavijest", b =>
@@ -1028,6 +1086,13 @@ namespace eNote.Services.Migrations
                     b.Navigation("Prisustvo");
 
                     b.Navigation("Zadaci");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.Uloge", b =>
+                {
+                    b.Navigation("Korisnik");
+
+                    b.Navigation("MusicShop");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>

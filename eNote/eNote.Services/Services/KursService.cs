@@ -37,7 +37,7 @@ namespace eNote.Services.Services
             }
 
             var instruktor = await context.Korisnici
-                .FirstOrDefaultAsync(x => x.Id == request.InstruktorId && x.Uloga == Uloge.Instruktor) ?? throw new Exception("Odabrani korisnik nije Instruktor");
+                .FirstOrDefaultAsync(x => x.Id == request.InstruktorId && x.UlogaId == 2) ?? throw new Exception("Odabrani korisnik nije Instruktor");
 
             if (request.DatumPocetka.Date < DateTime.Today)
                 throw new ArgumentException("Početni datum ne može biti manji od trenutnog datuma.");

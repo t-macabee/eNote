@@ -9,6 +9,9 @@ namespace eNote.Services.Configurations
             TypeAdapterConfig<Database.Adresa, Model.DTOs.Adresa>
                 .NewConfig();
 
+            TypeAdapterConfig<Database.Uloge, Model.DTOs.Uloge>
+                .NewConfig();
+
             TypeAdapterConfig<Database.Korisnik, Model.Korisnik>
                 .NewConfig()
                 .Map(dest => dest.Adresa, src => src.Adresa);

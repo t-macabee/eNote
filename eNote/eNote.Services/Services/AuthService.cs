@@ -12,6 +12,7 @@ namespace eNote.Services.Services
         public async Task<object> Login(LoginModel model)
         {
             var korisnikEntity = await context.Korisnici
+                .Include(x => x.Uloga)
                 .Include(x => x.Adresa)
                 .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
 
@@ -21,6 +22,7 @@ namespace eNote.Services.Services
             }
 
             var musicShopEntity = await context.MusicShops
+                .Include(x => x.Uloga)
                 .Include(x => x.Adresa)
                 .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
 

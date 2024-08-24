@@ -15,13 +15,15 @@ namespace eNote.Services.Services
       
         public override IQueryable<Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Korisnik> query)
         {
-            query = base.AddFilter(search, query).Include(x => x.Adresa)
+            query = base.AddFilter(search, query)
+                .Include(x => x.Adresa)
+                .Include(x => x.Uloga)
                 .Where(x =>
                     (string.IsNullOrEmpty(search.Ime) || x.Ime.StartsWith(search.Ime)) &&
                     (string.IsNullOrEmpty(search.Prezime) || x.Prezime.StartsWith(search.Prezime)) &&
                     (string.IsNullOrEmpty(search.KorisnickoIme) || x.KorisnickoIme == search.KorisnickoIme) &&
                     (string.IsNullOrEmpty(search.Grad) || x.Adresa.Grad.StartsWith(search.Grad)) &&
-                     (!search.Uloga.HasValue || x.Uloga == search.Uloga.Value) && (!search.Uloga.HasValue || x.Uloga != Uloge.MusicShop)
+                    (string.IsNullOrEmpty(search.Uloga) || x.Uloga.Naziv.StartsWith(search.Uloga)) 
                 );
 
             return query;
@@ -60,13 +62,14 @@ namespace eNote.Services.Services
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
             }
 
-            var validRoles = Enum.GetValues<Uloge>().Where(role => role != Uloge.MusicShop).ToList();
-            if (!validRoles.Contains(request.Uloga))
+            var uloga = await context.Uloge.FindAsync(request.UlogaId);
+
+            if (uloga == null)
             {
-                throw new Exception("Nevažeća uloga.");
+                throw new Exception("Uloga ne postoji!");
             }
 
-            entity.Uloga = request.Uloga;
+            entity.UlogaId = uloga.Id;
 
             var adresa = await AddressBuilder.GetOrCreateAdresa(context, request);
             entity.AdresaId = adresa.Id;
@@ -80,7 +83,7 @@ namespace eNote.Services.Services
 
         public override async Task BeforeUpdate(KorisnikUpdateRequest request, Database.Korisnik entity)
         {
-            entity = await context.Korisnici.Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == entity.Id);
+            entity = await context.Korisnici.Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == entity.Id);
 
             if (entity == null)
             {

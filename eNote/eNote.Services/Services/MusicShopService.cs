@@ -1,6 +1,5 @@
 ﻿using eNote.Model.Requests.MusicShop;
 using eNote.Model.SearchObjects;
-using eNote.Model.Enums;
 using eNote.Services.Database;
 using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
@@ -14,7 +13,9 @@ namespace eNote.Services.Services
     {
         public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
         {
-            query = base.AddFilter(search, query).Include(x => x.Adresa)
+            query = base.AddFilter(search, query)
+                .Include(x => x.Uloga)
+                .Include(x => x.Adresa)
                 .Where(x =>                    
                     (string.IsNullOrEmpty(search.Naziv)) &&
                     (string.IsNullOrEmpty(search.KorisnickoIme) || x.KorisnickoIme == search.KorisnickoIme) &&
@@ -26,7 +27,7 @@ namespace eNote.Services.Services
 
         public override async Task<Model.DTOs.MusicShop> GetById(int id)
         {
-            var entity = await context.MusicShops.Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await context.MusicShops.Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == id);
 
             return entity == null ? null : mapper.Map<Model.DTOs.MusicShop>(entity);
         }
@@ -55,7 +56,7 @@ namespace eNote.Services.Services
                 throw new Exception("Lozinka i LozinkaPotvrda moraju biti iste!");
             }
 
-            entity.Uloga = Uloge.MusicShop;
+            entity.UlogaId = 4;
 
             var adresa = await AddressBuilder.GetOrCreateAdresa(context, request);
             entity.AdresaId = adresa.Id;
@@ -69,7 +70,7 @@ namespace eNote.Services.Services
 
         public override async Task BeforeUpdate(MusicShopUpdateRequest request, MusicShop entity)
         {
-            entity = await context.MusicShops.Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == entity.Id);
+            entity = await context.MusicShops.Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == entity.Id);
 
             if (entity == null)
             {

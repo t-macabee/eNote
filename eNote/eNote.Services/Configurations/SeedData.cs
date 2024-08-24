@@ -9,10 +9,21 @@ namespace eNote.Services.Configurations
     {
         public static void Seed(ModelBuilder modelBuilder)
         {
+            SeedRoles(modelBuilder);
             SeedAddresses(modelBuilder);
             SeedUsers(modelBuilder);            
             SeedCourses(modelBuilder);
             SeedInstruments(modelBuilder);
+        }
+
+        public static void SeedRoles(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Uloge>().HasData(
+                new Uloge { Id = 1, Naziv = "Administrator" },
+                new Uloge { Id = 2, Naziv = "Instruktor" },
+                new Uloge { Id = 3, Naziv = "Polaznik" },
+                new Uloge { Id = 4, Naziv = "Shop" }
+            );
         }
 
         public static void SeedAddresses(ModelBuilder modelBuilder)
@@ -41,13 +52,13 @@ namespace eNote.Services.Configurations
             var musicShopHash = PasswordBuilder.GenerateHash(musicShopSalt, "pwd123");
 
             modelBuilder.Entity<Korisnik>().HasData(
-                new Korisnik { Id = 1, KorisnickoIme = "admin", Email = "admin@outlook.com", Telefon = "000000000", LozinkaHash = adminHash, LozinkaSalt = adminSalt, Uloga = Uloge.Administrator, AdresaId = 1, Ime = "Admin", Prezime = "Admin", DatumRodjenja = new DateTime(1996, 07, 29), Status = true },
-                new Korisnik { Id = 2, KorisnickoIme = "instruktor", Email = "john.doe@outlook.com", Telefon = "111111111", LozinkaHash = instruktorHash, LozinkaSalt = instruktorSalt, Uloga = Uloge.Instruktor, AdresaId = 4, Ime = "John", Prezime = "Doe", DatumRodjenja = new DateTime(1997, 06, 15), Status = true },
-                new Korisnik { Id = 3, KorisnickoIme = "polaznik", Email = "jane.doe@outlook.com", Telefon = "222222222", LozinkaHash = ucenikHash, LozinkaSalt = ucenikSalt, Uloga = Uloge.Polaznik, AdresaId = 5, Ime = "Jane", Prezime = "Doe", DatumRodjenja = new DateTime(1967, 03, 17), Status = true }               
+                new Korisnik { Id = 1, KorisnickoIme = "admin", Email = "admin@outlook.com", Telefon = "000000000", LozinkaHash = adminHash, LozinkaSalt = adminSalt, UlogaId = 1, AdresaId = 1, Ime = "Admin", Prezime = "Admin", DatumRodjenja = new DateTime(1996, 07, 29), Status = true },
+                new Korisnik { Id = 2, KorisnickoIme = "instruktor", Email = "john.doe@outlook.com", Telefon = "111111111", LozinkaHash = instruktorHash, LozinkaSalt = instruktorSalt, UlogaId = 2, AdresaId = 4, Ime = "John", Prezime = "Doe", DatumRodjenja = new DateTime(1997, 06, 15), Status = true },
+                new Korisnik { Id = 3, KorisnickoIme = "polaznik", Email = "jane.doe@outlook.com", Telefon = "222222222", LozinkaHash = ucenikHash, LozinkaSalt = ucenikSalt, UlogaId = 3, AdresaId = 5, Ime = "Jane", Prezime = "Doe", DatumRodjenja = new DateTime(1967, 03, 17), Status = true }               
             );
 
             modelBuilder.Entity<MusicShop>().HasData(
-                 new MusicShop { Id = 1, KorisnickoIme = "shop1", Email = "shop1@outlook.com", Telefon = "333333333", LozinkaHash = musicShopHash, LozinkaSalt = musicShopSalt, Uloga = Uloge.MusicShop, AdresaId = 2, Naziv = "Bonemeal Music Shop", Status = true }
+                 new MusicShop { Id = 1, KorisnickoIme = "shop1", Email = "shop1@outlook.com", Telefon = "333333333", LozinkaHash = musicShopHash, LozinkaSalt = musicShopSalt, UlogaId = 4, AdresaId = 2, Naziv = "Bonemeal Music Shop", Status = true }
             );
         }
 

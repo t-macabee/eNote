@@ -8,8 +8,10 @@ namespace eNote.Services.Database
         public string KorisnickoIme { get; set; }
         public string LozinkaHash { get; set; } 
         public string LozinkaSalt { get; set; }
-        public Uloge Uloga { get; set; }
         public bool Status { get; set; } 
+
+        public int UlogaId { get; set; }
+        public Uloge Uloga { get; set; }
 
         public int AdresaId { get; set; }
         public Adresa Adresa { get; set; }

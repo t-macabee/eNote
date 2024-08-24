@@ -9,6 +9,7 @@ namespace eNote.Services.Database
         public DbSet<Korisnik> Korisnici { get; set; }
         public DbSet<MusicShop> MusicShops { get; set; }
         public DbSet<Adresa> Adresa { get; set; }
+        public DbSet<Uloge> Uloge { get; set; }
         public DbSet<Kurs> Kurs { get; set; }
         public DbSet<Predavanje> Predavanja { get; set; }
         public DbSet<Upis> Upisi { get; set; }
@@ -21,19 +22,26 @@ namespace eNote.Services.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Uloge
-            modelBuilder.Entity<Korisnik>()
-                .Property(k => k.Uloga)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (Uloge)Enum.Parse(typeof(Uloge), v));
-
             // Vrsta instrumenta
             modelBuilder.Entity<Instrumenti>()
                 .Property(k => k.VrstaInstrumenta)
                 .HasConversion(
                     v => v.ToString(),
                     v => (VrstaInstrumenta)Enum.Parse(typeof(VrstaInstrumenta), v));
+
+            // Korisnik-uloga
+            modelBuilder.Entity<Korisnik>()
+                .HasOne(k => k.Uloga)
+                .WithMany(u => u.Korisnik)
+                .HasForeignKey(k => k.UlogaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // MusicShop-uloga
+            modelBuilder.Entity<MusicShop>()
+                .HasOne(m => m.Uloga)
+                .WithMany(u => u.MusicShop)
+                .HasForeignKey(m => m.UlogaId)
+                .OnDelete(DeleteBehavior.Restrict);          
 
             // Korisnik-adresa
             modelBuilder.Entity<Korisnik>()
