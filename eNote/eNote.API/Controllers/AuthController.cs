@@ -1,5 +1,6 @@
 ﻿using eNote.Model;
 using eNote.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eNote.API.Controllers
@@ -9,6 +10,7 @@ namespace eNote.API.Controllers
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<ActionResult<Korisnik>> Login(LoginModel model)
         {
             var result = await authService.Login(model);

@@ -4,6 +4,7 @@ using eNote.Model.Requests.MusicShop;
 using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
 using eNote.Services.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eNote.API.Controllers
@@ -11,6 +12,7 @@ namespace eNote.API.Controllers
     public class MusicShopController(IMusicShopService musicShopService) : CRUDController<MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest>(musicShopService)
     {
         [HttpGet("Adrese")]
+        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<List<Adresa>>> GetAddresses()
         {
             var addresses = await musicShopService.GetAddresses();

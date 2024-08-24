@@ -62,7 +62,7 @@ namespace eNote.API.Authentication
                 return AuthenticateResult.Fail($"Authentication failed: {ex.Message}");
             }
         }
-
+            
         private ClaimsIdentity CreateIdentity(string id, string username, string role)
         {
             var claims = new List<Claim>
