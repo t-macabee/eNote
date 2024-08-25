@@ -1,9 +1,13 @@
 import 'package:enote_desktop/providers/auth_provider.dart';
+import 'package:enote_desktop/providers/instrumenti_provider.dart';
 import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => InstrumentiProvider()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

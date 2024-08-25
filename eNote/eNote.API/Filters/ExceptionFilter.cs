@@ -11,7 +11,7 @@ namespace eNote.API.Filters
 
         public override void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception, context.Exception.Message);
+            _logger.LogError(context.Exception, "An error occurred: {Message}", context.Exception.Message);
 
             if (context.Exception is UserException)
             {
