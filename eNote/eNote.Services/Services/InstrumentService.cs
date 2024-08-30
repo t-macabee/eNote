@@ -17,10 +17,11 @@ namespace eNote.Services.Services
                 .Where(x =>
                     (string.IsNullOrEmpty(search.Model) || x.Model.StartsWith(search.Model)) &&
                     (string.IsNullOrEmpty(search.Proizvodjac) || x.Proizvodjac.StartsWith(search.Proizvodjac)) &&
-                    (!search.Dostupan.HasValue || x.Dostupan == search.Dostupan)
-                );         
+                    (!search.Dostupan.HasValue || x.Dostupan == search.Dostupan) &&
+                    (!search.VrstaInstrumenta.HasValue || x.VrstaInstrumenta == search.VrstaInstrumenta)
+                );
 
-            return query; 
+            return query;
         }
 
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)

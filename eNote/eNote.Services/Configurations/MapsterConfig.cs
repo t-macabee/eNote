@@ -19,18 +19,17 @@ namespace eNote.Services.Configurations
             TypeAdapterConfig<Database.MusicShop, Model.DTOs.MusicShop>
                 .NewConfig();
 
-            TypeAdapterConfig<Database.Kurs, Model.DTOs.Kurs> 
-                .NewConfig();
-
             TypeAdapterConfig<Database.Upis, Model.DTOs.Upis>
                 .NewConfig();
 
             TypeAdapterConfig<Database.Obavijest, Model.DTOs.Obavijest>
-                .NewConfig();
+                .NewConfig()
+                .Map(dest => dest.DatumVrijemePostavljanja, src => src.DatumVrijemePostavljanja);
 
             TypeAdapterConfig<Database.Predavanje, Model.DTOs.Predavanje>
                 .NewConfig()
-                .Map(dest => dest.Kurs, src => src.Kurs);
+                .Map(dest => dest.Kurs, src => src.Kurs)
+                .Map(dest => dest.DatumVrijemePredavanja, src => src.DatumVrijemePredavanja);
 
             TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
                .NewConfig()

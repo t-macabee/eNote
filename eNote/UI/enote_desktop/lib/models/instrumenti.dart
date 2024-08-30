@@ -1,3 +1,4 @@
+import 'package:enote_desktop/models/enums/vrsta_instrumenta.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'instrumenti.g.dart';
@@ -6,6 +7,12 @@ part 'instrumenti.g.dart';
 class Instrumenti {
   int? id;
   String? model;
+  String? proizvodjac;
+  String? opis;
+  String? musicShop;
+  VrstaInstrumenta? vrstaInstrumenta; // Enum type
+  String? slika;
+  bool? dostupan;
 
   Instrumenti();
 

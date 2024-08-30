@@ -13,6 +13,6 @@ namespace eNote.Model.Requests.Predavanje
         public DateTime DatumVrijemePredavanja { get; set; }
         public int TrajanjeMinute { get; set; }
         public TipPredavanja TipPredavanja { get; set; }
-        public StatusPredavanja StatusPredavanja { get; set; }
+        public StanjePredavanja StatusPredavanja { get; set; }
     }
 }

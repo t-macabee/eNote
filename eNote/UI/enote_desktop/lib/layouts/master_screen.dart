@@ -16,7 +16,12 @@ class _MasterScreenState extends State<MasterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: Text(
+            widget.title,
+            style: const TextStyle(color: Colors.white),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: const Color.fromARGB(255, 114, 23, 16),
         ),
         drawer: Drawer(
           child: ListView(
@@ -32,7 +37,7 @@ class _MasterScreenState extends State<MasterScreen> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const InstrumentiListScreen()));
-                  })
+                  }),
             ],
           ),
         ),

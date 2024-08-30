@@ -8,6 +8,7 @@ namespace eNote.Model.Enums
     {        
         NaCekanju = 1,
         Potvrdjeno = 2,
-        Odbijeno = 3
+        Zavrseno = 3,
+        Odbijeno = 4
     }
 }

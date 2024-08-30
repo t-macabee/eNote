@@ -6,12 +6,12 @@ using System.Text.Json.Serialization;
 namespace eNote.Model.Enums
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum StatusUpisa
+    public enum StanjeUpisa
     {
         NaCekanju = 1,
         Potvrdjeno = 2,
         Aktivno = 3,
-        Otkazano = 4,
+        Odbijeno = 4,
         Odustao = 5
     }
 }
