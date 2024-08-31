@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
