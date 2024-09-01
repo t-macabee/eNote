@@ -34,6 +34,11 @@ class AuthProvider {
     }
   }
 
+  static void logout() {
+    username = null;
+    password = null;
+  }
+
   static String _createBasicAuthHeader() {
     String basicAuth =
         "Basic ${base64Encode(utf8.encode('$username:$password'))}";

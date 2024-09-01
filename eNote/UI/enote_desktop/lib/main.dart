@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => InstrumentiProvider()),
+    ChangeNotifierProvider<InstrumentiProvider>(
+        create: (_) => InstrumentiProvider()),
   ], child: const MyApp()));
 }
 
@@ -17,9 +18,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'eNote',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 114, 23, 16),
-            primary: const Color.fromARGB(255, 114, 23, 16)),
         useMaterial3: true,
       ),
       home: const LoginScreen(),
