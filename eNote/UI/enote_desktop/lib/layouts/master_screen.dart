@@ -26,49 +26,128 @@ class _MasterScreenState extends State<MasterScreen> {
         appBar: AppBar(
           title: Text(
             widget.title,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           iconTheme: const IconThemeData(color: Colors.white),
-          backgroundColor: const Color.fromARGB(255, 114, 23, 16),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () => _logout(context)),
-            )
-          ],
+          backgroundColor: const Color.fromARGB(213, 26, 89, 105),
+          elevation: 0,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(213, 26, 89, 105),
+                  Color.fromARGB(255, 114, 23, 16)
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
         ),
         drawer: Drawer(
-          child: Column(
+          backgroundColor: const Color.fromARGB(255, 26, 89, 105),
+          child: Stack(
             children: [
-              SizedBox(
-                height: 150,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                        title: const Text("Korisnici"),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const KorisniciListScreen()));
-                        }),
-                    ListTile(
-                        title: const Text("Instrumenti"),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const InstrumentiListScreen()));
-                        }),
-                  ],
+              Column(
+                children: [
+                  UserAccountsDrawerHeader(
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(213, 26, 89, 105),
+                    ),
+                    accountName: Text(
+                      AuthProvider.currentUser?.korisnickoIme ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    accountEmail: Text(
+                      AuthProvider.currentUser?.email ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    currentAccountPicture: const CircleAvatar(
+                      backgroundImage:
+                          AssetImage('assets/images/user.png') as ImageProvider,
+                      backgroundColor: Colors.white,
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        _buildDrawerItem(
+                          icon: Icons.people,
+                          text: "Korisnici",
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const KorisniciListScreen()));
+                          },
+                        ),
+                        const SizedBox(height: 15),
+                        _buildDrawerItem(
+                          icon: Icons.music_note,
+                          text: "Instrumenti",
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    const InstrumentiListScreen()));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 20,
+                right: 10,
+                child: IconButton(
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  onPressed: () => _logout(context),
                 ),
               ),
-              Expanded(
-                  child: Container()), // This will push the content to the top
             ],
           ),
         ),
-        body: widget.child);
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(170, 26, 89, 105),
+                Color.fromARGB(170, 114, 23, 16),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: widget.child,
+            ),
+          ),
+        ));
+  }
+
+  Widget _buildDrawerItem({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(
+        text,
+        style: const TextStyle(color: Colors.white, fontSize: 16),
+      ),
+      onTap: onTap,
+    );
   }
 }

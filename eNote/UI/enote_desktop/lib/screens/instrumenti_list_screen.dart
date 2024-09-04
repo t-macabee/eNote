@@ -2,9 +2,7 @@ import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/enums/vrsta_instrumenta.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
 import 'package:enote_desktop/models/search_result.dart';
-import 'package:enote_desktop/providers/enum_provider.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
-import 'package:enote_desktop/providers/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,38 +17,149 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
   late InstrumentiProvider provider;
   late SearchResult<Instrumenti> result = SearchResult<Instrumenti>();
 
+  final TextEditingController _modelSearch = TextEditingController();
+  final TextEditingController _proizvodjacSearch = TextEditingController();
+
+  VrstaInstrumenta? _vrstaInstrumenta;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     provider = context.read<InstrumentiProvider>();
+    _loadInstruments();
+  }
+
+  Future<void> _loadInstruments({Map<String, String>? filter}) async {
+    result = await provider.get(filter: filter);
+
+    setState(() {});
+  }
+
+  void _applyFilters() async {
+    var filter = {
+      'model': _modelSearch.text,
+      'proizvodjac': _proizvodjacSearch.text,
+      'vrstaInstrumenta': _vrstaInstrumenta?.toString().split('.').last,
+    };
+    filter.removeWhere((key, value) => value == null || value.isEmpty);
+    var validFilter = filter.cast<String, String>();
+    await _loadInstruments(filter: validFilter);
+  }
+
+  void _resetFilters() {
+    _modelSearch.clear();
+    _proizvodjacSearch.clear();
+
+    setState(() {
+      _vrstaInstrumenta = null;
+    });
+
+    _loadInstruments();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final horizontalPadding = screenWidth * 0.03;
-    final verticalPadding = screenHeight * 0.03;
-
     return MasterScreen(
-      "Instrumenti",
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding)
-            .copyWith(top: verticalPadding),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        "Instrumenti",
+        Column(
           children: [
-            Expanded(
-              flex: 3,
-              child: _buildResult(),
+            _buildSearch(),
+            const SizedBox(
+              height: 50,
             ),
-            const SizedBox(width: 32),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: _buildSearch(),
+            _buildResult()
+          ],
+        ));
+  }
+
+  Widget _buildSearch() {
+    const double padding = 10.0;
+    const double space = 20.0;
+
+    return Padding(
+      padding: const EdgeInsets.all(padding),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 300,
+              child: buildStyledTextField(
+                controller: _modelSearch,
+                labelText: "Model",
               ),
+            ),
+            const SizedBox(width: space),
+            SizedBox(
+              width: 300,
+              child: buildStyledTextField(
+                controller: _proizvodjacSearch,
+                labelText: "Proizvođač",
+              ),
+            ),
+            const SizedBox(width: space),
+            SizedBox(
+              width: 150,
+              child: buildStyledDropdown<VrstaInstrumenta?>(
+                options: VrstaInstrumenta.values,
+                hint: "Vrsta Instrumenta",
+                selectedValue: _vrstaInstrumenta,
+                onChanged: (VrstaInstrumenta? newValue) {
+                  setState(() {
+                    _vrstaInstrumenta = newValue;
+                  });
+                },
+                allLabel: 'Svi instrumenti',
+              ),
+            ),
+            const SizedBox(width: 40.0),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                side: const BorderSide(color: Colors.white, width: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                elevation: 4,
+              ),
+              onPressed: _applyFilters,
+              child: const Text('Pretraga'),
+            ),
+            const SizedBox(width: space),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                side: const BorderSide(color: Colors.white, width: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                elevation: 4,
+              ),
+              onPressed: _resetFilters,
+              child: const Text('Reset filtera'),
+            ),
+            const SizedBox(width: 200),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                side: const BorderSide(color: Colors.white, width: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                elevation: 4,
+              ),
+              onPressed: () {},
+              child: const Text('Novi instrument'),
             ),
           ],
         ),
@@ -58,150 +167,197 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     );
   }
 
-  final TextEditingController _modelSearch = TextEditingController();
-  final TextEditingController _proizvodjacSearch = TextEditingController();
-  VrstaInstrumenta? _vrstaInstrumenta;
-  bool? _dostupan;
+  Widget _buildResult() {
+    return Expanded(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double cardWidth = (constraints.maxWidth / 6) - 8.0;
+          double cardHeight = cardWidth * 1.5;
 
-  Widget _buildSearch() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: TextField(
-              controller: _modelSearch,
-              decoration: const InputDecoration(labelText: "Model"),
+          final groupedInstruments = <VrstaInstrumenta, List<Instrumenti>>{};
+          for (var instrument in result.result) {
+            final type = instrument.vrstaInstrumenta ?? VrstaInstrumenta.Zicani;
+            groupedInstruments.putIfAbsent(type, () => []).add(instrument);
+          }
+
+          return SingleChildScrollView(
+            child: Column(
+              children: groupedInstruments.entries.map((entry) {
+                final instrumentType = entry.key;
+                final instruments = entry.value;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        instrumentType.toString().split('.').last,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 7,
+                        childAspectRatio: 1.5,
+                        mainAxisSpacing: 8.0,
+                        crossAxisSpacing: 8.0,
+                      ),
+                      itemCount: instruments.length,
+                      itemBuilder: (context, index) {
+                        final instrument = instruments[index];
+                        bool isHovered = false;
+
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return MouseRegion(
+                              onEnter: (_) => setState(() => isHovered = true),
+                              onExit: (_) => setState(() => isHovered = false),
+                              child: Card(
+                                margin: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/user.png',
+                                      width: cardWidth,
+                                      height: cardHeight,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    AnimatedOpacity(
+                                      opacity: isHovered ? 1.0 : 0.0,
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      child: Container(
+                                        color: Colors.black54,
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              instrument.model ?? "",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16.0,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              instrument.proizvodjac ?? "",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.0,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: TextField(
-              controller: _proizvodjacSearch,
-              decoration: const InputDecoration(labelText: "Proizvođač"),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: DropdownButton<VrstaInstrumenta?>(
-              value: _vrstaInstrumenta,
-              hint: const Text("Vrsta Instrumenta"),
-              onChanged: (VrstaInstrumenta? newValue) {
-                setState(() {
-                  _vrstaInstrumenta = newValue;
-                });
-              },
-              isExpanded: true,
-              items: [
-                const DropdownMenuItem<VrstaInstrumenta?>(
-                  value: null,
-                  child: Text("Svi instrumenti"),
-                ),
-                ...VrstaInstrumenta.values.map((VrstaInstrumenta value) {
-                  return DropdownMenuItem<VrstaInstrumenta>(
-                    value: value,
-                    child: Text(vrstaInstrumenta(value)),
-                  );
-                }),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Checkbox(
-                value: _dostupan ?? false,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _dostupan = value;
-                  });
-                },
-              ),
-              const Text("Dostupan"),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  var filter = {
-                    "model": _modelSearch.text,
-                    "proizvodjac": _proizvodjacSearch.text,
-                    "vrstaInstrumenta":
-                        _vrstaInstrumenta?.toString().split('.').last,
-                    "dostupan": _dostupan
-                  };
-
-                  if (_vrstaInstrumenta == null) {
-                    filter.remove("vrstaInstrumenta");
-                  }
-
-                  result = await provider.get(filter: filter);
-
-                  setState(() {});
-                },
-                child: const Text("Pretraga"),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  setState(() {});
-                },
-                child: const Text("Reset filtera"),
-              ),
-            ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildResult() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: GridView.builder(
-        padding: const EdgeInsets.only(right: 20.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
-          childAspectRatio: 1.5,
+  Widget buildStyledTextField({
+    required TextEditingController controller,
+    required String labelText,
+  }) {
+    return TextField(
+      controller: controller,
+      style: const TextStyle(color: Colors.white),
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderSide: const BorderSide(width: 2.0, color: Colors.white),
+          borderRadius: BorderRadius.circular(12.0),
         ),
-        itemCount: result.result.length,
-        itemBuilder: (context, index) {
-          final e = result.result[index];
-          return SizedBox(
-            child: Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: e.slika != null
-                        ? SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: imageFromString(e.slika!),
-                          )
-                        : const Icon(Icons.forest),
-                    title: Text(
-                      e.model ?? "",
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    subtitle: Text(
-                      e.proizvodjac ?? "",
-                      style: const TextStyle(fontSize: 10),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 1.0, color: Colors.white),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(width: 2.0, color: Colors.white),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelText: labelText,
+        labelStyle: const TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget buildStyledDropdown<T>({
+    required List<T> options,
+    required String hint,
+    required T? selectedValue,
+    required void Function(T?) onChanged,
+    required String allLabel,
+  }) {
+    return SizedBox(
+      width: 150,
+      child: DropdownButtonFormField<T>(
+        value: selectedValue,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: const BorderSide(width: 2.0, color: Colors.white),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 1.0, color: Colors.white),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 2.0, color: Colors.white),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          hintText: hint,
+          hintStyle: const TextStyle(color: Colors.white, fontSize: 14),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+        ),
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+        dropdownColor: Colors.black,
+        isExpanded: true,
+        items: [
+          DropdownMenuItem<T>(
+            value: null,
+            child: Text(allLabel),
+          ),
+          ...options.map((T value) {
+            return DropdownMenuItem<T>(
+              value: value,
+              child: Text(value.toString().split('.').last),
+            );
+          }),
+        ],
+        onChanged: onChanged,
       ),
     );
   }

@@ -16,5 +16,12 @@ namespace eNote.API.Controllers
             var addresses = await korisniciService.GetAddresses();
             return Ok(addresses);          
         }
+
+        [HttpGet("CurrentUser")]
+        public async Task<ActionResult> GetCurrentUser()
+        {
+            var user = await korisniciService.GetCurrentUser();
+            return Ok(user);
+        }
     }
 }

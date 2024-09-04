@@ -99,76 +99,96 @@ class _LoginScreenState extends State<LoginScreen> {
     const TextStyle whiteTextStyle = TextStyle(color: Colors.white);
 
     return Scaffold(
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: 500,
-            maxHeight: 500,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(213, 26, 89, 105),
+              Color.fromARGB(255, 114, 23, 16)
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: Card(
-            color: const Color.fromARGB(213, 26, 89, 105),
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(
+              maxWidth: 500,
+              maxHeight: 600,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Dobrodošli u eNote',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 60),
-                  _buildTextField(
-                    controller: _usernameController,
-                    labelText: "Username",
-                    icon: Icons.person,
-                    borderColor: borderColor,
-                    textStyle: whiteTextStyle,
-                  ),
-                  const SizedBox(height: 40),
-                  _buildTextField(
-                    controller: _passwordController,
-                    labelText: "Password",
-                    icon: Icons.lock,
-                    borderColor: borderColor,
-                    textStyle: whiteTextStyle,
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 70),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _login(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.transparent, // Text color
-                        side: const BorderSide(
-                            color: borderColor, width: 2), // Border color
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 100, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              8.0), // Rounded button corners
+            child: Card(
+              color: const Color.fromARGB(213, 26, 89, 105),
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+                side: const BorderSide(
+                  color: borderColor,
+                  width: 2.0,
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Dobrodošli u eNote',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                        elevation: 4, // Subtle shadow
+                        textAlign: TextAlign.center,
                       ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(fontSize: 18),
+                      const SizedBox(height: 60),
+                      _buildTextField(
+                        controller: _usernameController,
+                        labelText: "Username",
+                        icon: Icons.person,
+                        borderColor: borderColor,
+                        textStyle: whiteTextStyle,
                       ),
-                    ),
+                      const SizedBox(height: 40),
+                      _buildTextField(
+                        controller: _passwordController,
+                        labelText: "Password",
+                        icon: Icons.lock,
+                        borderColor: borderColor,
+                        textStyle: whiteTextStyle,
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 70),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _login(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.transparent,
+                            side:
+                                const BorderSide(color: borderColor, width: 2),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 100, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            elevation: 4,
+                          ),
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 60)
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -176,41 +196,41 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
 
-Widget _buildTextField({
-  required TextEditingController controller,
-  required String labelText,
-  required IconData icon,
-  required Color borderColor,
-  required TextStyle textStyle,
-  bool obscureText = false,
-}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-    child: TextField(
-      controller: controller,
-      style: textStyle,
-      cursorColor: Colors.white,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: BorderSide(width: 2.0, color: borderColor),
-          borderRadius: BorderRadius.circular(12.0),
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData icon,
+    required Color borderColor,
+    required TextStyle textStyle,
+    bool obscureText = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: TextField(
+        controller: controller,
+        style: textStyle,
+        cursorColor: Colors.white,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: borderColor),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 1.0, color: borderColor),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: borderColor),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          labelText: labelText,
+          labelStyle: textStyle,
+          prefixIcon: Icon(icon, color: borderColor),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 1.0, color: borderColor),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 2.0, color: borderColor),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelText: labelText,
-        labelStyle: textStyle,
-        prefixIcon: Icon(icon, color: borderColor),
       ),
-    ),
-  );
+    );
+  }
 }

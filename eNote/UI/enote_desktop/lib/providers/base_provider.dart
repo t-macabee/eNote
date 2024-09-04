@@ -15,6 +15,21 @@ abstract class BaseProvider<T> with ChangeNotifier {
         defaultValue: "http://localhost:5256/");
   }
 
+  Future<T> getById(int id) async {
+    var url = "$_baseUrl$_endpoint/$id";
+    var uri = Uri.parse(url);
+    var headers = createHeaders();
+
+    var response = await http.get(uri, headers: headers);
+
+    if (isValidResponse(response)) {
+      var data = jsonDecode(response.body);
+      return fromJson(data);
+    } else {
+      throw Exception("Failed to fetch item with ID $id");
+    }
+  }
+
   Future<SearchResult<T>> get({dynamic filter}) async {
     var url = "$_baseUrl$_endpoint";
 
@@ -38,7 +53,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
 
       return result;
     } else {
-      throw Exception("Unknown error");
+      throw Exception("Failed to get corresponding items.");
     }
   }
 
@@ -54,7 +69,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw Exception("Unknown error");
+      throw Exception("Failed to insert.");
     }
   }
 
@@ -70,7 +85,7 @@ abstract class BaseProvider<T> with ChangeNotifier {
       var data = jsonDecode(response.body);
       return fromJson(data);
     } else {
-      throw Exception("Unknown error");
+      throw Exception("Failed to update");
     }
   }
 

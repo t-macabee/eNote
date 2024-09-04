@@ -1,15 +1,16 @@
-﻿using eNote.Model.Enums;
-using eNote.Model.Requests.Korisnik;
+﻿using eNote.Model.Requests.Korisnik;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
 using eNote.Services.Helpers;
 using eNote.Services.Interfaces;
 using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace eNote.Services.Services
 {
-    public class KorisniciService(ENoteContext context, IMapper mapper)
+    public class KorisniciService(ENoteContext context, IMapper mapper, IHttpContextAccessor accessor)
         : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
     {
       
@@ -31,7 +32,7 @@ namespace eNote.Services.Services
 
         public override async Task<Model.Korisnik> GetById(int id)
         {
-            var entity = await context.Korisnici.Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await context.Korisnici.Include(x => x.Uloga).Include(x => x.Adresa).FirstOrDefaultAsync(x => x.Id == id);
 
             return entity == null ? null : mapper.Map<Model.Korisnik>(entity);
         }
@@ -109,5 +110,13 @@ namespace eNote.Services.Services
             var result = await context.Adresa.ToListAsync();
             return mapper.Map<List<Model.DTOs.Adresa>>(result);
         }
+
+        public async Task<Model.Korisnik> GetCurrentUser()
+        {
+            var userId = int.Parse(accessor.HttpContext.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            return await GetById(userId);
+        }
     }
 }
+    

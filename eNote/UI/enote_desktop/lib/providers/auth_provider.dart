@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:enote_desktop/models/korisnik.dart';
 import 'package:http/http.dart' as http;
 
 class AuthProvider {
   static String? username;
   static String? password;
+  static Korisnik? currentUser;
 
   static const String _baseUrl = "http://localhost:5256";
   static const String _loginEndpoint = "/Auth/Login";
@@ -25,6 +27,8 @@ class AuthProvider {
       var response = await http.post(uri, headers: headers, body: body);
 
       if (response.statusCode < 299) {
+        var data = jsonDecode(response.body);
+        currentUser = Korisnik.fromJson(data);
         return true;
       } else {
         throw Exception("Something bad happened please try again");
@@ -37,6 +41,7 @@ class AuthProvider {
   static void logout() {
     username = null;
     password = null;
+    currentUser = null;
   }
 
   static String _createBasicAuthHeader() {
