@@ -2,7 +2,6 @@
 
 namespace eNote.Model.Enums
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum StanjePredavanja
     {
         NaCekanju = 1,        

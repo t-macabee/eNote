@@ -13,7 +13,7 @@ namespace eNote.Model
         public string DatumRodjenja { get; set; } 
         public string Email { get; set; }
         public string Telefon { get; set; } 
-        public Adresa Adresa { get; set; } 
-        public Uloge Uloga { get; set; }
+        public string Adresa { get; set; } 
+        public string Uloga { get; set; }
     }
 }

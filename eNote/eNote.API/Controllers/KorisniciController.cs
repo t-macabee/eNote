@@ -10,13 +10,6 @@ namespace eNote.API.Controllers
 {
     public class KorisniciController(IKorisniciService korisniciService) : CRUDController<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>(korisniciService)
     {
-        [HttpGet("Adrese")]        
-        public async Task<ActionResult<List<Adresa>>> GetAddresses()
-        {           
-            var addresses = await korisniciService.GetAddresses();
-            return Ok(addresses);          
-        }
-
         [HttpGet("CurrentUser")]
         public async Task<ActionResult> GetCurrentUser()
         {

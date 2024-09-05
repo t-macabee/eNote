@@ -116,13 +116,14 @@ namespace eNote.Services.Migrations
                     b.Property<byte[]>("SlikaThumb")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("VrstaInstrumenta")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("VrstaInstrumentaId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MusicShopId");
+
+                    b.HasIndex("VrstaInstrumentaId");
 
                     b.ToTable("Instrumenti");
 
@@ -131,251 +132,161 @@ namespace eNote.Services.Migrations
                         {
                             Id = 1,
                             Dostupan = true,
-                            Model = "J-45",
+                            Model = "Stratocaster",
                             MusicShopId = 1,
-                            Opis = "Ikonična akustična gitara poznata po bogatom, punom zvuku.",
-                            Proizvodjac = "Gibson",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.",
+                            Proizvodjac = "Fender",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 2,
                             Dostupan = true,
-                            Model = "214ce",
+                            Model = "Les Paul",
                             MusicShopId = 1,
-                            Opis = "Popularna grand auditorium akustična gitara sa svijetlim, jasnim tonom.",
-                            Proizvodjac = "Taylor",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.",
+                            Proizvodjac = "Gibson",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 3,
                             Dostupan = true,
-                            Model = "CD-60S",
+                            Model = "RG",
                             MusicShopId = 1,
-                            Opis = "Pristupačna akustična gitara savršena za početnike i srednje napredne svirače.",
-                            Proizvodjac = "Fender",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.",
+                            Proizvodjac = "Ibanez",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 4,
                             Dostupan = true,
-                            Model = "Stratocaster",
+                            Model = "Custom 24",
                             MusicShopId = 1,
-                            Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.",
-                            Proizvodjac = "Fender",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.",
+                            Proizvodjac = "PRS",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 5,
                             Dostupan = true,
-                            Model = "Les Paul",
+                            Model = "Pacifica",
                             MusicShopId = 1,
-                            Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.",
-                            Proizvodjac = "Gibson",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Svestrana električna gitara pogodna za različite žanrove.",
+                            Proizvodjac = "Yamaha",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 6,
                             Dostupan = true,
-                            Model = "RG",
+                            Model = "Dinky",
                             MusicShopId = 1,
-                            Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.",
-                            Proizvodjac = "Ibanez",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.",
+                            Proizvodjac = "Jackson",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 7,
                             Dostupan = true,
-                            Model = "Custom 24",
+                            Model = "Precision Bass",
                             MusicShopId = 1,
-                            Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.",
-                            Proizvodjac = "PRS",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.",
+                            Proizvodjac = "Fender",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 8,
                             Dostupan = true,
-                            Model = "Pacifica",
+                            Model = "Thunderbird",
                             MusicShopId = 1,
-                            Opis = "Svestrana električna gitara pogodna za različite žanrove.",
-                            Proizvodjac = "Yamaha",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.",
+                            Proizvodjac = "Gibson",
+                            VrstaInstrumentaId = 1
                         },
                         new
                         {
                             Id = 9,
                             Dostupan = true,
-                            Model = "Dinky",
+                            Model = "Export",
                             MusicShopId = 1,
-                            Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.",
-                            Proizvodjac = "Jackson",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.",
+                            Proizvodjac = "Pearl",
+                            VrstaInstrumentaId = 2
                         },
                         new
                         {
                             Id = 10,
                             Dostupan = true,
-                            Model = "C-1",
+                            Model = "Imperialstar",
                             MusicShopId = 1,
-                            Opis = "Električna gitara poznata po svojoj čvrstoj izradi i teškim tonovima.",
-                            Proizvodjac = "Schecter",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.",
+                            Proizvodjac = "Tama",
+                            VrstaInstrumentaId = 2
                         },
                         new
                         {
                             Id = 11,
                             Dostupan = true,
-                            Model = "Precision Bass",
+                            Model = "Breakbeats",
                             MusicShopId = 1,
-                            Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.",
-                            Proizvodjac = "Fender",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.",
+                            Proizvodjac = "Ludwig",
+                            VrstaInstrumentaId = 2
                         },
                         new
                         {
                             Id = 12,
                             Dostupan = true,
-                            Model = "SR",
+                            Model = "Mark VI",
                             MusicShopId = 1,
-                            Opis = "Elegantna bas gitara popularna zbog svog brzog vrata i svestranih tonova.",
-                            Proizvodjac = "Ibanez",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.",
+                            Proizvodjac = "Selmer",
+                            VrstaInstrumentaId = 3
                         },
                         new
                         {
                             Id = 13,
                             Dostupan = true,
-                            Model = "Thunderbird",
+                            Model = "YAS-280",
                             MusicShopId = 1,
-                            Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.",
-                            Proizvodjac = "Gibson",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Popularni saksofon među studentima i srednje naprednim sviračima.",
+                            Proizvodjac = "Yamaha",
+                            VrstaInstrumentaId = 3
                         },
                         new
                         {
                             Id = 14,
                             Dostupan = true,
-                            Model = "BB",
+                            Model = "Stradivarius",
                             MusicShopId = 1,
-                            Opis = "Pouzdana bas gitara sa velikim balansom svirljivosti i tona.",
-                            Proizvodjac = "Yamaha",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.",
+                            Proizvodjac = "Bach",
+                            VrstaInstrumentaId = 3
                         },
                         new
                         {
                             Id = 15,
                             Dostupan = true,
-                            Model = "RockBass",
+                            Model = "Minilogue",
                             MusicShopId = 1,
-                            Opis = "Bas gitara poznata po svom jedinstvenom 'growl' tonu i ergonomskoj izradi.",
-                            Proizvodjac = "Warwick",
-                            VrstaInstrumenta = "Zicani"
+                            Opis = "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.",
+                            Proizvodjac = "Korg",
+                            VrstaInstrumentaId = 4
                         },
                         new
                         {
                             Id = 16,
                             Dostupan = true,
-                            Model = "Export",
-                            MusicShopId = 1,
-                            Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.",
-                            Proizvodjac = "Pearl",
-                            VrstaInstrumenta = "Udaraljke"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Dostupan = true,
-                            Model = "Imperialstar",
-                            MusicShopId = 1,
-                            Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.",
-                            Proizvodjac = "Tama",
-                            VrstaInstrumenta = "Udaraljke"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Dostupan = true,
-                            Model = "Breakbeats",
-                            MusicShopId = 1,
-                            Opis = "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.",
-                            Proizvodjac = "Ludwig",
-                            VrstaInstrumenta = "Udaraljke"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Dostupan = true,
-                            Model = "Mark VI",
-                            MusicShopId = 1,
-                            Opis = "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.",
-                            Proizvodjac = "Selmer",
-                            VrstaInstrumenta = "Limeni"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Dostupan = true,
-                            Model = "YAS-280",
-                            MusicShopId = 1,
-                            Opis = "Popularni saksofon među studentima i srednje naprednim sviračima.",
-                            Proizvodjac = "Yamaha",
-                            VrstaInstrumenta = "Limeni"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            Dostupan = true,
-                            Model = "Stradivarius",
-                            MusicShopId = 1,
-                            Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.",
-                            Proizvodjac = "Bach",
-                            VrstaInstrumenta = "Limeni"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            Dostupan = true,
-                            Model = "YSL-354",
-                            MusicShopId = 1,
-                            Opis = "Studentski trombon poznat po svojoj izdržljivosti i lakoći sviranja.",
-                            Proizvodjac = "Yamaha",
-                            VrstaInstrumenta = "Limeni"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Dostupan = true,
-                            Model = "Minilogue",
-                            MusicShopId = 1,
-                            Opis = "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.",
-                            Proizvodjac = "Korg",
-                            VrstaInstrumenta = "Tipke"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            Dostupan = true,
                             Model = "Juno-DS",
                             MusicShopId = 1,
                             Opis = "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.",
                             Proizvodjac = "Roland",
-                            VrstaInstrumenta = "Tipke"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            Dostupan = true,
-                            Model = "Sub Phatty",
-                            MusicShopId = 1,
-                            Opis = "Analogni sintisajzer poznat po svom snažnom basu i lead tonovima.",
-                            Proizvodjac = "Moog",
-                            VrstaInstrumenta = "Tipke"
+                            VrstaInstrumentaId = 4
                         });
                 });
 
@@ -399,8 +310,9 @@ namespace eNote.Services.Migrations
                     b.Property<int>("InstrumentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StanjeIznajmljivanja")
-                        .HasColumnType("int");
+                    b.Property<string>("StanjeIznajmljivanja")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -485,8 +397,8 @@ namespace eNote.Services.Migrations
                             Email = "admin@outlook.com",
                             Ime = "Admin",
                             KorisnickoIme = "admin",
-                            LozinkaHash = "szscCuh10ehcpvsOIyaAGlgpRuVYxqYbqQKpys6CKyY=",
-                            LozinkaSalt = "K1RoXmN03WlUNlIQIkFWQw==",
+                            LozinkaHash = "WKTfkbdGWV1pTiu38dMWepmAJGklzxrsWJtdwn0RlAk=",
+                            LozinkaSalt = "O6p/En0PA0iT0lRGDe2LtQ==",
                             Prezime = "Admin",
                             Status = true,
                             Telefon = "000000000",
@@ -500,8 +412,8 @@ namespace eNote.Services.Migrations
                             Email = "john.doe@outlook.com",
                             Ime = "John",
                             KorisnickoIme = "instruktor",
-                            LozinkaHash = "B6Haiy3AuI2llq/S49dqxlVzTCw8Vv23gfsMXIEMHZ0=",
-                            LozinkaSalt = "CcwYSrcFSwYp7y42xxg+1g==",
+                            LozinkaHash = "Kcsd0uSoaQjbx8U6l0U52ipNUzB2rmKOS55TuZbtgmY=",
+                            LozinkaSalt = "tKD8q8f+GHfxp6Gs5SJ1wA==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "111111111",
@@ -515,8 +427,8 @@ namespace eNote.Services.Migrations
                             Email = "jane.doe@outlook.com",
                             Ime = "Jane",
                             KorisnickoIme = "polaznik",
-                            LozinkaHash = "Lze5t5qg4XbsG9boqQ9CsyWqhma/GaIjVr9p1pgGtW4=",
-                            LozinkaSalt = "9I0Ve42LkphAsHohOlJ/Qg==",
+                            LozinkaHash = "CDOx+fhzWzr7wDExfgEAM32Ws7L93gH/vXqm8WPeK0I=",
+                            LozinkaSalt = "y1WRZMZQ5bwExCHOmNY5QA==",
                             Prezime = "Doe",
                             Status = true,
                             Telefon = "222222222",
@@ -648,8 +560,8 @@ namespace eNote.Services.Migrations
                             AdresaId = 2,
                             Email = "shop1@outlook.com",
                             KorisnickoIme = "shop1",
-                            LozinkaHash = "sKnmbsMFlvpdhdRQVpgcoflPZMGiqQ3iZoFYX09Vilw=",
-                            LozinkaSalt = "Sv/JXST1J06Xi2dxUWMnDg==",
+                            LozinkaHash = "wg1ff1ZjQ2isUlT8snaHQm5a7GWJEa+x1M3YhSM5ZhU=",
+                            LozinkaSalt = "GUTxMPnemBUcO9Hn/4kEYA==",
                             Naziv = "Bonemeal Music Shop",
                             Status = true,
                             Telefon = "333333333",
@@ -737,11 +649,13 @@ namespace eNote.Services.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StatusPredavanja")
-                        .HasColumnType("int");
+                    b.Property<string>("StanjePredavanja")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TipPredavanja")
-                        .HasColumnType("int");
+                    b.Property<string>("TipPredavanja")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TrajanjeMinute")
                         .HasColumnType("int");
@@ -829,8 +743,9 @@ namespace eNote.Services.Migrations
                     b.Property<int>("KursId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusUpisa")
-                        .HasColumnType("int");
+                    b.Property<string>("StanjeUpisa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -842,6 +757,45 @@ namespace eNote.Services.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("Upisi");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.VrstaInstrumenta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Naziv")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VrstaInstrumenta");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Naziv = "Zicani"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Naziv = "Udaraljke"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Naziv = "Limeni"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Naziv = "Tipke"
+                        });
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>
@@ -881,7 +835,15 @@ namespace eNote.Services.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("eNote.Services.Database.VrstaInstrumenta", "VrstaInstrumenta")
+                        .WithMany("Instrumenti")
+                        .HasForeignKey("VrstaInstrumentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("MusicShop");
+
+                    b.Navigation("VrstaInstrumenta");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.IznajmljivanjeInstrumenta", b =>
@@ -1093,6 +1055,11 @@ namespace eNote.Services.Migrations
                     b.Navigation("Korisnik");
 
                     b.Navigation("MusicShop");
+                });
+
+            modelBuilder.Entity("eNote.Services.Database.VrstaInstrumenta", b =>
+                {
+                    b.Navigation("Instrumenti");
                 });
 
             modelBuilder.Entity("eNote.Services.Database.Zadatak", b =>

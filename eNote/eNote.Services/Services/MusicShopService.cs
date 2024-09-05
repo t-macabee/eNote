@@ -9,18 +9,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class MusicShopService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.MusicShop, MusicShopSearchObject, MusicShopInsertRequest,MusicShopUpdateRequest, Database.MusicShop>(context, mapper), IMusicShopService
+    public class MusicShopService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest, Database.MusicShop>(context, mapper), IMusicShopService
     {
         public override IQueryable<MusicShop> AddFilter(MusicShopSearchObject search, IQueryable<MusicShop> query)
         {
-            query = base.AddFilter(search, query)
-                .Include(x => x.Uloga)
-                .Include(x => x.Adresa)
-                .Where(x =>                    
-                    (string.IsNullOrEmpty(search.Naziv)) &&
-                    (string.IsNullOrEmpty(search.KorisnickoIme) || x.KorisnickoIme == search.KorisnickoIme) &&
-                    (string.IsNullOrEmpty(search.Grad) || x.Adresa.Grad.StartsWith(search.Grad))
-                );
+            query = base.AddFilter(search, query).Include(x => x.Uloga).Include(x => x.Adresa);
+
+            if (!string.IsNullOrEmpty(search.Naziv))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.Naziv));
+            }
+
+            if (!string.IsNullOrEmpty(search.Grad))
+            {
+                query = query.Where(x => x.Adresa.Grad == search.Grad);
+            }
 
             return query;
         }
@@ -58,9 +61,14 @@ namespace eNote.Services.Services
 
             entity.UlogaId = 4;
 
-            var adresa = await AddressBuilder.GetOrCreateAdresa(context, request);
+            var adresa = await context.Adresa.FindAsync(request.AdresaId);
+
+            if (adresa == null)
+            {
+                throw new Exception("Uloga ne postoji!");
+            }
+
             entity.AdresaId = adresa.Id;
-            entity.Adresa = adresa;
 
             entity.LozinkaSalt = PasswordBuilder.GenerateSalt();
             entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
@@ -91,10 +99,6 @@ namespace eNote.Services.Services
             await base.BeforeUpdate(request, entity);
         }
 
-        public async Task<List<Model.DTOs.Adresa>> GetAddresses()
-        {
-            var result = await context.Adresa.ToListAsync();
-            return mapper.Map<List<Model.DTOs.Adresa>>(result);
-        }
+   
     }
 }

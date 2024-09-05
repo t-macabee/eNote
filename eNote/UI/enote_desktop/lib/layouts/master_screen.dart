@@ -85,9 +85,10 @@ class _MasterScreenState extends State<MasterScreen> {
                           icon: Icons.people,
                           text: "Korisnici",
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const KorisniciListScreen()));
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const KorisniciListScreen()));
                           },
                         ),
                         const SizedBox(height: 15),
@@ -95,9 +96,10 @@ class _MasterScreenState extends State<MasterScreen> {
                           icon: Icons.music_note,
                           text: "Instrumenti",
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    const InstrumentiListScreen()));
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const InstrumentiListScreen()));
                           },
                         ),
                       ],

@@ -11,12 +11,6 @@ namespace eNote.API.Controllers
 {
     public class MusicShopController(IMusicShopService musicShopService) : CRUDController<MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest>(musicShopService)
     {
-        [HttpGet("Adrese")]
-        [Authorize(Roles = "Administrator")]
-        public async Task<ActionResult<List<Adresa>>> GetAddresses()
-        {
-            var addresses = await musicShopService.GetAddresses();
-            return Ok(addresses);
-        }
+        
     }
 }

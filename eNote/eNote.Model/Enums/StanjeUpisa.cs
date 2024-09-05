@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 
 namespace eNote.Model.Enums
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum StanjeUpisa
     {
         NaCekanju = 1,

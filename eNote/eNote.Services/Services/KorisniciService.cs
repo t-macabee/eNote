@@ -13,19 +13,37 @@ namespace eNote.Services.Services
     public class KorisniciService(ENoteContext context, IMapper mapper, IHttpContextAccessor accessor)
         : CRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest, Database.Korisnik>(context, mapper), IKorisniciService
     {
-      
+
         public override IQueryable<Korisnik> AddFilter(KorisnikSearchObject search, IQueryable<Korisnik> query)
         {
             query = base.AddFilter(search, query)
                 .Include(x => x.Adresa)
-                .Include(x => x.Uloga)
-                .Where(x =>
-                    (string.IsNullOrEmpty(search.Ime) || x.Ime.StartsWith(search.Ime)) &&
-                    (string.IsNullOrEmpty(search.Prezime) || x.Prezime.StartsWith(search.Prezime)) &&
-                    (string.IsNullOrEmpty(search.KorisnickoIme) || x.KorisnickoIme == search.KorisnickoIme) &&
-                    (string.IsNullOrEmpty(search.Grad) || x.Adresa.Grad.StartsWith(search.Grad)) &&
-                    (string.IsNullOrEmpty(search.Uloga) || x.Uloga.Naziv.StartsWith(search.Uloga)) 
-                );
+                .Include(x => x.Uloga);
+
+            if (!string.IsNullOrEmpty(search.Ime))
+            {
+                query = query.Where(x => x.Ime.StartsWith(search.Ime));
+            }
+
+            if (!string.IsNullOrEmpty(search.Prezime))
+            {
+                query = query.Where(x => x.Prezime.StartsWith(search.Prezime));
+            }
+
+            if (!string.IsNullOrEmpty(search.KorisnickoIme))
+            {
+                query = query.Where(x => x.KorisnickoIme == search.KorisnickoIme);
+            }
+
+            if (!string.IsNullOrEmpty(search.Grad))
+            {
+                query = query.Where(x => x.Adresa.Grad.StartsWith(search.Grad));
+            }
+
+            if (!string.IsNullOrEmpty(search.Uloga))
+            {
+                query = query.Where(x => x.Uloga.Naziv.StartsWith(search.Uloga));
+            }
 
             return query;
         }
@@ -70,11 +88,15 @@ namespace eNote.Services.Services
                 throw new Exception("Uloga ne postoji!");
             }
 
-            entity.UlogaId = uloga.Id;
+            var adresa = await context.Adresa.FindAsync(request.AdresaId);
 
-            var adresa = await AddressBuilder.GetOrCreateAdresa(context, request);
+            if (adresa == null)
+            {
+                throw new Exception("Uloga ne postoji!");
+            }
+
+            entity.UlogaId = uloga.Id;
             entity.AdresaId = adresa.Id;
-            entity.Adresa = adresa;
 
             entity.LozinkaSalt = PasswordBuilder.GenerateSalt();
             entity.LozinkaHash = PasswordBuilder.GenerateHash(entity.LozinkaSalt, request.Lozinka);
@@ -103,12 +125,6 @@ namespace eNote.Services.Services
             }
 
             await base.BeforeUpdate(request, entity);
-        }
-
-        public async Task<List<Model.DTOs.Adresa>> GetAddresses()
-        {
-            var result = await context.Adresa.ToListAsync();
-            return mapper.Map<List<Model.DTOs.Adresa>>(result);
         }
 
         public async Task<Model.Korisnik> GetCurrentUser()

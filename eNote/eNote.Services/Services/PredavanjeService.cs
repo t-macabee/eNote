@@ -13,19 +13,19 @@ namespace eNote.Services.Services
     {
         public override IQueryable<Predavanje> AddFilter(PredavanjeSearchObject search, IQueryable<Predavanje> query)
         {
-            query = base.AddFilter(search, query).Include(x => x.Kurs).ThenInclude(x => x.Instruktor)
-              .Where(x =>
-                    (string.IsNullOrEmpty(search.Naziv) || x.Naziv.StartsWith(search.Naziv)) &&
-                    (!search.StatusPredavanja.HasValue || x.StatusPredavanja == search.StatusPredavanja.Value) &&
-                    (!search.TipPredavanja.HasValue || x.TipPredavanja == search.TipPredavanja.Value)
-              );
+            query = base.AddFilter(search, query).Include(x => x.Kurs).ThenInclude(x => x.Instruktor);
+
+            if (!string.IsNullOrEmpty(search.Naziv))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.Naziv));
+            }
 
             return query;
         }
 
         public override async Task<Model.DTOs.Predavanje> GetById(int id)
         {
-            var entity = await context.Predavanja.Include(x => x.Kurs).ThenInclude(x => x.Instruktor).FirstOrDefaultAsync(p => p.Id == id);
+            var entity = await context.Predavanja.Include(x => x.TipPredavanja).Include(x => x.Kurs).ThenInclude(x => x.Instruktor).FirstOrDefaultAsync(p => p.Id == id);
 
             if(entity == null)
             {
@@ -37,7 +37,7 @@ namespace eNote.Services.Services
 
         public override async Task BeforeInsert(PredavanjeInsertRequest request, Predavanje entity)
         {
-            var existingPredavanje = await context.Predavanja
+            var existingPredavanje = await context.Predavanja.Include(X => X.TipPredavanja)
                 .FirstOrDefaultAsync(x => x.Naziv == request.Naziv && x.KursId == request.KursId);
 
             if (existingPredavanje != null)

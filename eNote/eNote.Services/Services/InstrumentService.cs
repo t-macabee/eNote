@@ -13,20 +13,36 @@ namespace eNote.Services.Services
     {
         public override IQueryable<Instrumenti> AddFilter(InstrumentSearchObject search, IQueryable<Instrumenti> query)
         {
-            query = base.AddFilter(search, query).Include(x => x.MusicShop)
-                .Where(x =>
-                    (string.IsNullOrEmpty(search.Model) || x.Model.StartsWith(search.Model)) &&
-                    (string.IsNullOrEmpty(search.Proizvodjac) || x.Proizvodjac.StartsWith(search.Proizvodjac)) &&
-                    (!search.Dostupan.HasValue || x.Dostupan == search.Dostupan) &&
-                    (!search.VrstaInstrumenta.HasValue || x.VrstaInstrumenta == search.VrstaInstrumenta)
-                );
+            query = base.AddFilter(search, query).Include(x => x.MusicShop).Include(x => x.VrstaInstrumenta);
+
+            if (!string.IsNullOrEmpty(search.Model))
+            {
+                query = query.Where(x => x.Model.StartsWith(search.Model));
+            }
+
+            if (!string.IsNullOrEmpty(search.Proizvodjac))
+            {
+                query = query.Where(x => x.Proizvodjac.StartsWith(search.Proizvodjac));
+            }
+
+            if (search.Dostupan.HasValue)
+            {
+                query = query.Where(x => x.Dostupan == search.Dostupan);
+            }
+
+            if (!string.IsNullOrEmpty(search.VrstaInstrumenta))
+            {
+                query = query.Where(x => x.VrstaInstrumenta.Naziv.StartsWith(search.VrstaInstrumenta));
+            }
 
             return query;
         }
 
+
+
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {
-            var entity = await context.Instrumenti.Include(x => x.MusicShop).FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await context.Instrumenti.Include(x => x.MusicShop).Include(x => x.VrstaInstrumenta).FirstOrDefaultAsync(x => x.Id == id);
 
             return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
         }

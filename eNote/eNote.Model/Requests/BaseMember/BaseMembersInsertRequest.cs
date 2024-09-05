@@ -10,7 +10,6 @@ namespace eNote.Model.Requests.BaseMember
         public string Email { get; set; }
         public string Telefon { get; set; }
         public int? AdresaId { get; set; }
-        public Adresa Adresa { get; set; }
         public bool Status { get; set; }
     }
 }

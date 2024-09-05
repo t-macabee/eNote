@@ -9,15 +9,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class UpisService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.Upis, UpisSearchObject, UpisUpsertRequest, UpisUpsertRequest, Upis>(context, mapper), IUpisService
+    public class UpisService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, UpisUpdateRequest, Upis>(context, mapper), IUpisService
     {
         public override IQueryable<Upis> AddFilter(UpisSearchObject search, IQueryable<Upis> query)
         {
-            query = base.AddFilter(search, query)
-                .Where(x =>
-                    (!search.StudentId.HasValue || x.StudentId == search.StudentId.Value) &&
-                    (!search.KursId.HasValue || x.KursId == search.KursId.Value)
-                );
+            query = base.AddFilter(search, query);
+
+            if (search.StudentId.HasValue)
+            {
+                query = query.Where(x => x.StudentId == search.StudentId.Value);
+            }
+
+            if (search.KursId.HasValue)
+            {
+                query = query.Where(x => x.KursId == search.KursId.Value);
+            }
 
             return query;
         }
@@ -34,7 +40,7 @@ namespace eNote.Services.Services
             return mapper.Map<Model.DTOs.Upis>(entity);
         }
 
-        public override async Task BeforeInsert(UpisUpsertRequest request, Upis entity)
+        public override async Task BeforeInsert(UpisInsertRequest request, Upis entity)
         {
             var student = await context.Korisnici.FindAsync(request.StudentId);
 
@@ -50,7 +56,7 @@ namespace eNote.Services.Services
 
             entity.StudentId = request.StudentId;
             entity.KursId = request.KursId;
-            entity.StatusUpisa = request.StatusUpisa;
+            entity.StanjeUpisa = request.StanjeUpisa.ToString();
 
             var kurs = await context.Kurs.FindAsync(request.KursId);
             if (kurs != null)
@@ -59,6 +65,13 @@ namespace eNote.Services.Services
             }
 
             await base.BeforeInsert(request, entity);
+        }
+
+        public override async Task BeforeUpdate(UpisUpdateRequest request, Upis entity)
+        {
+            entity.StanjeUpisa = request.StanjeUpisa.ToString();
+
+            await base.BeforeUpdate(request, entity);
         }
 
         public override async Task Delete(int id)

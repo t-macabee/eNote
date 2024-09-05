@@ -1,8 +1,9 @@
 import 'package:enote_desktop/layouts/master_screen.dart';
-import 'package:enote_desktop/models/enums/vrsta_instrumenta.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
 import 'package:enote_desktop/models/search_result.dart';
+import 'package:enote_desktop/models/vrsta_instrumenta.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
+import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,24 +15,27 @@ class InstrumentiListScreen extends StatefulWidget {
 }
 
 class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
-  late InstrumentiProvider provider;
-  late SearchResult<Instrumenti> result = SearchResult<Instrumenti>();
+  late InstrumentiProvider instrumentiProvider;
+  late VrstaInstrumentaProvider vrstaInstrumentaProvider;
+
+  SearchResult<Instrumenti>? instrumentiResult;
+  SearchResult<VrstaInstrumenta>? vrstaInstrumenta;
 
   final TextEditingController _modelSearch = TextEditingController();
   final TextEditingController _proizvodjacSearch = TextEditingController();
 
-  VrstaInstrumenta? _vrstaInstrumenta;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    provider = context.read<InstrumentiProvider>();
+    instrumentiProvider = context.read<InstrumentiProvider>();
+    vrstaInstrumentaProvider = context.read<VrstaInstrumentaProvider>();
+
     _loadInstruments();
   }
 
   Future<void> _loadInstruments({Map<String, String>? filter}) async {
-    result = await provider.get(filter: filter);
-
+    instrumentiResult = await instrumentiProvider.get(filter: filter);
+    vrstaInstrumenta = await vrstaInstrumentaProvider.get();
     setState(() {});
   }
 
@@ -39,9 +43,9 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     var filter = {
       'model': _modelSearch.text,
       'proizvodjac': _proizvodjacSearch.text,
-      'vrstaInstrumenta': _vrstaInstrumenta?.toString().split('.').last,
+      //'vrstaInstrumenta': _vrstaInstrumenta?.id.toString(),
     };
-    filter.removeWhere((key, value) => value == null || value.isEmpty);
+    filter.removeWhere((key, value) => value.isEmpty);
     var validFilter = filter.cast<String, String>();
     await _loadInstruments(filter: validFilter);
   }
@@ -49,11 +53,6 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
   void _resetFilters() {
     _modelSearch.clear();
     _proizvodjacSearch.clear();
-
-    setState(() {
-      _vrstaInstrumenta = null;
-    });
-
     _loadInstruments();
   }
 
@@ -99,20 +98,6 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
               ),
             ),
             const SizedBox(width: space),
-            SizedBox(
-              width: 150,
-              child: buildStyledDropdown<VrstaInstrumenta?>(
-                options: VrstaInstrumenta.values,
-                hint: "Vrsta Instrumenta",
-                selectedValue: _vrstaInstrumenta,
-                onChanged: (VrstaInstrumenta? newValue) {
-                  setState(() {
-                    _vrstaInstrumenta = newValue;
-                  });
-                },
-                allLabel: 'Svi instrumenti',
-              ),
-            ),
             const SizedBox(width: 40.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -158,7 +143,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                 ),
                 elevation: 4,
               ),
-              onPressed: () {},
+              onPressed: () async {},
               child: const Text('Novi instrument'),
             ),
           ],
@@ -174,110 +159,77 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
           double cardWidth = (constraints.maxWidth / 6) - 8.0;
           double cardHeight = cardWidth * 1.5;
 
-          final groupedInstruments = <VrstaInstrumenta, List<Instrumenti>>{};
-          for (var instrument in result.result) {
-            final type = instrument.vrstaInstrumenta ?? VrstaInstrumenta.Zicani;
-            groupedInstruments.putIfAbsent(type, () => []).add(instrument);
-          }
-
           return SingleChildScrollView(
-            child: Column(
-              children: groupedInstruments.entries.map((entry) {
-                final instrumentType = entry.key;
-                final instruments = entry.value;
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                childAspectRatio: 1.5,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+              ),
+              itemCount: instrumentiResult?.result.length ?? 0,
+              itemBuilder: (context, index) {
+                final instrument = instrumentiResult!.result[index];
+                bool isHovered = false;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        instrumentType.toString().split('.').last,
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return MouseRegion(
+                      onEnter: (_) => setState(() => isHovered = true),
+                      onExit: (_) => setState(() => isHovered = false),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
                         ),
-                      ),
-                    ),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7,
-                        childAspectRatio: 1.5,
-                        mainAxisSpacing: 8.0,
-                        crossAxisSpacing: 8.0,
-                      ),
-                      itemCount: instruments.length,
-                      itemBuilder: (context, index) {
-                        final instrument = instruments[index];
-                        bool isHovered = false;
-
-                        return StatefulBuilder(
-                          builder: (context, setState) {
-                            return MouseRegion(
-                              onEnter: (_) => setState(() => isHovered = true),
-                              onExit: (_) => setState(() => isHovered = false),
-                              child: Card(
-                                margin: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: Stack(
+                        clipBehavior: Clip.antiAlias,
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              'assets/images/user.png',
+                              width: cardWidth,
+                              height: cardHeight,
+                              fit: BoxFit.cover,
+                            ),
+                            AnimatedOpacity(
+                              opacity: isHovered ? 1.0 : 0.0,
+                              duration: const Duration(milliseconds: 200),
+                              child: Container(
+                                color: Colors.black54,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                      'assets/images/user.png',
-                                      width: cardWidth,
-                                      height: cardHeight,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    AnimatedOpacity(
-                                      opacity: isHovered ? 1.0 : 0.0,
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      child: Container(
-                                        color: Colors.black54,
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              instrument.model ?? "",
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16.0,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            Text(
-                                              instrument.proizvodjac ?? "",
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14.0,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
+                                    Text(
+                                      instrument.model ?? "",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.0,
                                       ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      instrument.proizvodjac ?? "",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14.0,
+                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
-              }).toList(),
+              },
             ),
           );
         },
@@ -317,43 +269,24 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     required List<T> options,
     required String hint,
     required T? selectedValue,
-    required void Function(T?) onChanged,
+    required ValueChanged<T?> onChanged,
     required String allLabel,
+    required String Function(T? item) getLabel,
   }) {
     return SizedBox(
-      width: 150,
+      width: double.infinity,
       child: DropdownButtonFormField<T>(
+        decoration: InputDecoration(labelText: hint),
         value: selectedValue,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(width: 2.0, color: Colors.white),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(width: 1.0, color: Colors.white),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(width: 2.0, color: Colors.white),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          hintText: hint,
-          hintStyle: const TextStyle(color: Colors.white, fontSize: 14),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-        ),
-        style: const TextStyle(color: Colors.white, fontSize: 14),
-        dropdownColor: Colors.black,
-        isExpanded: true,
         items: [
           DropdownMenuItem<T>(
             value: null,
             child: Text(allLabel),
           ),
-          ...options.map((T value) {
+          ...options.map((T option) {
             return DropdownMenuItem<T>(
-              value: value,
-              child: Text(value.toString().split('.').last),
+              value: option,
+              child: Text(getLabel(option)),
             );
           }),
         ],

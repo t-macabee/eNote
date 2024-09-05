@@ -14,6 +14,7 @@ namespace eNote.Services.Database
         public DbSet<Predavanje> Predavanja { get; set; }
         public DbSet<Upis> Upisi { get; set; }
         public DbSet<Instrumenti> Instrumenti { get; set; }
+        public DbSet<VrstaInstrumenta> VrstaInstrumenta { get; set; }
         public DbSet<IznajmljivanjeInstrumenta> IznajmljivanjeInstrumenata { get; set; }
         public DbSet<Obavijest> Obavijesti { get; set; }
         public DbSet<PredajaZadatka> PredajaZadatka { get; set; }
@@ -21,14 +22,7 @@ namespace eNote.Services.Database
         public DbSet<Prisustvo> Prisustva { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // Vrsta instrumenta
-            modelBuilder.Entity<Instrumenti>()
-                .Property(k => k.VrstaInstrumenta)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (VrstaInstrumenta)Enum.Parse(typeof(VrstaInstrumenta), v));
-
+        {           
             // Korisnik-uloga
             modelBuilder.Entity<Korisnik>()
                 .HasOne(k => k.Uloga)
@@ -62,6 +56,13 @@ namespace eNote.Services.Database
                 .HasOne(i => i.MusicShop)
                 .WithMany(ms => ms.Instrumenti)
                 .HasForeignKey(i => i.MusicShopId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Instrumenti-vrsta instrumenta
+            modelBuilder.Entity<Instrumenti>()
+                .HasOne(i => i.VrstaInstrumenta)
+                .WithMany(v => v.Instrumenti)
+                .HasForeignKey(i => i.VrstaInstrumentaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Kurs-instruktor

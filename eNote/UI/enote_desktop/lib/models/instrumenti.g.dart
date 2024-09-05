@@ -11,11 +11,10 @@ Instrumenti _$InstrumentiFromJson(Map<String, dynamic> json) => Instrumenti()
   ..model = json['model'] as String?
   ..proizvodjac = json['proizvodjac'] as String?
   ..opis = json['opis'] as String?
-  ..musicShop = json['musicShop'] as String?
-  ..vrstaInstrumenta =
-      $enumDecodeNullable(_$VrstaInstrumentaEnumMap, json['vrstaInstrumenta'])
   ..slika = json['slika'] as String?
-  ..dostupan = json['dostupan'] as bool?;
+  ..dostupan = json['dostupan'] as bool?
+  ..vrstaInstrumentaId = (json['vrstaInstrumentaId'] as num?)?.toInt()
+  ..musicShopId = (json['musicShopId'] as num?)?.toInt();
 
 Map<String, dynamic> _$InstrumentiToJson(Instrumenti instance) =>
     <String, dynamic>{
@@ -23,16 +22,8 @@ Map<String, dynamic> _$InstrumentiToJson(Instrumenti instance) =>
       'model': instance.model,
       'proizvodjac': instance.proizvodjac,
       'opis': instance.opis,
-      'musicShop': instance.musicShop,
-      'vrstaInstrumenta': _$VrstaInstrumentaEnumMap[instance.vrstaInstrumenta],
       'slika': instance.slika,
       'dostupan': instance.dostupan,
+      'vrstaInstrumentaId': instance.vrstaInstrumentaId,
+      'musicShopId': instance.musicShopId,
     };
-
-const _$VrstaInstrumentaEnumMap = {
-  VrstaInstrumenta.Zicani: 'Zicani',
-  VrstaInstrumenta.Limeni: 'Limeni',
-  VrstaInstrumenta.Udaraljke: 'Udaraljke',
-  VrstaInstrumenta.Tipke: 'Tipke',
-  VrstaInstrumenta.Elektronicki: 'Elektronicki',
-};

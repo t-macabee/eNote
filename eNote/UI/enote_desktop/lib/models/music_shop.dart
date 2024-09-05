@@ -1,5 +1,3 @@
-import 'package:enote_desktop/models/adresa.dart';
-import 'package:enote_desktop/models/uloge.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'music_shop.g.dart';
@@ -12,8 +10,10 @@ class MusicShop {
   String? status;
   String? email;
   String? telefon;
-  Adresa? adresa;
-  Uloge? uloga;
+  int? adresaId;
+  String? adresaNaziv;
+  int? ulogaId;
+  String? uloga;
 
   MusicShop();
 

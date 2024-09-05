@@ -12,10 +12,12 @@ namespace eNote.Services.Services
     {
         public override IQueryable<Kurs> AddFilter(KursSearchObject search, IQueryable<Kurs> query)
         {
-            query = base.AddFilter(search, query).Include(x => x.Instruktor)
-                .Where(x =>
-                    (string.IsNullOrEmpty(search.Naziv) || x.Naziv.StartsWith(search.Naziv)) 
-                );
+            query = base.AddFilter(search, query).Include(x => x.Instruktor);
+
+            if (!string.IsNullOrEmpty(search.Naziv))
+            {
+                query = query.Where(x => x.Naziv.StartsWith(search.Naziv));
+            }
 
             return query;
         }

@@ -13,12 +13,10 @@ MusicShop _$MusicShopFromJson(Map<String, dynamic> json) => MusicShop()
   ..status = json['status'] as String?
   ..email = json['email'] as String?
   ..telefon = json['telefon'] as String?
-  ..adresa = json['adresa'] == null
-      ? null
-      : Adresa.fromJson(json['adresa'] as Map<String, dynamic>)
-  ..uloga = json['uloga'] == null
-      ? null
-      : Uloge.fromJson(json['uloga'] as Map<String, dynamic>);
+  ..adresaId = (json['adresaId'] as num?)?.toInt()
+  ..adresaNaziv = json['adresaNaziv'] as String?
+  ..ulogaId = (json['ulogaId'] as num?)?.toInt()
+  ..uloga = json['uloga'] as String?;
 
 Map<String, dynamic> _$MusicShopToJson(MusicShop instance) => <String, dynamic>{
       'id': instance.id,
@@ -27,6 +25,8 @@ Map<String, dynamic> _$MusicShopToJson(MusicShop instance) => <String, dynamic>{
       'status': instance.status,
       'email': instance.email,
       'telefon': instance.telefon,
-      'adresa': instance.adresa,
+      'adresaId': instance.adresaId,
+      'adresaNaziv': instance.adresaNaziv,
+      'ulogaId': instance.ulogaId,
       'uloga': instance.uloga,
     };

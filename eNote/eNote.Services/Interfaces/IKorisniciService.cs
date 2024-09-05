@@ -6,7 +6,6 @@ namespace eNote.Services.Interfaces
 {
     public interface IKorisniciService : ICRUDService<Model.Korisnik, KorisnikSearchObject, KorisnikInsertRequest, KorisnikUpdateRequest>
     {
-        Task<List<Model.DTOs.Adresa>> GetAddresses();
         Task<Model.Korisnik> GetCurrentUser();
     }
 }

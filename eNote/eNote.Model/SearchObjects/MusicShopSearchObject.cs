@@ -7,7 +7,6 @@ namespace eNote.Model.SearchObjects
 {
     public class MusicShopSearchObject : BaseSearchObject
     {
-        public string? KorisnickoIme { get; set; }
         public string? Naziv {  get; set; }
         public string? Grad { get; set; }
     }

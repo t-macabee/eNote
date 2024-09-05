@@ -9,7 +9,7 @@ namespace eNote.Services.Database
         public DateTime DatumIznajmljivanja { get; set; }
         public DateTime DatumPovratka { get; set; }
         public decimal CijenaIznajmljivanja { get; set; }
-        public StanjeIznajmljivanja StanjeIznajmljivanja { get; set; }
+        public string StanjeIznajmljivanja { get; set; }
         
         public int StudentId { get; set; }
         public Korisnik Student { get; set; }

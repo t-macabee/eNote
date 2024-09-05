@@ -5,10 +5,8 @@ using System.Text;
 
 namespace eNote.Model.Requests.Upis
 {
-    public class UpisUpsertRequest
+    public class UpisUpdateRequest
     {
-        public int KursId { get; set; }
-        public int StudentId { get; set; }
-        public StanjeUpisa StatusUpisa { get; set; } = StanjeUpisa.NaCekanju;
+        public StanjeUpisa StanjeUpisa { get; set; }
     }
 }

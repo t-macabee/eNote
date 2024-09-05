@@ -1,5 +1,3 @@
-import 'package:enote_desktop/models/adresa.dart';
-import 'package:enote_desktop/models/uloge.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'korisnik.g.dart';
@@ -14,8 +12,10 @@ class Korisnik {
   String? datumRodjenja;
   String? email;
   String? telefon;
-  Adresa? adresa;
-  Uloge? uloga;
+  int? adresaId;
+  String? adresa;
+  int? ulogaId;
+  String? uloga;
 
   Korisnik();
 

@@ -19,6 +19,8 @@ builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IUpisService, UpisService>();
 builder.Services.AddTransient<IPredavanjeService, PredavanjeService>();
 builder.Services.AddTransient<IObavijestService, ObavijestService>();
+builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
+builder.Services.AddTransient<IAdresaService, AdresaService>();
 
 builder.Services.AddControllers(x =>
 {
