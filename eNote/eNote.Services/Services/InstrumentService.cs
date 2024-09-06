@@ -25,20 +25,16 @@ namespace eNote.Services.Services
                 query = query.Where(x => x.Proizvodjac.StartsWith(search.Proizvodjac));
             }
 
-            if (search.Dostupan.HasValue)
-            {
-                query = query.Where(x => x.Dostupan == search.Dostupan);
-            }
-
             if (!string.IsNullOrEmpty(search.VrstaInstrumenta))
             {
-                query = query.Where(x => x.VrstaInstrumenta.Naziv.StartsWith(search.VrstaInstrumenta));
+                if (int.TryParse(search.VrstaInstrumenta, out int vrstaInstrumentaId))
+                {
+                    query = query.Where(x => x.VrstaInstrumenta.Id == vrstaInstrumentaId);
+                }
             }
 
             return query;
         }
-
-
 
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {

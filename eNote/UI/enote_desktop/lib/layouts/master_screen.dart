@@ -1,7 +1,7 @@
 import 'package:enote_desktop/providers/auth_provider.dart';
-import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
 import 'package:enote_desktop/screens/korisnici_list_screen.dart';
 import 'package:enote_desktop/screens/login_screen.dart';
+import 'package:enote_desktop/screens/music_shop_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class MasterScreen extends StatefulWidget {
@@ -81,6 +81,7 @@ class _MasterScreenState extends State<MasterScreen> {
                     child: ListView(
                       padding: EdgeInsets.zero,
                       children: [
+                        const SizedBox(height: 20),
                         _buildDrawerItem(
                           icon: Icons.people,
                           text: "Korisnici",
@@ -91,15 +92,15 @@ class _MasterScreenState extends State<MasterScreen> {
                                         const KorisniciListScreen()));
                           },
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 20),
                         _buildDrawerItem(
-                          icon: Icons.music_note,
-                          text: "Instrumenti",
+                          icon: Icons.store,
+                          text: "Music Shop",
                           onTap: () {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const InstrumentiListScreen()));
+                                        const MusicShopListScreen()));
                           },
                         ),
                       ],
@@ -131,7 +132,7 @@ class _MasterScreenState extends State<MasterScreen> {
           ),
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(12.0),
               child: widget.child,
             ),
           ),

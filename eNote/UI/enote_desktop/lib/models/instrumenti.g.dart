@@ -14,7 +14,9 @@ Instrumenti _$InstrumentiFromJson(Map<String, dynamic> json) => Instrumenti()
   ..slika = json['slika'] as String?
   ..dostupan = json['dostupan'] as bool?
   ..vrstaInstrumentaId = (json['vrstaInstrumentaId'] as num?)?.toInt()
-  ..musicShopId = (json['musicShopId'] as num?)?.toInt();
+  ..vrstaInstrumenta = json['vrstaInstrumenta'] as String?
+  ..musicShopId = (json['musicShopId'] as num?)?.toInt()
+  ..musicShop = json['musicShop'] as String?;
 
 Map<String, dynamic> _$InstrumentiToJson(Instrumenti instance) =>
     <String, dynamic>{
@@ -25,5 +27,7 @@ Map<String, dynamic> _$InstrumentiToJson(Instrumenti instance) =>
       'slika': instance.slika,
       'dostupan': instance.dostupan,
       'vrstaInstrumentaId': instance.vrstaInstrumentaId,
+      'vrstaInstrumenta': instance.vrstaInstrumenta,
       'musicShopId': instance.musicShopId,
+      'musicShop': instance.musicShop,
     };

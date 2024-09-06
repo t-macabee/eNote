@@ -6,7 +6,6 @@ using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace eNote.Services.Services
 {
     public class MusicShopService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest, Database.MusicShop>(context, mapper), IMusicShopService
@@ -99,6 +98,10 @@ namespace eNote.Services.Services
             await base.BeforeUpdate(request, entity);
         }
 
-   
+        public async Task<List<Model.DTOs.Instrumenti>> GetInstumentiByShop(int id)
+        {
+            var entity = await context.MusicShops.Where(x => x.Id == id).SelectMany(x => x.Instrumenti).Include(x => x.MusicShop).Include(x => x.VrstaInstrumenta).ToListAsync();
+            return mapper.Map<List<Model.DTOs.Instrumenti>>(entity);
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace eNote.API.Controllers
 {
     public class InstrumentiController(IInstrumentService service) : CRUDController<Model.DTOs.Instrumenti, InstrumentSearchObject, InstrumentInsertRequest, InstrumentUpdateRequest>(service)
     {
+
     }
 }

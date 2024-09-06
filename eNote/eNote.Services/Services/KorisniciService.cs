@@ -20,14 +20,9 @@ namespace eNote.Services.Services
                 .Include(x => x.Adresa)
                 .Include(x => x.Uloga);
 
-            if (!string.IsNullOrEmpty(search.Ime))
+            if (!string.IsNullOrEmpty(search.ImePrezime))
             {
-                query = query.Where(x => x.Ime.StartsWith(search.Ime));
-            }
-
-            if (!string.IsNullOrEmpty(search.Prezime))
-            {
-                query = query.Where(x => x.Prezime.StartsWith(search.Prezime));
+                query = query.Where(x => x.Ime.StartsWith(search.ImePrezime) || x.Prezime.StartsWith(search.ImePrezime));
             }
 
             if (!string.IsNullOrEmpty(search.KorisnickoIme))
@@ -35,14 +30,12 @@ namespace eNote.Services.Services
                 query = query.Where(x => x.KorisnickoIme == search.KorisnickoIme);
             }
 
-            if (!string.IsNullOrEmpty(search.Grad))
-            {
-                query = query.Where(x => x.Adresa.Grad.StartsWith(search.Grad));
-            }
-
             if (!string.IsNullOrEmpty(search.Uloga))
             {
-                query = query.Where(x => x.Uloga.Naziv.StartsWith(search.Uloga));
+                if (int.TryParse(search.Uloga, out int ulogaId))
+                {
+                    query = query.Where(x => x.Uloga.Id == ulogaId);
+                }
             }
 
             return query;

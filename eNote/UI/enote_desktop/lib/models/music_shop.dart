@@ -11,7 +11,7 @@ class MusicShop {
   String? email;
   String? telefon;
   int? adresaId;
-  String? adresaNaziv;
+  String? adresa;
   int? ulogaId;
   String? uloga;
 

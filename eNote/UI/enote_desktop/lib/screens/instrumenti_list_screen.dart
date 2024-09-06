@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InstrumentiListScreen extends StatefulWidget {
-  const InstrumentiListScreen({super.key});
+  final int? shopId;
+
+  const InstrumentiListScreen({super.key, this.shopId});
 
   @override
   State<InstrumentiListScreen> createState() => _InstrumentiListScreenState();
@@ -19,10 +21,11 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
   late VrstaInstrumentaProvider vrstaInstrumentaProvider;
 
   SearchResult<Instrumenti>? instrumentiResult;
-  SearchResult<VrstaInstrumenta>? vrstaInstrumenta;
+  SearchResult<VrstaInstrumenta>? vrstaInstrumentaResult;
 
   final TextEditingController _modelSearch = TextEditingController();
   final TextEditingController _proizvodjacSearch = TextEditingController();
+  VrstaInstrumenta? _selectedVrstaInstrumenta;
 
   @override
   void didChangeDependencies() {
@@ -31,11 +34,16 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     vrstaInstrumentaProvider = context.read<VrstaInstrumentaProvider>();
 
     _loadInstruments();
+    _loadInstrumentTypes();
   }
 
   Future<void> _loadInstruments({Map<String, String>? filter}) async {
     instrumentiResult = await instrumentiProvider.get(filter: filter);
-    vrstaInstrumenta = await vrstaInstrumentaProvider.get();
+    setState(() {});
+  }
+
+  Future<void> _loadInstrumentTypes() async {
+    vrstaInstrumentaResult = await vrstaInstrumentaProvider.get();
     setState(() {});
   }
 
@@ -43,9 +51,14 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     var filter = {
       'model': _modelSearch.text,
       'proizvodjac': _proizvodjacSearch.text,
-      //'vrstaInstrumenta': _vrstaInstrumenta?.id.toString(),
+      'vrstaInstrumenta': _selectedVrstaInstrumenta?.id.toString(),
     };
-    filter.removeWhere((key, value) => value.isEmpty);
+
+    filter.removeWhere((key, value) {
+      if (value == null) return true;
+      return value.isEmpty;
+    });
+
     var validFilter = filter.cast<String, String>();
     await _loadInstruments(filter: validFilter);
   }
@@ -53,6 +66,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
   void _resetFilters() {
     _modelSearch.clear();
     _proizvodjacSearch.clear();
+    _selectedVrstaInstrumenta = null;
     _loadInstruments();
   }
 
@@ -73,7 +87,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
 
   Widget _buildSearch() {
     const double padding = 10.0;
-    const double space = 20.0;
+    const double space = 25.0;
 
     return Padding(
       padding: const EdgeInsets.all(padding),
@@ -83,7 +97,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
-              width: 300,
+              width: 200,
               child: buildStyledTextField(
                 controller: _modelSearch,
                 labelText: "Model",
@@ -91,13 +105,60 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
             ),
             const SizedBox(width: space),
             SizedBox(
-              width: 300,
+              width: 200,
               child: buildStyledTextField(
                 controller: _proizvodjacSearch,
                 labelText: "Proizvođač",
               ),
             ),
             const SizedBox(width: space),
+            SizedBox(
+              width: 200,
+              child: DropdownButtonFormField<VrstaInstrumenta>(
+                decoration: InputDecoration(
+                  labelText: "Vrsta Instrumenta",
+                  labelStyle: const TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(width: 2.0, color: Colors.white),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(width: 1.0, color: Colors.white),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(width: 2.0, color: Colors.white),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                value: _selectedVrstaInstrumenta,
+                items: [
+                  const DropdownMenuItem<VrstaInstrumenta>(
+                    value: null,
+                    child: Text('Svi instrumenti',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  ...?vrstaInstrumentaResult?.result
+                      .map((VrstaInstrumenta option) {
+                    return DropdownMenuItem<VrstaInstrumenta>(
+                      value: option,
+                      child: Text(option.naziv ?? "",
+                          style: const TextStyle(color: Colors.white)),
+                    );
+                  }),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedVrstaInstrumenta = value;
+                  });
+                },
+                style: const TextStyle(color: Colors.white),
+                dropdownColor: const Color.fromARGB(255, 49, 53, 61),
+              ),
+            ),
             const SizedBox(width: 40.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -166,8 +227,8 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
                 childAspectRatio: 1.5,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 24.0,
+                crossAxisSpacing: 24.0,
               ),
               itemCount: instrumentiResult?.result.length ?? 0,
               itemBuilder: (context, index) {
@@ -193,33 +254,38 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                               height: cardHeight,
                               fit: BoxFit.cover,
                             ),
-                            AnimatedOpacity(
-                              opacity: isHovered ? 1.0 : 0.0,
-                              duration: const Duration(milliseconds: 200),
-                              child: Container(
-                                color: Colors.black54,
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      instrument.model ?? "",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16.0,
-                                      ),
-                                      textAlign: TextAlign.center,
+                            Positioned.fill(
+                              child: AnimatedOpacity(
+                                opacity: isHovered ? 1.0 : 0.0,
+                                duration: const Duration(milliseconds: 200),
+                                child: Container(
+                                  color: Colors.black54,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          instrument.model ?? "",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.0,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text(
+                                          instrument.proizvodjac ?? "",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.0,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      instrument.proizvodjac ?? "",
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14.0,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -261,36 +327,6 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         labelText: labelText,
         labelStyle: const TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  Widget buildStyledDropdown<T>({
-    required List<T> options,
-    required String hint,
-    required T? selectedValue,
-    required ValueChanged<T?> onChanged,
-    required String allLabel,
-    required String Function(T? item) getLabel,
-  }) {
-    return SizedBox(
-      width: double.infinity,
-      child: DropdownButtonFormField<T>(
-        decoration: InputDecoration(labelText: hint),
-        value: selectedValue,
-        items: [
-          DropdownMenuItem<T>(
-            value: null,
-            child: Text(allLabel),
-          ),
-          ...options.map((T option) {
-            return DropdownMenuItem<T>(
-              value: option,
-              child: Text(getLabel(option)),
-            );
-          }),
-        ],
-        onChanged: onChanged,
       ),
     );
   }

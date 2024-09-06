@@ -1,5 +1,7 @@
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
 import 'package:enote_desktop/providers/korisnici_provider.dart';
+import 'package:enote_desktop/providers/music_shop_provider.dart';
+import 'package:enote_desktop/providers/uloge_provider.dart';
 import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
 import 'package:enote_desktop/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,10 @@ void main() {
     ChangeNotifierProvider<KorisniciProvider>(
         create: (_) => KorisniciProvider()),
     ChangeNotifierProvider<VrstaInstrumentaProvider>(
-        create: (_) => VrstaInstrumentaProvider())
+        create: (_) => VrstaInstrumentaProvider()),
+    ChangeNotifierProvider<UlogeProvider>(create: (_) => UlogeProvider()),
+    ChangeNotifierProvider<MusicShopProvider>(
+        create: (_) => MusicShopProvider()),
   ], child: const MyApp()));
 }
 
