@@ -11,6 +11,8 @@ namespace eNote.Model.DTOs
         public string Email { get; set; }
         public string Telefon { get; set; }
         public string Adresa { get; set; }
+        public string RadnoVrijeme { get; set; }
         public string Uloga { get; set; }
+        public byte[]? Slika { get; set; }
     }
 }

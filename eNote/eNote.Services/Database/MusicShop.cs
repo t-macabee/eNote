@@ -25,8 +25,8 @@ namespace eNote.Services.Database
         public string Naziv { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; } 
+        public string RadnoVrijeme { get; set; }
         public byte[]? Slika { get; set; }
-        public byte[]? SlikaThumb { get; set; }
 
         public ICollection<Instrumenti> Instrumenti { get; set; } = new List<Instrumenti>();
     }

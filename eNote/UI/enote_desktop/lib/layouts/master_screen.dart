@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:enote_desktop/providers/auth_provider.dart';
+import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
 import 'package:enote_desktop/screens/korisnici_list_screen.dart';
 import 'package:enote_desktop/screens/login_screen.dart';
 import 'package:enote_desktop/screens/music_shop_list_screen.dart';
@@ -71,9 +74,9 @@ class _MasterScreenState extends State<MasterScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    currentAccountPicture: const CircleAvatar(
-                      backgroundImage:
-                          AssetImage('assets/images/user.png') as ImageProvider,
+                    currentAccountPicture: CircleAvatar(
+                      backgroundImage: MemoryImage(
+                          base64Decode(AuthProvider.currentUser!.slika!)),
                       backgroundColor: Colors.white,
                     ),
                   ),
@@ -95,12 +98,23 @@ class _MasterScreenState extends State<MasterScreen> {
                         const SizedBox(height: 20),
                         _buildDrawerItem(
                           icon: Icons.store,
-                          text: "Music Shop",
+                          text: "Prodavnice opreme",
                           onTap: () {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         const MusicShopListScreen()));
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        _buildDrawerItem(
+                          icon: Icons.music_note,
+                          text: "Svi instrumenti",
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const InstrumentiListScreen()));
                           },
                         ),
                       ],

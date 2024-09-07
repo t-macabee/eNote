@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/korisnik.dart';
 import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/models/uloge.dart';
 import 'package:enote_desktop/providers/korisnici_provider.dart';
 import 'package:enote_desktop/providers/uloge_provider.dart';
+import 'package:enote_desktop/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,6 +96,27 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                side: const BorderSide(color: Colors.white, width: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                elevation: 4,
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              },
+              child: const Icon(Icons.arrow_back),
+            ),
+            const SizedBox(width: space),
             SizedBox(
               width: 200,
               child: buildStyledTextField(
@@ -245,8 +269,8 @@ class _KorisniciListScreenState extends State<KorisniciListScreen> {
                         clipBehavior: Clip.antiAlias,
                         child: Stack(
                           children: [
-                            Image.asset(
-                              'assets/images/user.png',
+                            Image.memory(
+                              base64Decode(korisnik.slika!),
                               width: cardWidth,
                               height: cardHeight,
                               fit: BoxFit.cover,

@@ -63,15 +63,30 @@ namespace eNote.Services.Configurations
             var musicShopHash = PasswordBuilder.GenerateHash(musicShopSalt, "pwd123");
 
             modelBuilder.Entity<Korisnik>().HasData(
-                new Korisnik { Id = 1, KorisnickoIme = "admin", Email = "admin@outlook.com", Telefon = "000000000", LozinkaHash = adminHash, LozinkaSalt = adminSalt, UlogaId = 1, AdresaId = 1, Ime = "Admin", Prezime = "Admin", DatumRodjenja = new DateTime(1996, 07, 29), Status = true },
-                new Korisnik { Id = 2, KorisnickoIme = "instruktor", Email = "john.doe@outlook.com", Telefon = "111111111", LozinkaHash = instruktorHash, LozinkaSalt = instruktorSalt, UlogaId = 2, AdresaId = 4, Ime = "John", Prezime = "Doe", DatumRodjenja = new DateTime(1997, 06, 15), Status = true },
-                new Korisnik { Id = 3, KorisnickoIme = "polaznik", Email = "jane.doe@outlook.com", Telefon = "222222222", LozinkaHash = ucenikHash, LozinkaSalt = ucenikSalt, UlogaId = 3, AdresaId = 5, Ime = "Jane", Prezime = "Doe", DatumRodjenja = new DateTime(1967, 03, 17), Status = true }               
+                new Korisnik
+                {
+                    Id = 1,
+                    KorisnickoIme = "admin",
+                    Email = "admin@outlook.com",
+                    Telefon = "000000000",
+                    LozinkaHash = adminHash,
+                    LozinkaSalt = adminSalt,
+                    UlogaId = 1,
+                    AdresaId = 1,
+                    Ime = "Admin",
+                    Prezime = "Admin",
+                    DatumRodjenja = new DateTime(1996, 07, 29),
+                    Status = true,
+                    Slika = ImageToByteArray("user.jpg")
+                },
+                new Korisnik { Id = 2, KorisnickoIme = "instruktor", Email = "john.doe@outlook.com", Telefon = "111111111", LozinkaHash = instruktorHash, LozinkaSalt = instruktorSalt, UlogaId = 2, AdresaId = 4, Ime = "John", Prezime = "Doe", DatumRodjenja = new DateTime(1997, 06, 15), Status = true, Slika = ImageToByteArray("user.jpg") },
+                new Korisnik { Id = 3, KorisnickoIme = "polaznik", Email = "jane.doe@outlook.com", Telefon = "222222222", LozinkaHash = ucenikHash, LozinkaSalt = ucenikSalt, UlogaId = 3, AdresaId = 5, Ime = "Jane", Prezime = "Doe", DatumRodjenja = new DateTime(1967, 03, 17), Status = true, Slika = ImageToByteArray("user.jpg") }               
             );
 
             modelBuilder.Entity<MusicShop>().HasData(
-                 new MusicShop { Id = 1, KorisnickoIme = "shop1", Email = "shop1@outlook.com", Telefon = "333333333", LozinkaHash = musicShopHash, LozinkaSalt = musicShopSalt, UlogaId = 4, AdresaId = 2, Naziv = "Bonemeal Music Shop", Status = true }
+                 new MusicShop { Id = 1, KorisnickoIme = "shop1", Email = "shop1@outlook.com", Telefon = "333333333", LozinkaHash = musicShopHash, LozinkaSalt = musicShopSalt, UlogaId = 4, AdresaId = 2, Naziv = "Bonemeal Music Shop", RadnoVrijeme = "Ponedjeljak - Petak: 9:00 - 16:00", Status = true, Slika = ImageToByteArray("user.jpg") }
             );
-        }
+        }       
 
         public static void SeedCourses(ModelBuilder modelBuilder)
         {
@@ -103,27 +118,52 @@ namespace eNote.Services.Configurations
         public static void SeedInstruments(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Instrumenti>().HasData(               
-               new Instrumenti { Id = 1, Model = "Stratocaster", Proizvodjac = "Fender", Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },
-               new Instrumenti { Id = 2, Model = "Les Paul", Proizvodjac = "Gibson", Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },
-               new Instrumenti { Id = 3, Model = "RG", Proizvodjac = "Ibanez", Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },
-               new Instrumenti { Id = 4, Model = "Custom 24", Proizvodjac = "PRS", Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },
-               new Instrumenti { Id = 5, Model = "Pacifica", Proizvodjac = "Yamaha", Opis = "Svestrana električna gitara pogodna za različite žanrove.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },
-               new Instrumenti { Id = 6, Model = "Dinky", Proizvodjac = "Jackson", Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },               
+               new Instrumenti { Id = 1, Model = "Stratocaster", Proizvodjac = "Fender", Opis = "Klasična električna gitara poznata po svojoj svestranosti i glatkoj svirljivosti.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("strat.jpg") },
+               new Instrumenti { Id = 2, Model = "Les Paul", Proizvodjac = "Gibson", Opis = "Legendarna električna gitara omiljena zbog bogatog tona i održavanja.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("les-paul.jpg") },
+               new Instrumenti { Id = 3, Model = "RG", Proizvodjac = "Ibanez", Opis = "Visokoperformansna električna gitara popularna među rok i metal sviračima.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("rg.jpg") },
+               new Instrumenti { Id = 4, Model = "Custom 24", Proizvodjac = "PRS", Opis = "Visokokvalitetna električna gitara poznata po svojoj prelijepoj izradi i zvuku.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("prs.jpg") },
+               new Instrumenti { Id = 5, Model = "Pacifica", Proizvodjac = "Yamaha", Opis = "Svestrana električna gitara pogodna za različite žanrove.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("pacifica.jpg") },
+               new Instrumenti { Id = 6, Model = "Dinky", Proizvodjac = "Jackson", Opis = "Električna gitara dizajnirana za brzo sviranje i snažan zvuk.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("dinky.jpg") },               
 
-               new Instrumenti { Id = 7, Model = "Precision Bass", Proizvodjac = "Fender", Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },               
-               new Instrumenti { Id = 8, Model = "Thunderbird", Proizvodjac = "Gibson", Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true },
+               new Instrumenti { Id = 7, Model = "Precision Bass", Proizvodjac = "Fender", Opis = "Industrijski standard bas gitara poznata po dubokom, udarnom zvuku.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("precision.jpg") },               
+               new Instrumenti { Id = 8, Model = "Thunderbird", Proizvodjac = "Gibson", Opis = "Ikonična bas gitara poznata po jedinstvenom dizajnu i snažnom zvuku.", MusicShopId = 1, VrstaInstrumentaId = 1, Dostupan = true, Slika = ImageToByteArray("thunderbird.jpg") },
                
-               new Instrumenti { Id = 9, Model = "Export", Proizvodjac = "Pearl", Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", MusicShopId = 1, VrstaInstrumentaId = 2, Dostupan = true },
-               new Instrumenti { Id = 10, Model = "Imperialstar", Proizvodjac = "Tama", Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.", MusicShopId = 1, VrstaInstrumentaId = 2, Dostupan = true },
-               new Instrumenti { Id = 11, Model = "Breakbeats", Proizvodjac = "Ludwig", Opis = "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.", MusicShopId = 1, VrstaInstrumentaId = 2, Dostupan = true },
+               new Instrumenti { Id = 9, Model = "Export", Proizvodjac = "Pearl", Opis = "Pristupačan bubanj set savršen za početnike i srednje napredne bubnjare.", MusicShopId = 1, VrstaInstrumentaId = 2, Dostupan = true, Slika = ImageToByteArray("export.jpg") },
+               new Instrumenti { Id = 10, Model = "Imperialstar", Proizvodjac = "Tama", Opis = "Svestran bubanj set sa izvrsnom izradom i zvukom.", MusicShopId = 1, VrstaInstrumentaId = 2, Dostupan = true, Slika = ImageToByteArray("imperialstar.jpg") },
+               new Instrumenti { Id = 11, Model = "Breakbeats", Proizvodjac = "Ludwig", Opis = "Kompaktni bubanj set dizajniran za prenosivost i odličan ton.", MusicShopId = 1, VrstaInstrumentaId = 2, Dostupan = true, Slika = ImageToByteArray("breakbeats.jpg") },
+               
+               new Instrumenti { Id = 13, Model = "YAS-280", Proizvodjac = "Yamaha", Opis = "Popularni saksofon među studentima i srednje naprednim sviračima.", MusicShopId = 1, VrstaInstrumentaId = 3, Dostupan = true, Slika = ImageToByteArray("yas.jpg") },
+               new Instrumenti { Id = 14, Model = "Stradivarius", Proizvodjac = "Bach", Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.", MusicShopId = 1, VrstaInstrumentaId = 3, Dostupan = true, Slika = ImageToByteArray("stradivarius.jpg") },               
 
-               new Instrumenti { Id = 12, Model = "Mark VI", Proizvodjac = "Selmer", Opis = "Legendarni saksofon poznat po izvrsnom tonu i svirljivosti.", MusicShopId = 1, VrstaInstrumentaId = 3, Dostupan = true },
-               new Instrumenti { Id = 13, Model = "YAS-280", Proizvodjac = "Yamaha", Opis = "Popularni saksofon među studentima i srednje naprednim sviračima.", MusicShopId = 1, VrstaInstrumentaId = 3, Dostupan = true },
-               new Instrumenti { Id = 14, Model = "Stradivarius", Proizvodjac = "Bach", Opis = "Profesionalni trombon poznat po bogatom tonu i preciznoj intonaciji.", MusicShopId = 1, VrstaInstrumentaId = 3, Dostupan = true },               
-
-               new Instrumenti { Id = 15, Model = "Minilogue", Proizvodjac = "Korg", Opis = "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.", MusicShopId = 1, VrstaInstrumentaId = 4, Dostupan = true },
-               new Instrumenti { Id = 16, Model = "Juno-DS", Proizvodjac = "Roland", Opis = "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.", MusicShopId = 1, VrstaInstrumentaId = 4, Dostupan = true }               
+               new Instrumenti { Id = 15, Model = "Minilogue", Proizvodjac = "Korg", Opis = "Analogni sintisajzer poznat po svom bogatom, toplom zvuku.", MusicShopId = 1, VrstaInstrumentaId = 4, Dostupan = true, Slika = ImageToByteArray("minilogue.jpg") },
+               new Instrumenti { Id = 16, Model = "Juno-DS", Proizvodjac = "Roland", Opis = "Svestrani sintisajzer popularan za žive nastupe i studijsku upotrebu.", MusicShopId = 1, VrstaInstrumentaId = 4, Dostupan = true, Slika = ImageToByteArray("juno-ds.jpg") }               
             );
         }
+
+        private static byte[] ImageToByteArray(string imagePath)
+        {
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string wwwRootPath = Path.Combine(currentDirectory, "wwwroot");
+            string fullImagePath = Path.Combine(wwwRootPath, imagePath);
+
+            try
+            {
+                if (File.Exists(fullImagePath))
+                {
+                    return File.ReadAllBytes(fullImagePath);
+                }
+                else
+                {
+                    Console.WriteLine($"Image file not found: {fullImagePath}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading image file: {ex.Message}");
+                return null;
+            }
+        }
+
     }
 }

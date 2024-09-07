@@ -3,7 +3,6 @@ import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 abstract class BaseProvider<T> with ChangeNotifier {
   String baseUrl = "http://localhost:5256/";
@@ -92,13 +91,20 @@ abstract class BaseProvider<T> with ChangeNotifier {
     throw Exception("Method not implemented");
   }
 
-  bool isValidResponse(Response response) {
-    if (response.statusCode < 299) {
-      return true;
-    } else if (response.statusCode == 401) {
-      throw Exception("Unauthorized");
+  bool isValidResponse(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      try {
+        var jsonData = jsonDecode(response.body);
+        if (jsonData is List || jsonData is Map) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
     } else {
-      throw Exception("Something bad happened please try again");
+      return false;
     }
   }
 

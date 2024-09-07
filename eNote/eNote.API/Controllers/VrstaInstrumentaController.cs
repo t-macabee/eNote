@@ -4,7 +4,7 @@ using eNote.Services.Interfaces;
 
 namespace eNote.API.Controllers
 {
-    public class VrstaInstrumentaController(IVrstaInstrumentaService service) : CRUDController<Model.DTOs.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>(service)
+    public class VrstaInstrumentaController(IVrstaInstrumentaService vrstaInstrumentaservice) : CRUDController<Model.DTOs.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest>(vrstaInstrumentaservice)
     {
     }
 }

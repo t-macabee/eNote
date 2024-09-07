@@ -8,5 +8,6 @@ namespace eNote.Model.Requests.MusicShop
     public class MusicShopUpdateRequest : BaseMembersUpdateRequest
     {
         public string Naziv {  get; set; }
+        public string RadnoVrijeme {  get; set; }
     }
 }

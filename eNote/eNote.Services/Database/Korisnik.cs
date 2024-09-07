@@ -21,8 +21,7 @@ namespace eNote.Services.Database
         public DateTime DatumRodjenja { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; } 
-        public byte[]? Slika { get; set; }
-        public byte[]? SlikaThumb { get; set; }        
+        public byte[]? Slika { get; set; }     
 
         // Instruktor
         public ICollection<Kurs> Kurs { get; set; } = new List<Kurs>();

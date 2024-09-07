@@ -12,6 +12,7 @@ class Korisnik {
   String? datumRodjenja;
   String? email;
   String? telefon;
+  String? slika;
   int? adresaId;
   String? adresa;
   int? ulogaId;

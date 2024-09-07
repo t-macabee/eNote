@@ -2,36 +2,36 @@ import 'dart:convert';
 
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
-import 'package:enote_desktop/models/music_shop.dart';
 import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/models/vrsta_instrumenta.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
 import 'package:enote_desktop/providers/music_shop_provider.dart';
 import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
-import 'package:enote_desktop/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class InstrumentiListScreen extends StatefulWidget {
-  const InstrumentiListScreen({super.key});
+class ShopInstrumentiListScreen extends StatefulWidget {
+  final int? shopId;
+  final String? shopName;
+
+  const ShopInstrumentiListScreen({super.key, this.shopId, this.shopName});
 
   @override
-  State<InstrumentiListScreen> createState() => _InstrumentiListScreenState();
+  State<ShopInstrumentiListScreen> createState() =>
+      _InstrumentiListScreenState();
 }
 
-class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
+class _InstrumentiListScreenState extends State<ShopInstrumentiListScreen> {
   late InstrumentiProvider instrumentiProvider;
   late VrstaInstrumentaProvider vrstaInstrumentaProvider;
   late MusicShopProvider musicShopProvider;
 
   SearchResult<Instrumenti>? instrumentiResult;
   SearchResult<VrstaInstrumenta>? vrstaInstrumentaResult;
-  SearchResult<MusicShop>? musicShopResult;
 
   final TextEditingController _modelSearch = TextEditingController();
   final TextEditingController _proizvodjacSearch = TextEditingController();
   VrstaInstrumenta? _selectedVrstaInstrumenta;
-  MusicShop? _selectedMusicShop;
 
   @override
   void didChangeDependencies() {
@@ -42,11 +42,15 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
 
     _loadInstruments();
     _loadInstrumentTypes();
-    _loadMusicShops();
   }
 
   Future<void> _loadInstruments({Map<String, String>? filter}) async {
-    instrumentiResult = await instrumentiProvider.get(filter: filter);
+    var extendedFilter = {
+      'shopId': widget.shopId,
+      ...?filter,
+    };
+
+    instrumentiResult = await instrumentiProvider.get(filter: extendedFilter);
     setState(() {});
   }
 
@@ -55,17 +59,11 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     setState(() {});
   }
 
-  Future<void> _loadMusicShops() async {
-    musicShopResult = await musicShopProvider.get();
-    setState(() {});
-  }
-
   void _applyFilters() async {
     var filter = {
       'model': _modelSearch.text,
       'proizvodjac': _proizvodjacSearch.text,
       'vrstaInstrumenta': _selectedVrstaInstrumenta?.id.toString(),
-      'musicShop': _selectedMusicShop?.id.toString(),
     };
 
     filter.removeWhere((key, value) {
@@ -81,14 +79,13 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     _modelSearch.clear();
     _proizvodjacSearch.clear();
     _selectedVrstaInstrumenta = null;
-    _selectedMusicShop = null;
     _loadInstruments();
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-        "Svi instrumenti",
+        widget.shopName!,
         Column(
           children: [
             _buildSearch(),
@@ -124,10 +121,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                 elevation: 4,
               ),
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
+                Navigator.pop(context);
               },
               child: const Icon(Icons.arrow_back),
             ),
@@ -195,53 +189,6 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                 dropdownColor: const Color.fromARGB(255, 49, 53, 61),
               ),
             ),
-            const SizedBox(width: space),
-            SizedBox(
-              width: 200,
-              child: DropdownButtonFormField<MusicShop>(
-                decoration: InputDecoration(
-                  labelText: "Shop",
-                  labelStyle: const TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 1.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                value: _selectedMusicShop,
-                items: [
-                  const DropdownMenuItem<MusicShop>(
-                    value: null,
-                    child: Text('Sve prodavnice',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                  ...?musicShopResult?.result.map((MusicShop option) {
-                    return DropdownMenuItem<MusicShop>(
-                      value: option,
-                      child: Text(option.naziv ?? "",
-                          style: const TextStyle(color: Colors.white)),
-                    );
-                  }),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedMusicShop = value;
-                  });
-                },
-                style: const TextStyle(color: Colors.white),
-                dropdownColor: const Color.fromARGB(255, 49, 53, 61),
-              ),
-            ),
             const SizedBox(width: 40.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -297,93 +244,110 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
   }
 
   Widget _buildResult() {
-    return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          double cardWidth = (constraints.maxWidth / 6) - 8.0;
-          double cardHeight = cardWidth * 1.5;
+    if (instrumentiResult == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (instrumentiResult!.result.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: 40.0),
+        child: Center(
+          child: Text(
+            'Shop trenutno nema instrumente',
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    } else {
+      return Expanded(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            double cardWidth = (constraints.maxWidth / 6) - 8.0;
+            double cardHeight = cardWidth * 1.5;
 
-          return SingleChildScrollView(
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                childAspectRatio: 1.5,
-                mainAxisSpacing: 24.0,
-                crossAxisSpacing: 24.0,
-              ),
-              itemCount: instrumentiResult?.result.length ?? 0,
-              itemBuilder: (context, index) {
-                final instrument = instrumentiResult!.result[index];
-                bool isHovered = false;
+            return SingleChildScrollView(
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 7,
+                  childAspectRatio: 1.5,
+                  mainAxisSpacing: 24.0,
+                  crossAxisSpacing: 24.0,
+                ),
+                itemCount: instrumentiResult!.result.length,
+                itemBuilder: (context, index) {
+                  final instrument = instrumentiResult!.result[index];
+                  bool isHovered = false;
 
-                return StatefulBuilder(
-                  builder: (context, setState) {
-                    return MouseRegion(
-                      onEnter: (_) => setState(() => isHovered = true),
-                      onExit: (_) => setState(() => isHovered = false),
-                      child: Card(
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
-                          children: [
-                            Image.memory(
-                              base64Decode(instrument.slika!),
-                              width: cardWidth,
-                              height: cardHeight,
-                              fit: BoxFit.cover,
-                            ),
-                            Positioned.fill(
-                              child: AnimatedOpacity(
-                                opacity: isHovered ? 1.0 : 0.0,
-                                duration: const Duration(milliseconds: 200),
-                                child: Container(
-                                  color: Colors.black54,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          instrument.model ?? "",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16.0,
+                  return StatefulBuilder(
+                    builder: (context, setState) {
+                      return MouseRegion(
+                        onEnter: (_) => setState(() => isHovered = true),
+                        onExit: (_) => setState(() => isHovered = false),
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Stack(
+                            children: [
+                              Image.memory(
+                                base64Decode(instrument.slika!),
+                                width: cardWidth,
+                                height: cardHeight,
+                                fit: BoxFit.cover,
+                              ),
+                              Positioned.fill(
+                                child: AnimatedOpacity(
+                                  opacity: isHovered ? 1.0 : 0.0,
+                                  duration: const Duration(milliseconds: 200),
+                                  child: Container(
+                                    color: Colors.black54,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            instrument.model ?? "",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16.0,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(
-                                          instrument.proizvodjac ?? "",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.0,
+                                          Text(
+                                            instrument.proizvodjac ?? "",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14.0,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          );
-        },
-      ),
-    );
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          },
+        ),
+      );
+    }
   }
 
   Widget buildStyledTextField({

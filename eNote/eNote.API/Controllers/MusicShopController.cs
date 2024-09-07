@@ -9,7 +9,7 @@ namespace eNote.API.Controllers
     public class MusicShopController(IMusicShopService musicShopService) : CRUDController<MusicShop, MusicShopSearchObject, MusicShopInsertRequest, MusicShopUpdateRequest>(musicShopService)
     {
         [HttpGet("Instrumenti/{id}")]
-        public async Task<IActionResult> GetInstrumentsByShop(int id)
+        public async Task<ActionResult> GetInstrumentsByShop(int id)
         {
             var instruments = await musicShopService.GetInstumentiByShop(id);
             if (instruments == null || instruments.Count == 0)

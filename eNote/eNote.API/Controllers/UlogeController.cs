@@ -3,7 +3,7 @@ using eNote.Services.Interfaces;
 
 namespace eNote.API.Controllers
 {
-    public class UlogeController(IUlogeService service) : BaseController<Model.DTOs.Uloge, UlogeSearchObject>(service)
+    public class UlogeController(IUlogeService ulogeService) : BaseController<Model.DTOs.Uloge, UlogeSearchObject>(ulogeService)
     {
     }
 }

@@ -33,8 +33,14 @@ namespace eNote.Services.Services
                 }
             }
 
+            if (search.ShopId.HasValue)
+            {
+                query = query.Where(x => x.MusicShop.Id == search.ShopId.Value);
+            }
+
             return query;
         }
+
 
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {

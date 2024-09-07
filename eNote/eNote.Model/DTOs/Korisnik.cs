@@ -15,5 +15,6 @@ namespace eNote.Model
         public string Telefon { get; set; } 
         public string Adresa { get; set; } 
         public string Uloga { get; set; }
+        public byte[]? Slika { get; set; }
     }
 }

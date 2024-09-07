@@ -1,10 +1,11 @@
 ﻿using eNote.Model.Requests.Adresa;
 using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace eNote.API.Controllers
 {
-    public class AdresaController(IAdresaService service) : CRUDController<Model.DTOs.Adresa, AdresaSearchObject, AdresaUpsertRequest, AdresaUpsertRequest>(service)
-    {
+    public class AdresaController(IAdresaService adresaService) : CRUDController<Model.DTOs.Adresa, AdresaSearchObject, AdresaUpsertRequest, AdresaUpsertRequest>(adresaService)
+    {        
     }
 }

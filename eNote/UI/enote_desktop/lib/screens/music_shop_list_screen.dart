@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/music_shop.dart';
 import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/providers/music_shop_provider.dart';
-import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
+import 'package:enote_desktop/screens/home_screen.dart';
+import 'package:enote_desktop/screens/shop_instrumenti_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +18,6 @@ class MusicShopListScreen extends StatefulWidget {
 
 class _MusicShopListScreenState extends State<MusicShopListScreen> {
   late MusicShopProvider musicShopProvider;
-
   SearchResult<MusicShop>? musicShopResult;
 
   final TextEditingController _nazivSearch = TextEditingController();
@@ -25,21 +27,16 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     musicShopProvider = context.read<MusicShopProvider>();
-
     _loadShops();
   }
 
   Future<void> _loadShops({Map<String, String>? filter}) async {
     musicShopResult = await musicShopProvider.get(filter: filter);
-
     setState(() {});
   }
 
   void _applyFilters() async {
-    var filter = {
-      'naziv': _nazivSearch.text,
-      'adresa.grad': _gradSearch.text,
-    };
+    var filter = {'naziv': _nazivSearch.text, 'adresa': _gradSearch.text};
 
     filter.removeWhere((key, value) {
       return value.isEmpty;
@@ -58,7 +55,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-        "Music Shops",
+        "Prodavnice muzičke opreme",
         Column(
           children: [
             _buildSearch(),
@@ -80,6 +77,27 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                side: const BorderSide(color: Colors.white, width: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                elevation: 4,
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              },
+              child: const Icon(Icons.arrow_back),
+            ),
+            const SizedBox(width: space),
             SizedBox(
               width: 200,
               child: buildStyledTextField(
@@ -185,8 +203,8 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
                           clipBehavior: Clip.antiAlias,
                           child: Stack(
                             children: [
-                              Image.asset(
-                                'assets/images/user.png',
+                              Image.memory(
+                                base64Decode(shop.slika!),
                                 width: cardWidth,
                                 height: cardHeight,
                                 fit: BoxFit.cover,
@@ -236,9 +254,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
                                         Flexible(
                                           child: ElevatedButton(
                                             style: buildButtonStyleForCard(),
-                                            onPressed: () {
-                                              // Handle details button press
-                                            },
+                                            onPressed: () {},
                                             child: const Text('Detalji'),
                                           ),
                                         ),
@@ -250,8 +266,10 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      InstrumentiListScreen(
-                                                          shopId: shop.id),
+                                                      ShopInstrumentiListScreen(
+                                                    shopId: shop.id,
+                                                    shopName: shop.naziv,
+                                                  ),
                                                 ),
                                               );
                                             },
@@ -283,8 +301,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
       foregroundColor: Colors.white,
       backgroundColor: Colors.transparent,
       side: const BorderSide(color: Colors.white, width: 2),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 20, vertical: 8), // Adjusted padding
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
@@ -325,8 +342,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
       foregroundColor: Colors.white,
       backgroundColor: Colors.transparent,
       side: const BorderSide(color: Colors.white, width: 2),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 20, vertical: 8), // Adjusted padding
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),

@@ -13,6 +13,7 @@ MusicShop _$MusicShopFromJson(Map<String, dynamic> json) => MusicShop()
   ..status = json['status'] as String?
   ..email = json['email'] as String?
   ..telefon = json['telefon'] as String?
+  ..slika = json['slika'] as String?
   ..adresaId = (json['adresaId'] as num?)?.toInt()
   ..adresa = json['adresa'] as String?
   ..ulogaId = (json['ulogaId'] as num?)?.toInt()
@@ -25,6 +26,7 @@ Map<String, dynamic> _$MusicShopToJson(MusicShop instance) => <String, dynamic>{
       'status': instance.status,
       'email': instance.email,
       'telefon': instance.telefon,
+      'slika': instance.slika,
       'adresaId': instance.adresaId,
       'adresa': instance.adresa,
       'ulogaId': instance.ulogaId,

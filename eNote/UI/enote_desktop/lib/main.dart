@@ -1,3 +1,4 @@
+import 'package:enote_desktop/providers/adresa_provider.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
 import 'package:enote_desktop/providers/korisnici_provider.dart';
 import 'package:enote_desktop/providers/music_shop_provider.dart';
@@ -16,6 +17,7 @@ void main() {
     ChangeNotifierProvider<VrstaInstrumentaProvider>(
         create: (_) => VrstaInstrumentaProvider()),
     ChangeNotifierProvider<UlogeProvider>(create: (_) => UlogeProvider()),
+    ChangeNotifierProvider<AdresaProvider>(create: (_) => AdresaProvider()),
     ChangeNotifierProvider<MusicShopProvider>(
         create: (_) => MusicShopProvider()),
   ], child: const MyApp()));

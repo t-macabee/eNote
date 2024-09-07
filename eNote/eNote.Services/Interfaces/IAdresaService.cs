@@ -1,4 +1,5 @@
-﻿using eNote.Model.Requests.Adresa;
+﻿using eNote.Model.DTOs;
+using eNote.Model.Requests.Adresa;
 using eNote.Model.SearchObjects;
 using System;
 using System.Collections.Generic;

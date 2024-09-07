@@ -11,7 +11,6 @@ namespace eNote.Model.DTOs
         public string MusicShop { get; set; }
         public string VrstaInstrumenta { get; set; }
         public byte[]? Slika { get; set; }
-        public byte[]? SlikaThumb { get; set; }
         public bool Dostupan { get; set; }
     }
 }
