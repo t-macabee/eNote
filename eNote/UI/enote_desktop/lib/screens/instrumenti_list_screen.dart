@@ -41,7 +41,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     musicShopProvider = context.read<MusicShopProvider>();
 
     _loadInstruments();
-    _loadInstrumentTypes();
+    _loadTipInstrumenta();
     _loadMusicShops();
   }
 
@@ -50,7 +50,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     setState(() {});
   }
 
-  Future<void> _loadInstrumentTypes() async {
+  Future<void> _loadTipInstrumenta() async {
     vrstaInstrumentaResult = await vrstaInstrumentaProvider.get();
     setState(() {});
   }

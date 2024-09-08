@@ -269,7 +269,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
                                                   builder: (context) =>
                                                       ShopInstrumentiListScreen(
                                                     shopId: shop.id,
-                                                    shopName: shop.naziv,
+                                                    shopNaziv: shop.naziv,
                                                   ),
                                                 ),
                                               );

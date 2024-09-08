@@ -11,11 +11,9 @@ namespace eNote.Model.DTOs
         public string Naziv { get; set; }
         public string Lokacija { get; set; }
         public string DatumVrijemePredavanja { get; set; }
-        public int TrajanjeMinute { get; set; }
-        
+        public int TrajanjeMinute { get; set; }        
         public string Kurs { get; set; }
         public string TipPredavanja { get; set; }
-
-        public StanjePredavanja StatusPredavanja { get; set; }
+        public string StanjePredavanja { get; set; }
     }
 }

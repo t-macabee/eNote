@@ -98,8 +98,8 @@ class _MasterScreenState extends State<MasterScreen> {
                         ),
                         const SizedBox(height: 20),
                         _buildDrawerItem(
-                          icon: Icons.cloud_circle_sharp,
-                          text: "Kurs",
+                          icon: Icons.all_inclusive,
+                          text: "Kursevi",
                           onTap: () {
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(

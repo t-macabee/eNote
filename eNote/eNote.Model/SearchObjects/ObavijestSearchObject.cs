@@ -6,7 +6,7 @@ namespace eNote.Model.SearchObjects
 {
     public class ObavijestSearchObject : BaseSearchObject
     {
-        public DateTime? PocetniDatum { get; set; } 
-        public DateTime? KrajnjiDatum { get; set; } 
+        public DateTime? Od { get; set; } 
+        public DateTime? Do { get; set; } 
     }
 }

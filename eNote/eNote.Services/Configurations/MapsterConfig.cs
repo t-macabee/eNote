@@ -35,7 +35,8 @@ namespace eNote.Services.Configurations
             TypeAdapterConfig<Database.Predavanje, Model.DTOs.Predavanje>
                 .NewConfig()
                 .Map(dest => dest.Kurs, src => src.Kurs.Naziv)
-                .Map(dest => dest.DatumVrijemePredavanja, src => src.DatumVrijemePredavanja);
+                .Map(dest => dest.DatumVrijemePredavanja, src => src.DatumVrijemePredavanja)
+                .Map(dest => dest.TipPredavanja, src => src.TipPredavanja.Naziv);
 
             TypeAdapterConfig<Database.Instrumenti, Model.DTOs.Instrumenti>
                .NewConfig()

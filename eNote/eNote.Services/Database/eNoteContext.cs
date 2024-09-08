@@ -12,6 +12,7 @@ namespace eNote.Services.Database
         public DbSet<Uloge> Uloge { get; set; }
         public DbSet<Kurs> Kurs { get; set; }
         public DbSet<Predavanje> Predavanja { get; set; }
+        public DbSet<TipPredavanja> TipPredavanja { get; set; }
         public DbSet<Upis> Upisi { get; set; }
         public DbSet<Instrumenti> Instrumenti { get; set; }
         public DbSet<VrstaInstrumenta> VrstaInstrumenta { get; set; }
@@ -121,6 +122,13 @@ namespace eNote.Services.Database
                 .HasOne(z => z.Predavanje)
                 .WithMany(p => p.Zadaci)
                 .HasForeignKey(z => z.PredavanjeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Predavanje-tip predavanja
+            modelBuilder.Entity<Predavanje>()
+                .HasOne(p => p.TipPredavanja)
+                .WithMany(t => t.Predavanje)  
+                .HasForeignKey(p => p.TipPredavanjaId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // PredajaZadatka

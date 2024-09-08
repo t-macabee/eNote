@@ -13,8 +13,10 @@ namespace eNote.Services.Database
         public int KursId { get; set; }
         public Kurs Kurs { get; set; }
 
-        public string TipPredavanja { get; set; }
-        public string StanjePredavanja { get; set; }
+        public int TipPredavanjaId { get; set; }
+        public TipPredavanja TipPredavanja { get; set; }
+
+        public StanjePredavanja StanjePredavanja { get; set; }
 
         public ICollection<Prisustvo> Prisustvo { get; set; } = new List<Prisustvo>();
         public ICollection<Obavijest> Napomena { get; set; } = new List<Obavijest>();

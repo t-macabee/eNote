@@ -7,6 +7,7 @@ namespace eNote.Model.Requests.Predavanje
 {
     public class PredavanjeUpdateRequest
     {
+        public int TipPredavanjaId { get; set; }
         public string Naziv { get; set; }
         public string Lokacija { get; set; }
         public DateTime DatumVrijemePredavanja { get; set; }

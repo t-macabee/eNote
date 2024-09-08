@@ -13,12 +13,18 @@ namespace eNote.Services.Services
     {
         public override IQueryable<Predavanje> AddFilter(PredavanjeSearchObject search, IQueryable<Predavanje> query)
         {
-            query = base.AddFilter(search, query).Include(x => x.Kurs).ThenInclude(x => x.Instruktor);
+            query = base.AddFilter(search, query).Include(x => x.TipPredavanja).Include(x => x.Kurs).ThenInclude(x => x.Instruktor);
 
             if (!string.IsNullOrEmpty(search.Naziv))
             {
                 query = query.Where(x => x.Naziv.Contains(search.Naziv));
             }
+
+            if (search.KursId.HasValue)
+            {
+                query = query.Where(x => x.KursId == search.KursId.Value);
+            }
+
 
             return query;
         }
@@ -37,7 +43,7 @@ namespace eNote.Services.Services
 
         public override async Task BeforeInsert(PredavanjeInsertRequest request, Predavanje entity)
         {
-            var existingPredavanje = await context.Predavanja.Include(X => X.TipPredavanja)
+            var existingPredavanje = await context.Predavanja.Include(x => x.TipPredavanja).Include(x => x.Kurs).ThenInclude(x => x.Instruktor)
                 .FirstOrDefaultAsync(x => x.Naziv == request.Naziv && x.KursId == request.KursId);
 
             if (existingPredavanje != null)
@@ -63,13 +69,14 @@ namespace eNote.Services.Services
             }
 
             entity.TrajanjeMinute = request.TrajanjeMinute;
+            entity.StanjePredavanja = StanjePredavanja.Zakazano;
 
             await base.BeforeInsert(request, entity);
         }
 
         public override async Task BeforeUpdate(PredavanjeUpdateRequest request, Predavanje entity)
         {
-            entity = await context.Predavanja.Include(x => x.Kurs).ThenInclude(x => x.Instruktor).FirstOrDefaultAsync(x => x.Id == entity.Id);
+            entity = await context.Predavanja.Include(x => x.TipPredavanja).Include(x => x.Kurs).ThenInclude(x => x.Instruktor).FirstOrDefaultAsync(x => x.Id == entity.Id);
 
             if (entity == null)
             {

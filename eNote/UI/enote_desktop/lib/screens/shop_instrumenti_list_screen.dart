@@ -1,20 +1,18 @@
 import 'dart:convert';
-
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
 import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/models/vrsta_instrumenta.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
-import 'package:enote_desktop/providers/music_shop_provider.dart';
 import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ShopInstrumentiListScreen extends StatefulWidget {
   final int? shopId;
-  final String? shopName;
+  final String? shopNaziv;
 
-  const ShopInstrumentiListScreen({super.key, this.shopId, this.shopName});
+  const ShopInstrumentiListScreen({super.key, this.shopId, this.shopNaziv});
 
   @override
   State<ShopInstrumentiListScreen> createState() =>
@@ -24,7 +22,6 @@ class ShopInstrumentiListScreen extends StatefulWidget {
 class _InstrumentiListScreenState extends State<ShopInstrumentiListScreen> {
   late InstrumentiProvider instrumentiProvider;
   late VrstaInstrumentaProvider vrstaInstrumentaProvider;
-  late MusicShopProvider musicShopProvider;
 
   SearchResult<Instrumenti>? instrumentiResult;
   SearchResult<VrstaInstrumenta>? vrstaInstrumentaResult;
@@ -38,10 +35,9 @@ class _InstrumentiListScreenState extends State<ShopInstrumentiListScreen> {
     super.didChangeDependencies();
     instrumentiProvider = context.read<InstrumentiProvider>();
     vrstaInstrumentaProvider = context.read<VrstaInstrumentaProvider>();
-    musicShopProvider = context.read<MusicShopProvider>();
 
     _loadInstruments();
-    _loadInstrumentTypes();
+    _loadTipInstrumenta();
   }
 
   Future<void> _loadInstruments({Map<String, String>? filter}) async {
@@ -54,7 +50,7 @@ class _InstrumentiListScreenState extends State<ShopInstrumentiListScreen> {
     setState(() {});
   }
 
-  Future<void> _loadInstrumentTypes() async {
+  Future<void> _loadTipInstrumenta() async {
     vrstaInstrumentaResult = await vrstaInstrumentaProvider.get();
     setState(() {});
   }
@@ -85,7 +81,7 @@ class _InstrumentiListScreenState extends State<ShopInstrumentiListScreen> {
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-        widget.shopName!,
+        widget.shopNaziv!,
         Column(
           children: [
             _buildSearch(),

@@ -10,7 +10,7 @@ namespace eNote.Services.Utilities
             if (entity is Predavanje predavanje)
             {
                 await context.Entry(predavanje)
-                    .Reference(p => p.Kurs)
+                    .Reference(p => p.Kurs)                    
                     .LoadAsync();
 
                 if (predavanje.Kurs != null)

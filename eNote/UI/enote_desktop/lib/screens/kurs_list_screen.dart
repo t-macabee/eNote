@@ -227,78 +227,101 @@ class _KursListScreenState extends State<KursListScreen> {
     return Expanded(
       child: LayoutBuilder(
         builder: (context, constraints) {
+          double cardWidth = (constraints.maxWidth / 4) - 8.0;
+          double cardHeight = cardWidth * 2.5;
+
           return SingleChildScrollView(
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                childAspectRatio: 2.5,
+                childAspectRatio: 3.0,
                 mainAxisSpacing: 24.0,
                 crossAxisSpacing: 24.0,
               ),
               itemCount: kursResult?.result.length ?? 0,
               itemBuilder: (context, index) {
-                final shop = kursResult!.result[index];
+                final kurs = kursResult!.result[index];
+                bool isHovered = false;
 
                 return StatefulBuilder(
                   builder: (context, setState) {
                     return GestureDetector(
                       child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) => setState(() => isHovered = true),
+                        onExit: (_) => setState(() => isHovered = false),
                         child: SizedBox(
-                          width: 200.0,
+                          width: cardWidth,
+                          height: cardHeight,
                           child: Card(
                             margin: EdgeInsets.zero,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16.0),
                             ),
                             clipBehavior: Clip.antiAlias,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(213, 26, 89, 105),
-                                    Color.fromARGB(255, 114, 23, 16)
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color.fromARGB(213, 26, 89, 105),
+                                        Color.fromARGB(255, 114, 23, 16)
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 40.0),
+                                      child: Text(
+                                        kurs.naziv ?? "",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    bottom: 16,
-                                    left: 0,
-                                    right: 0,
+                                Positioned(
+                                  bottom: 16,
+                                  left: 0,
+                                  right: 0,
+                                  child: AnimatedOpacity(
+                                    opacity: isHovered ? 1.0 : 0.0,
+                                    duration: const Duration(milliseconds: 200),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16.0),
-                                      child: Column(
+                                      child: Row(
                                         mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            shop.naziv ?? "",
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16.0,
-                                                fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          const SizedBox(height: 16.0),
                                           ElevatedButton(
                                             style: buildButtonStyleForCard(),
                                             onPressed: () {},
                                             child: const Text('Detalji'),
                                           ),
-                                          const SizedBox(height: 16.0),
+                                          const SizedBox(width: 8.0),
                                           ElevatedButton(
                                             style: buildButtonStyleForCard(),
                                             onPressed: () {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const PredavanjaListScreen(),
+                                                      PredavanjaListScreen(
+                                                    kursId: kurs.id,
+                                                    kursNaziv: kurs.naziv,
+                                                  ),
                                                 ),
                                               );
                                             },
@@ -308,8 +331,8 @@ class _KursListScreenState extends State<KursListScreen> {
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -366,44 +389,3 @@ class _KursListScreenState extends State<KursListScreen> {
     );
   }
 }
-
-/*
-Widget _buildResult() {
-    return Expanded(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text("Naziv")),
-                DataColumn(label: Text("Opis")),
-                DataColumn(label: Text("Cijena")),
-                DataColumn(label: Text("Broj upisanih")),
-                DataColumn(label: Text("Datum početka")),
-                DataColumn(label: Text("Datum završetka")),
-                DataColumn(label: Text("Ime instruktora")),
-              ],
-              rows: kursResult?.result
-                      .map((x) => DataRow(cells: [
-                            DataCell(Text(x.naziv ?? "")),
-                            DataCell(Text(x.opis ?? "")),
-                            DataCell(Text(formatNumber(x.cijena))),
-                            DataCell(Text(x.brojUpisanih.toString())),
-                            DataCell(Text(x.datumPocetka.toString())),
-                            DataCell(Text(x.datumZavrsetka.toString())),
-                            DataCell(Text(x.instruktorIme.toString())),
-                          ]))
-                      .toList()
-                      .cast<DataRow>() ??
-                  [], // Convert Iterable to List
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-*/
