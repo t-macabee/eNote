@@ -1,61 +1,75 @@
-import 'dart:convert';
-
 import 'package:enote_desktop/layouts/master_screen.dart';
-import 'package:enote_desktop/models/music_shop.dart';
+import 'package:enote_desktop/models/korisnik.dart';
+import 'package:enote_desktop/models/kurs.dart';
 import 'package:enote_desktop/models/search_result.dart';
-import 'package:enote_desktop/providers/music_shop_provider.dart';
+import 'package:enote_desktop/providers/korisnici_provider.dart';
+import 'package:enote_desktop/providers/kurs_provider.dart';
 import 'package:enote_desktop/screens/home_screen.dart';
-import 'package:enote_desktop/screens/shop_instrumenti_list_screen.dart';
+import 'package:enote_desktop/screens/predavanja_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MusicShopListScreen extends StatefulWidget {
-  const MusicShopListScreen({super.key});
+class KursListScreen extends StatefulWidget {
+  const KursListScreen({super.key});
 
   @override
-  State<MusicShopListScreen> createState() => _MusicShopListScreenState();
+  State<KursListScreen> createState() => _KursListScreenState();
 }
 
-class _MusicShopListScreenState extends State<MusicShopListScreen> {
-  late MusicShopProvider musicShopProvider;
-  SearchResult<MusicShop>? musicShopResult;
+class _KursListScreenState extends State<KursListScreen> {
+  late KursProvider kursProvider;
+  late KorisniciProvider korisniciProvider;
+
+  SearchResult<Kurs>? kursResult;
+  SearchResult<Korisnik>? korisniciResult;
 
   final TextEditingController _nazivSearch = TextEditingController();
-  final TextEditingController _gradSearch = TextEditingController();
+  Korisnik? _selectedKorisnik;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    musicShopProvider = context.read<MusicShopProvider>();
-    _loadShops();
+    kursProvider = context.read<KursProvider>();
+    korisniciProvider = context.read<KorisniciProvider>();
+
+    _loadKurs();
+    _loadKorisnici();
   }
 
-  Future<void> _loadShops({Map<String, String>? filter}) async {
-    musicShopResult = await musicShopProvider.get(filter: filter);
+  Future<void> _loadKurs({Map<String, String>? filter}) async {
+    kursResult = await kursProvider.get(filter: filter);
+    setState(() {});
+  }
+
+  Future<void> _loadKorisnici({Map<String, String>? filter}) async {
+    korisniciResult = await korisniciProvider.get(filter: filter);
     setState(() {});
   }
 
   void _applyFilters() async {
-    var filter = {'naziv': _nazivSearch.text, 'adresa': _gradSearch.text};
+    var filter = {
+      'naziv': _nazivSearch.text,
+      'instruktorId': _selectedKorisnik?.id.toString()
+    };
 
     filter.removeWhere((key, value) {
-      return value.isEmpty;
+      return value == null || value.isEmpty;
     });
 
     var validFilter = filter.cast<String, String>();
-    await _loadShops(filter: validFilter);
+    await _loadKurs(filter: validFilter);
   }
 
   void _resetFilters() {
     _nazivSearch.clear();
-    _gradSearch.clear();
-    _loadShops();
+    _selectedKorisnik = null;
+    _loadKurs();
   }
 
   @override
   Widget build(BuildContext context) {
     return MasterScreen(
-        "Prodavnice muzičke opreme",
+        "Kurs",
         Column(
           children: [
             _buildSearch(),
@@ -108,9 +122,51 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _gradSearch,
-                labelText: "Grad",
+              child: DropdownButtonFormField<Korisnik>(
+                decoration: InputDecoration(
+                  labelText: "Instruktor",
+                  labelStyle: const TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(width: 2.0, color: Colors.white),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(width: 1.0, color: Colors.white),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(width: 1.0, color: Colors.white),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                value: _selectedKorisnik,
+                items: [
+                  const DropdownMenuItem<Korisnik>(
+                    value: null,
+                    child: Text('Svi instruktori',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  ...?korisniciResult?.result
+                      .where((Korisnik option) => option.uloga == 'Instruktor')
+                      .map((Korisnik option) {
+                    return DropdownMenuItem<Korisnik>(
+                      value: option,
+                      child: Text(
+                          '${option.ime ?? ""} ${option.prezime ?? ""}'.trim(),
+                          style: const TextStyle(color: Colors.white)),
+                    );
+                  }),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedKorisnik = value;
+                  });
+                },
+                style: const TextStyle(color: Colors.white),
+                dropdownColor: const Color.fromARGB(255, 49, 53, 61),
               ),
             ),
             const SizedBox(width: 40.0),
@@ -159,7 +215,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
                 elevation: 4,
               ),
               onPressed: () async {},
-              child: const Text('Novi shop'),
+              child: const Text('Novi kurs'),
             ),
           ],
         ),
@@ -171,118 +227,90 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
     return Expanded(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          double cardWidth = (constraints.maxWidth / 6) - 8.0;
-          double cardHeight = cardWidth * 1.5;
-
           return SingleChildScrollView(
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                childAspectRatio: 1.5,
+                crossAxisCount: 4,
+                childAspectRatio: 2.5,
                 mainAxisSpacing: 24.0,
                 crossAxisSpacing: 24.0,
               ),
-              itemCount: musicShopResult?.result.length ?? 0,
+              itemCount: kursResult?.result.length ?? 0,
               itemBuilder: (context, index) {
-                final shop = musicShopResult!.result[index];
-                bool isHovered = false;
+                final shop = kursResult!.result[index];
 
                 return StatefulBuilder(
                   builder: (context, setState) {
                     return GestureDetector(
                       child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        onEnter: (_) => setState(() => isHovered = true),
-                        onExit: (_) => setState(() => isHovered = false),
-                        child: Card(
-                          margin: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: Stack(
-                            children: [
-                              Image.memory(
-                                base64Decode(shop.slika!),
-                                width: cardWidth,
-                                height: cardHeight,
-                                fit: BoxFit.cover,
+                        child: SizedBox(
+                          width: 200.0,
+                          child: Card(
+                            margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(213, 26, 89, 105),
+                                    Color.fromARGB(255, 114, 23, 16)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16.0),
                               ),
-                              Positioned.fill(
-                                child: AnimatedOpacity(
-                                  opacity: isHovered ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 200),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black54,
-                                    ),
-                                    child: Center(
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                    bottom: 16,
+                                    left: 0,
+                                    right: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
                                       child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
                                             shop.naziv ?? "",
                                             style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.0,
-                                            ),
+                                                color: Colors.white,
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold),
                                             textAlign: TextAlign.center,
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                left: 0,
-                                right: 0,
-                                child: AnimatedOpacity(
-                                  opacity: isHovered ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 200),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Flexible(
-                                          child: ElevatedButton(
+                                          const SizedBox(height: 16.0),
+                                          ElevatedButton(
                                             style: buildButtonStyleForCard(),
                                             onPressed: () {},
                                             child: const Text('Detalji'),
                                           ),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Flexible(
-                                          child: ElevatedButton(
+                                          const SizedBox(height: 16.0),
+                                          ElevatedButton(
                                             style: buildButtonStyleForCard(),
                                             onPressed: () {
                                               Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      ShopInstrumentiListScreen(
-                                                    shopId: shop.id,
-                                                    shopName: shop.naziv,
-                                                  ),
+                                                      const PredavanjaListScreen(),
                                                 ),
                                               );
                                             },
-                                            child: const Text('Instrumenti'),
+                                            child: const Text('Predavanja'),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -294,19 +322,6 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
           );
         },
       ),
-    );
-  }
-
-  ButtonStyle buildButtonStyleForCard() {
-    return ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.transparent,
-      side: const BorderSide(color: Colors.white, width: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 4,
     );
   }
 
@@ -338,7 +353,7 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
     );
   }
 
-  ButtonStyle buildButtonStyle() {
+  ButtonStyle buildButtonStyleForCard() {
     return ElevatedButton.styleFrom(
       foregroundColor: Colors.white,
       backgroundColor: Colors.transparent,
@@ -351,3 +366,44 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
     );
   }
 }
+
+/*
+Widget _buildResult() {
+    return Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.all(36.0),
+            child: DataTable(
+              columns: const [
+                DataColumn(label: Text("Naziv")),
+                DataColumn(label: Text("Opis")),
+                DataColumn(label: Text("Cijena")),
+                DataColumn(label: Text("Broj upisanih")),
+                DataColumn(label: Text("Datum početka")),
+                DataColumn(label: Text("Datum završetka")),
+                DataColumn(label: Text("Ime instruktora")),
+              ],
+              rows: kursResult?.result
+                      .map((x) => DataRow(cells: [
+                            DataCell(Text(x.naziv ?? "")),
+                            DataCell(Text(x.opis ?? "")),
+                            DataCell(Text(formatNumber(x.cijena))),
+                            DataCell(Text(x.brojUpisanih.toString())),
+                            DataCell(Text(x.datumPocetka.toString())),
+                            DataCell(Text(x.datumZavrsetka.toString())),
+                            DataCell(Text(x.instruktorIme.toString())),
+                          ]))
+                      .toList()
+                      .cast<DataRow>() ??
+                  [], // Convert Iterable to List
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+*/

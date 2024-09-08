@@ -17,12 +17,12 @@ namespace eNote.Services.Services
 
             if (!string.IsNullOrEmpty(search.Model))
             {
-                query = query.Where(x => x.Model.StartsWith(search.Model));
+                query = query.Where(x => x.Model.Contains(search.Model));
             }
 
             if (!string.IsNullOrEmpty(search.Proizvodjac))
             {
-                query = query.Where(x => x.Proizvodjac.StartsWith(search.Proizvodjac));
+                query = query.Where(x => x.Proizvodjac.Contains(search.Proizvodjac));
             }
 
             if (!string.IsNullOrEmpty(search.VrstaInstrumenta))

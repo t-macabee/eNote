@@ -284,6 +284,7 @@ class _InstrumentiListScreenState extends State<ShopInstrumentiListScreen> {
                   return StatefulBuilder(
                     builder: (context, setState) {
                       return MouseRegion(
+                        cursor: SystemMouseCursors.click,
                         onEnter: (_) => setState(() => isHovered = true),
                         onExit: (_) => setState(() => isHovered = false),
                         child: Card(

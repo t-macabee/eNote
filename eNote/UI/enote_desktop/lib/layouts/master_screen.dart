@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:enote_desktop/providers/auth_provider.dart';
 import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
 import 'package:enote_desktop/screens/korisnici_list_screen.dart';
+import 'package:enote_desktop/screens/kurs_list_screen.dart';
 import 'package:enote_desktop/screens/login_screen.dart';
 import 'package:enote_desktop/screens/music_shop_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,17 @@ class _MasterScreenState extends State<MasterScreen> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         const KorisniciListScreen()));
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        _buildDrawerItem(
+                          icon: Icons.cloud_circle_sharp,
+                          text: "Kurs",
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const KursListScreen()));
                           },
                         ),
                         const SizedBox(height: 20),

@@ -16,12 +16,12 @@ namespace eNote.Services.Services
 
             if (!string.IsNullOrEmpty(search.Naziv))
             {
-                query = query.Where(x => x.Naziv.StartsWith(search.Naziv));
+                query = query.Where(x => x.Naziv.Contains(search.Naziv));
             }
 
             if (!string.IsNullOrEmpty(search.Grad))
             {
-                query = query.Where(x => x.Adresa.Grad == search.Grad);
+                query = query.Where(x => x.Adresa.Grad.Contains(search.Grad));
             }
 
             return query;

@@ -15,7 +15,7 @@ namespace eNote.Services.Services
 
             if (!string.IsNullOrEmpty(search.Naziv))
             {
-                query = query.Where(x => x.Naziv.StartsWith(search.Naziv));
+                query = query.Where(x => x.Naziv.Contains(search.Naziv));
             }
 
             return query;

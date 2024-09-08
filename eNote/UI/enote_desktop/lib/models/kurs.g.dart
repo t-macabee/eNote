@@ -14,6 +14,7 @@ Kurs _$KursFromJson(Map<String, dynamic> json) => Kurs()
   ..brojUpisanih = (json['brojUpisanih'] as num?)?.toInt()
   ..datumPocetka = json['datumPocetka'] as String?
   ..datumZavrsetka = json['datumZavrsetka'] as String?
+  ..instruktorId = (json['instruktorId'] as num?)?.toInt()
   ..instruktorIme = json['instruktorIme'] as String?;
 
 Map<String, dynamic> _$KursToJson(Kurs instance) => <String, dynamic>{
@@ -24,5 +25,6 @@ Map<String, dynamic> _$KursToJson(Kurs instance) => <String, dynamic>{
       'brojUpisanih': instance.brojUpisanih,
       'datumPocetka': instance.datumPocetka,
       'datumZavrsetka': instance.datumZavrsetka,
+      'instruktorId': instance.instruktorId,
       'instruktorIme': instance.instruktorIme,
     };

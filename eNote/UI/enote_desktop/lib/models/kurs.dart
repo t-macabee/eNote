@@ -11,6 +11,7 @@ class Kurs {
   int? brojUpisanih;
   String? datumPocetka;
   String? datumZavrsetka;
+  int? instruktorId;
   String? instruktorIme;
 
   Kurs();

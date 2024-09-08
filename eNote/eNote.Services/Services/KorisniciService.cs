@@ -22,7 +22,7 @@ namespace eNote.Services.Services
 
             if (!string.IsNullOrEmpty(search.ImePrezime))
             {
-                query = query.Where(x => x.Ime.StartsWith(search.ImePrezime) || x.Prezime.StartsWith(search.ImePrezime));
+                query = query.Where(x => x.Ime.Contains(search.ImePrezime) || x.Prezime.Contains(search.ImePrezime));
             }
 
             if (!string.IsNullOrEmpty(search.KorisnickoIme))
