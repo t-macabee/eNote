@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:enote_desktop/popups/korisnici_dialog.dart';
 import 'package:enote_desktop/providers/auth_provider.dart';
 import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
 import 'package:enote_desktop/screens/korisnici_list_screen.dart';
@@ -140,6 +141,21 @@ class _MasterScreenState extends State<MasterScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.logout, color: Colors.white),
                   onPressed: () => _logout(context),
+                ),
+              ),
+              Positioned(
+                top: 110,
+                right: 13,
+                child: IconButton(
+                  icon: const Icon(Icons.settings, color: Colors.white),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const KorisniciDialog(); // Show the Korisnici dialog
+                      },
+                    );
+                  },
                 ),
               ),
             ],

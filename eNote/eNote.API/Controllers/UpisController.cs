@@ -5,7 +5,7 @@ using eNote.Services.Interfaces;
 
 namespace eNote.API.Controllers
 {
-    public class UpisController(IUpisService upisService) : CRUDController<Upis, UpisSearchObject, UpisInsertRequest, UpisUpdateRequest>(upisService)
+    public class UpisController(IUpisService upisService) : CRUDController<Upis, UpisSearchObject, UpisInsertRequest, object>(upisService)
     {
     }
 }

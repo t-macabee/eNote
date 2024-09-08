@@ -9,6 +9,5 @@ namespace eNote.Model.Requests.Upis
     {
         public int KursId { get; set; }
         public int StudentId { get; set; }
-        public StanjeUpisa StanjeUpisa { get; set; } = StanjeUpisa.NaCekanju;
     }
 }

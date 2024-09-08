@@ -10,6 +10,5 @@ namespace eNote.Model.DTOs
         public int Id { get; set; }
         public int StudentId { get; set; }
         public int KursId { get; set; }
-        public StanjeUpisa StatusUpisa { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class UpisService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, UpisUpdateRequest, Upis>(context, mapper), IUpisService
+    public class UpisService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, object, Upis>(context, mapper), IUpisService
     {
         public override IQueryable<Upis> AddFilter(UpisSearchObject search, IQueryable<Upis> query)
         {
@@ -56,7 +56,6 @@ namespace eNote.Services.Services
 
             entity.StudentId = request.StudentId;
             entity.KursId = request.KursId;
-            entity.StanjeUpisa = request.StanjeUpisa.ToString();
 
             var kurs = await context.Kurs.FindAsync(request.KursId);
             if (kurs != null)
@@ -65,13 +64,6 @@ namespace eNote.Services.Services
             }
 
             await base.BeforeInsert(request, entity);
-        }
-
-        public override async Task BeforeUpdate(UpisUpdateRequest request, Upis entity)
-        {
-            entity.StanjeUpisa = request.StanjeUpisa.ToString();
-
-            await base.BeforeUpdate(request, entity);
         }
 
         public override async Task Delete(int id)

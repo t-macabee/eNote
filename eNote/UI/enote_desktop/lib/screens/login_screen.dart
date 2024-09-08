@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:enote_desktop/providers/auth_provider.dart';
-import 'package:enote_desktop/screens/home_screen.dart';
+import 'package:enote_desktop/screens/kurs_list_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const HomeScreen(),
+            builder: (context) => const KursListScreen(),
           ),
         );
       } else {

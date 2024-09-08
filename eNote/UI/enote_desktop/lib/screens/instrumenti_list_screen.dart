@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
 import 'package:enote_desktop/models/music_shop.dart';
@@ -8,7 +7,6 @@ import 'package:enote_desktop/models/vrsta_instrumenta.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
 import 'package:enote_desktop/providers/music_shop_provider.dart';
 import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
-import 'package:enote_desktop/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,27 +109,6 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-              child: const Icon(Icons.arrow_back),
-            ),
-            const SizedBox(width: space),
             SizedBox(
               width: 200,
               child: buildStyledTextField(

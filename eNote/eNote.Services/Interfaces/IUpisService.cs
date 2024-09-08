@@ -3,7 +3,7 @@ using eNote.Model.SearchObjects;
 
 namespace eNote.Services.Interfaces
 {
-    public interface IUpisService : ICRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, UpisUpdateRequest>
+    public interface IUpisService : ICRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, object>
     {
     }
 }
