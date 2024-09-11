@@ -1,4 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
+import 'package:enote_desktop/extensions/elevated_button_extension.dart';
+import 'package:enote_desktop/extensions/error_dialog_extension.dart';
+import 'package:enote_desktop/extensions/text_field_extension.dart';
 import 'package:enote_desktop/providers/auth_provider.dart';
 import 'package:enote_desktop/screens/kurs_list_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +17,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   void _login(BuildContext context) async {
     String username = _usernameController.text.trim();
     String password = _passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
-      _showErrorDialog(context, "Unesite korisničko ime i lozinku.");
+      showErrorDialog(context, "Unesite korisničko ime i lozinku.");
       return;
     }
 
@@ -32,65 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       } else {
-        _showErrorDialog(context, "Pogrešno korisničko ime ili lozinka.");
+        showErrorDialog(context, "Pogrešno korisničko ime ili lozinka.");
       }
     } catch (e) {
-      _showErrorDialog(context, e.toString());
+      showErrorDialog(context, e.toString());
     }
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _showErrorDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        elevation: 8,
-        backgroundColor: Colors.black87,
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: SizedBox(
-            width: 300,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  message,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.redAccent,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -114,13 +70,13 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Container(
             constraints: const BoxConstraints(
               maxWidth: 500,
-              maxHeight: 600,
+              maxHeight: 500,
             ),
             child: Card(
               color: const Color.fromARGB(213, 26, 89, 105),
               elevation: 8,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(32.0),
                 side: const BorderSide(
                   color: borderColor,
                   width: 2.0,
@@ -128,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(32.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -144,47 +100,35 @@ class _LoginScreenState extends State<LoginScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 60),
-                      _buildTextField(
-                        controller: _usernameController,
-                        labelText: "Username",
-                        icon: Icons.person,
-                        borderColor: borderColor,
-                        textStyle: whiteTextStyle,
+                      SizedBox(
+                        width: 350,
+                        child: _usernameController.buildStyledTextField(
+                          labelText: "Username",
+                          borderColor: borderColor,
+                          textStyle: whiteTextStyle,
+                          icon: Icons.person,
+                        ),
                       ),
                       const SizedBox(height: 40),
-                      _buildTextField(
-                        controller: _passwordController,
-                        labelText: "Password",
-                        icon: Icons.lock,
-                        borderColor: borderColor,
-                        textStyle: whiteTextStyle,
-                        obscureText: true,
+                      SizedBox(
+                        width: 350,
+                        child: _passwordController.buildStyledTextField(
+                          labelText: "Password",
+                          borderColor: borderColor,
+                          textStyle: whiteTextStyle,
+                          icon: Icons.lock,
+                          obscureText: true,
+                        ),
                       ),
                       const SizedBox(height: 70),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _login(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.transparent,
-                            side:
-                                const BorderSide(color: borderColor, width: 2),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 100, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            elevation: 4,
-                          ),
-                          child: const Text(
-                            "Login",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
-                      ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: 'Login'.buildStyledButton(
+                              onPressed: () {
+                                _login(context);
+                              },
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 15))),
                       const SizedBox(height: 60)
                     ],
                   ),
@@ -192,43 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    required IconData icon,
-    required Color borderColor,
-    required TextStyle textStyle,
-    bool obscureText = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: TextField(
-        controller: controller,
-        style: textStyle,
-        cursorColor: Colors.white,
-        obscureText: obscureText,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(width: 2.0, color: borderColor),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 1.0, color: borderColor),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2.0, color: borderColor),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          floatingLabelBehavior: FloatingLabelBehavior.auto,
-          labelText: labelText,
-          labelStyle: textStyle,
-          prefixIcon: Icon(icon, color: borderColor),
         ),
       ),
     );

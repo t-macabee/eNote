@@ -41,7 +41,6 @@ namespace eNote.Services.Services
             return query;
         }
 
-
         public override async Task<Model.DTOs.Instrumenti> GetById(int id)
         {
             var entity = await context.Instrumenti.Include(x => x.MusicShop).Include(x => x.VrstaInstrumenta).FirstOrDefaultAsync(x => x.Id == id);
@@ -49,14 +48,20 @@ namespace eNote.Services.Services
             return entity == null ? throw new KeyNotFoundException("ID nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
         }
 
-        public override async Task<Model.DTOs.Instrumenti> Insert(InstrumentInsertRequest request)
+        public override async Task BeforeInsert(InstrumentInsertRequest request, Instrumenti entity)
         {
-            await base.Insert(request);
-
-            var entity = await context.Instrumenti.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop).FirstOrDefaultAsync(x => x.Model == request.Model);
-
-            return entity == null ? throw new Exception("Model nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
+            entity.Dostupan = true;
+            await base.BeforeInsert(request, entity);
         }
+
+        //public override async Task<Model.DTOs.Instrumenti> Insert(InstrumentInsertRequest request)
+        //{
+        //    await base.Insert(request);
+
+        //    var entity = await context.Instrumenti.Include(x => x.VrstaInstrumenta).Include(x => x.MusicShop).FirstOrDefaultAsync(x => x.Model == request.Model);
+
+        //    return entity == null ? throw new Exception("Model nije pronadjen.") : mapper.Map<Model.DTOs.Instrumenti>(entity);
+        //}
 
         public override async Task<Model.DTOs.Instrumenti> Update(int id, InstrumentUpdateRequest request)
         {

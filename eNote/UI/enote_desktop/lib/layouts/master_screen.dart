@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:enote_desktop/extensions/list_tile_extension.dart';
+import 'package:enote_desktop/extensions/text_styling_extension.dart';
 import 'package:enote_desktop/popups/korisnici_dialog.dart';
 import 'package:enote_desktop/providers/auth_provider.dart';
 import 'package:enote_desktop/screens/instrumenti_list_screen.dart';
@@ -31,10 +33,7 @@ class _MasterScreenState extends State<MasterScreen> {
         appBar: AppBar(
           title: Text(
             widget.title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyling.masterScreenTitleStyle(),
           ),
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: const Color.fromARGB(213, 26, 89, 105),
@@ -64,17 +63,11 @@ class _MasterScreenState extends State<MasterScreen> {
                     ),
                     accountName: Text(
                       AuthProvider.currentUser?.korisnickoIme ?? '',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyling.drawerAccountNameStyle(),
                     ),
                     accountEmail: Text(
                       AuthProvider.currentUser?.email ?? '',
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: TextStyling.drawerAccountEmailStyle(),
                     ),
                     currentAccountPicture: CircleAvatar(
                       backgroundImage: MemoryImage(
@@ -87,7 +80,7 @@ class _MasterScreenState extends State<MasterScreen> {
                       padding: EdgeInsets.zero,
                       children: [
                         const SizedBox(height: 20),
-                        _buildDrawerItem(
+                        ListTileStyling.styledDrawerItem(
                           icon: Icons.people,
                           text: "Korisnici",
                           onTap: () {
@@ -98,7 +91,7 @@ class _MasterScreenState extends State<MasterScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
-                        _buildDrawerItem(
+                        ListTileStyling.styledDrawerItem(
                           icon: Icons.all_inclusive,
                           text: "Kursevi",
                           onTap: () {
@@ -109,7 +102,7 @@ class _MasterScreenState extends State<MasterScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
-                        _buildDrawerItem(
+                        ListTileStyling.styledDrawerItem(
                           icon: Icons.store,
                           text: "Prodavnice opreme",
                           onTap: () {
@@ -120,7 +113,7 @@ class _MasterScreenState extends State<MasterScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
-                        _buildDrawerItem(
+                        ListTileStyling.styledDrawerItem(
                           icon: Icons.music_note,
                           text: "Svi instrumenti",
                           onTap: () {
@@ -145,14 +138,14 @@ class _MasterScreenState extends State<MasterScreen> {
               ),
               Positioned(
                 top: 110,
-                right: 13,
+                right: 12.5,
                 child: IconButton(
                   icon: const Icon(Icons.settings, color: Colors.white),
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return const KorisniciDialog(); // Show the Korisnici dialog
+                        return const KorisniciDialog();
                       },
                     );
                   },
@@ -179,20 +172,5 @@ class _MasterScreenState extends State<MasterScreen> {
             ),
           ),
         ));
-  }
-
-  Widget _buildDrawerItem({
-    required IconData icon,
-    required String text,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(
-        text,
-        style: const TextStyle(color: Colors.white, fontSize: 16),
-      ),
-      onTap: onTap,
-    );
   }
 }

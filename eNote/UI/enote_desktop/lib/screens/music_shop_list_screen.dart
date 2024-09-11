@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:enote_desktop/extensions/elevated_button_extension.dart';
+import 'package:enote_desktop/extensions/text_field_extension.dart';
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/music_shop.dart';
 import 'package:enote_desktop/models/search_result.dart';
@@ -16,16 +18,23 @@ class MusicShopListScreen extends StatefulWidget {
 
 class _MusicShopListScreenState extends State<MusicShopListScreen> {
   late MusicShopProvider musicShopProvider;
+
   SearchResult<MusicShop>? musicShopResult;
 
   final TextEditingController _nazivSearch = TextEditingController();
   final TextEditingController _gradSearch = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    musicShopProvider = context.read<MusicShopProvider>();
+
+    _loadShops();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    musicShopProvider = context.read<MusicShopProvider>();
-    _loadShops();
   }
 
   Future<void> _loadShops({Map<String, String>? filter}) async {
@@ -78,66 +87,37 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _nazivSearch,
+              child: _nazivSearch.buildStyledTextField(
                 labelText: "Naziv",
               ),
             ),
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _gradSearch,
+              child: _gradSearch.buildStyledTextField(
                 labelText: "Grad",
               ),
             ),
             const SizedBox(width: 40.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Pretraga'.buildStyledButton(
+                onPressed: _applyFilters,
               ),
-              onPressed: _applyFilters,
-              child: const Text('Pretraga'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Reset filtera'.buildStyledButton(
+                onPressed: _resetFilters,
               ),
-              onPressed: _resetFilters,
-              child: const Text('Reset filtera'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Novi shop'.buildStyledButton(
+                onPressed: () async {},
               ),
-              onPressed: () async {},
-              child: const Text('Novi shop'),
             ),
           ],
         ),
@@ -150,15 +130,15 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           double cardWidth = (constraints.maxWidth / 6) - 8.0;
-          double cardHeight = cardWidth * 1.5;
+          double cardHeight = cardWidth * 1.0;
 
           return SingleChildScrollView(
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
-                childAspectRatio: 1.5,
+                childAspectRatio: cardWidth / cardHeight,
                 mainAxisSpacing: 24.0,
                 crossAxisSpacing: 24.0,
               ),
@@ -169,99 +149,123 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
 
                 return StatefulBuilder(
                   builder: (context, setState) {
-                    return GestureDetector(
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        onEnter: (_) => setState(() => isHovered = true),
-                        onExit: (_) => setState(() => isHovered = false),
-                        child: Card(
-                          margin: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: Stack(
-                            children: [
-                              Image.memory(
-                                base64Decode(shop.slika!),
-                                width: cardWidth,
-                                height: cardHeight,
-                                fit: BoxFit.cover,
+                    return MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onEnter: (_) => setState(() => isHovered = true),
+                      onExit: (_) => setState(() => isHovered = false),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Stack(
+                          children: [
+                            shop.slika != null && shop.slika!.isNotEmpty
+                                ? Image.memory(
+                                    base64Decode(shop.slika!),
+                                    width: cardWidth,
+                                    height: cardHeight,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    'assets/images/stock-user.jpg',
+                                    width: cardWidth,
+                                    height: cardHeight,
+                                    fit: BoxFit.cover,
+                                  ),
+                            Positioned(
+                              top: 0.0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 6.0, horizontal: 8.0),
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromARGB(255, 114, 23, 16),
+                                      Color.fromARGB(213, 26, 89, 105)
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(16.0)),
+                                ),
+                                child: Text(
+                                  shop.naziv ?? "",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.0,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
+                            ),
+                            if (isHovered)
                               Positioned.fill(
                                 child: AnimatedOpacity(
                                   opacity: isHovered ? 1.0 : 0.0,
                                   duration: const Duration(milliseconds: 200),
                                   child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.black54,
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            shop.naziv ?? "",
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16.0,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                left: 0,
-                                right: 0,
-                                child: AnimatedOpacity(
-                                  opacity: isHovered ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 200),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Flexible(
-                                          child: ElevatedButton(
-                                            style: buildButtonStyleForCard(),
-                                            onPressed: () {},
-                                            child: const Text('Detalji'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Flexible(
-                                          child: ElevatedButton(
-                                            style: buildButtonStyleForCard(),
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ShopInstrumentiListScreen(
-                                                    shopId: shop.id,
-                                                    shopNaziv: shop.naziv,
+                                    color: Colors.black54,
+                                    child: LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        return Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Flexible(
+                                              child: SingleChildScrollView(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(
+                                                      constraints.maxHeight *
+                                                          0.05),
+                                                  child: Wrap(
+                                                    spacing: 8.0,
+                                                    runSpacing: 8.0,
+                                                    alignment:
+                                                        WrapAlignment.center,
+                                                    children: [
+                                                      _buildResponsiveButton(
+                                                        'Detalji',
+                                                        onPressed: () {},
+                                                        constraints:
+                                                            constraints,
+                                                      ),
+                                                      _buildResponsiveButton(
+                                                        'Instrumenti',
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .push(
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ShopInstrumentiListScreen(
+                                                                shopId: shop.id,
+                                                                shopNaziv:
+                                                                    shop.naziv,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        constraints:
+                                                            constraints,
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              );
-                                            },
-                                            child: const Text('Instrumenti'),
-                                          ),
-                                        ),
-                                      ],
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
                     );
@@ -274,58 +278,17 @@ class _MusicShopListScreenState extends State<MusicShopListScreen> {
       ),
     );
   }
+}
 
-  ButtonStyle buildButtonStyleForCard() {
-    return ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.transparent,
-      side: const BorderSide(color: Colors.white, width: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 4,
-    );
-  }
-
-  Widget buildStyledTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return TextField(
-      controller: controller,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  ButtonStyle buildButtonStyle() {
-    return ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.transparent,
-      side: const BorderSide(color: Colors.white, width: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 4,
-    );
-  }
+Widget _buildResponsiveButton(String text,
+    {required VoidCallback onPressed, required BoxConstraints constraints}) {
+  double horizontalPadding = constraints.maxWidth * 0.05;
+  double verticalPadding = constraints.maxHeight * 0.02;
+  return text.buildStyledButton(
+    onPressed: onPressed,
+    padding: EdgeInsets.symmetric(
+      horizontal: horizontalPadding,
+      vertical: verticalPadding,
+    ),
+  );
 }

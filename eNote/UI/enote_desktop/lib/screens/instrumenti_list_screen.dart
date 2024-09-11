@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'package:enote_desktop/extensions/dropdown_button_extension.dart';
+import 'package:enote_desktop/extensions/elevated_button_extension.dart';
+import 'package:enote_desktop/extensions/text_field_extension.dart';
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
 import 'package:enote_desktop/models/music_shop.dart';
 import 'package:enote_desktop/models/search_result.dart';
 import 'package:enote_desktop/models/vrsta_instrumenta.dart';
+import 'package:enote_desktop/popups/instrumenti_dialog.dart';
 import 'package:enote_desktop/providers/instrumenti_provider.dart';
 import 'package:enote_desktop/providers/music_shop_provider.dart';
 import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
@@ -28,19 +32,26 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
 
   final TextEditingController _modelSearch = TextEditingController();
   final TextEditingController _proizvodjacSearch = TextEditingController();
-  VrstaInstrumenta? _selectedVrstaInstrumenta;
-  MusicShop? _selectedMusicShop;
+
+  final ValueNotifier<VrstaInstrumenta?> _selectedVrstaInstrumenta =
+      ValueNotifier(null);
+  final ValueNotifier<MusicShop?> _selectedMusicShop = ValueNotifier(null);
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     instrumentiProvider = context.read<InstrumentiProvider>();
     vrstaInstrumentaProvider = context.read<VrstaInstrumentaProvider>();
     musicShopProvider = context.read<MusicShopProvider>();
 
     _loadInstruments();
-    _loadTipInstrumenta();
+    _loadVrstaInstrumenta();
     _loadMusicShops();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   Future<void> _loadInstruments({Map<String, String>? filter}) async {
@@ -48,7 +59,7 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     setState(() {});
   }
 
-  Future<void> _loadTipInstrumenta() async {
+  Future<void> _loadVrstaInstrumenta() async {
     vrstaInstrumentaResult = await vrstaInstrumentaProvider.get();
     setState(() {});
   }
@@ -62,14 +73,11 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
     var filter = {
       'model': _modelSearch.text,
       'proizvodjac': _proizvodjacSearch.text,
-      'vrstaInstrumenta': _selectedVrstaInstrumenta?.id.toString(),
-      'musicShop': _selectedMusicShop?.id.toString(),
+      'vrstaInstrumenta': _selectedVrstaInstrumenta.value?.id.toString(),
+      'musicShop': _selectedMusicShop.value?.id.toString(),
     };
 
-    filter.removeWhere((key, value) {
-      if (value == null) return true;
-      return value.isEmpty;
-    });
+    filter.removeWhere((key, value) => value == null || value.isEmpty);
 
     var validFilter = filter.cast<String, String>();
     await _loadInstruments(filter: validFilter);
@@ -78,8 +86,8 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
   void _resetFilters() {
     _modelSearch.clear();
     _proizvodjacSearch.clear();
-    _selectedVrstaInstrumenta = null;
-    _selectedMusicShop = null;
+    _selectedVrstaInstrumenta.value = null;
+    _selectedMusicShop.value = null;
     _loadInstruments();
   }
 
@@ -111,161 +119,98 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
           children: [
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _modelSearch,
+              child: _modelSearch.buildStyledTextField(
                 labelText: "Model",
               ),
             ),
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _proizvodjacSearch,
+              child: _proizvodjacSearch.buildStyledTextField(
                 labelText: "Proizvođač",
               ),
             ),
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: DropdownButtonFormField<VrstaInstrumenta>(
-                decoration: InputDecoration(
-                  labelText: "Vrsta instrumenta",
-                  labelStyle: const TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 1.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                value: _selectedVrstaInstrumenta,
-                items: [
-                  const DropdownMenuItem<VrstaInstrumenta>(
-                    value: null,
-                    child: Text('Svi instrumenti',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                  ...?vrstaInstrumentaResult?.result
-                      .map((VrstaInstrumenta option) {
-                    return DropdownMenuItem<VrstaInstrumenta>(
-                      value: option,
-                      child: Text(option.naziv ?? "",
-                          style: const TextStyle(color: Colors.white)),
-                    );
-                  }),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedVrstaInstrumenta = value;
-                  });
+              child: ValueListenableBuilder<VrstaInstrumenta?>(
+                valueListenable: _selectedVrstaInstrumenta,
+                builder: (context, selectedValue, child) {
+                  return vrstaInstrumentaResult?.result
+                          .map((VrstaInstrumenta option) {
+                            return DropdownMenuItem<VrstaInstrumenta>(
+                              value: option,
+                              child: Text(option.naziv ?? "",
+                                  style: const TextStyle(color: Colors.white)),
+                            );
+                          })
+                          .toList()
+                          .buildStyledDropdown(
+                            selectedValue: selectedValue,
+                            onChanged: (value) {
+                              _selectedVrstaInstrumenta.value = value;
+                            },
+                            labelText: "Vrsta instrumenta",
+                          ) ??
+                      const SizedBox.shrink();
                 },
-                style: const TextStyle(color: Colors.white),
-                dropdownColor: const Color.fromARGB(255, 49, 53, 61),
               ),
             ),
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: DropdownButtonFormField<MusicShop>(
-                decoration: InputDecoration(
-                  labelText: "Shop",
-                  labelStyle: const TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 1.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                value: _selectedMusicShop,
-                items: [
-                  const DropdownMenuItem<MusicShop>(
-                    value: null,
-                    child: Text('Sve prodavnice',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                  ...?musicShopResult?.result.map((MusicShop option) {
-                    return DropdownMenuItem<MusicShop>(
-                      value: option,
-                      child: Text(option.naziv ?? "",
-                          style: const TextStyle(color: Colors.white)),
-                    );
-                  }),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedMusicShop = value;
-                  });
+              child: ValueListenableBuilder<MusicShop?>(
+                valueListenable: _selectedMusicShop,
+                builder: (context, selectedValue, child) {
+                  return musicShopResult?.result
+                          .map((MusicShop option) {
+                            return DropdownMenuItem<MusicShop>(
+                              value: option,
+                              child: Text(option.naziv ?? "",
+                                  style: const TextStyle(color: Colors.white)),
+                            );
+                          })
+                          .toList()
+                          .buildStyledDropdown(
+                            selectedValue: selectedValue,
+                            onChanged: (value) {
+                              _selectedMusicShop.value = value;
+                            },
+                            labelText: "Music shop",
+                          ) ??
+                      const SizedBox.shrink();
                 },
-                style: const TextStyle(color: Colors.white),
-                dropdownColor: const Color.fromARGB(255, 49, 53, 61),
               ),
             ),
             const SizedBox(width: 40.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Pretraga'.buildStyledButton(
+                onPressed: _applyFilters,
               ),
-              onPressed: _applyFilters,
-              child: const Text('Pretraga'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Reset filtera'.buildStyledButton(
+                onPressed: _resetFilters,
               ),
-              onPressed: _resetFilters,
-              child: const Text('Reset filtera'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 210,
+              child: 'Novi instrument'.buildStyledButton(
+                onPressed: () async {
+                  final result = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        const InstrumentiDialog(),
+                  );
+                  if (result == true) {
+                    _loadInstruments();
+                  }
+                },
               ),
-              onPressed: () async {},
-              child: const Text('Novi instrument'),
             ),
           ],
         ),
@@ -298,58 +243,89 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                 return StatefulBuilder(
                   builder: (context, setState) {
                     return MouseRegion(
+                      cursor: SystemMouseCursors.click,
                       onEnter: (_) => setState(() => isHovered = true),
                       onExit: (_) => setState(() => isHovered = false),
-                      child: Card(
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
-                          children: [
-                            Image.memory(
-                              base64Decode(instrument.slika!),
-                              width: cardWidth,
-                              height: cardHeight,
-                              fit: BoxFit.cover,
-                            ),
-                            Positioned.fill(
-                              child: AnimatedOpacity(
-                                opacity: isHovered ? 1.0 : 0.0,
-                                duration: const Duration(milliseconds: 200),
-                                child: Container(
-                                  color: Colors.black54,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          instrument.model ?? "",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16.0,
+                      child: GestureDetector(
+                        onTap: () async {
+                          final result = await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                const InstrumentiDialog(),
+                          );
+                          if (result == true) {
+                            _loadInstruments();
+                          }
+                        },
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Stack(
+                            children: [
+                              instrument.slika != null &&
+                                      instrument.slika!.isNotEmpty
+                                  ? Image.memory(
+                                      base64Decode(instrument.slika!),
+                                      width: cardWidth,
+                                      height: cardHeight,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      'assets/images/stock-instrument.jpg',
+                                      width: cardWidth,
+                                      height: cardHeight,
+                                      fit: BoxFit.cover,
+                                    ),
+                              Positioned.fill(
+                                child: AnimatedOpacity(
+                                  opacity: isHovered ? 1.0 : 0.0,
+                                  duration: const Duration(milliseconds: 200),
+                                  child: Container(
+                                    color: Colors.black54,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                instrument.model ?? "",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16.0,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text(
-                                          instrument.proizvodjac ?? "",
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.0,
+                                          Expanded(
+                                            child: Center(
+                                              child: Text(
+                                                instrument.proizvodjac ?? "",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 14.0,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
                                           ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -359,34 +335,6 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget buildStyledTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return TextField(
-      controller: controller,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white),
       ),
     );
   }

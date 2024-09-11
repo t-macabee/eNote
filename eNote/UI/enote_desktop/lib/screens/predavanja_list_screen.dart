@@ -1,3 +1,5 @@
+import 'package:enote_desktop/extensions/elevated_button_extension.dart';
+import 'package:enote_desktop/extensions/text_field_extension.dart';
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/predavanje.dart';
 import 'package:enote_desktop/models/search_result.dart';
@@ -23,11 +25,16 @@ class _PredavanjaListScreenState extends State<PredavanjaListScreen> {
   final TextEditingController _nazivSearch = TextEditingController();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     predavanjeProvider = context.read<PredavanjeProvider>();
 
     _loadPredavanja();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   Future<void> _loadPredavanja({Map<String, String>? filter}) async {
@@ -102,58 +109,30 @@ class _PredavanjaListScreenState extends State<PredavanjaListScreen> {
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _nazivSearch,
+              child: _nazivSearch.buildStyledTextField(
                 labelText: "Naziv",
               ),
             ),
             const SizedBox(width: 40.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Pretraga'.buildStyledButton(
+                onPressed: _applyFilters,
               ),
-              onPressed: _applyFilters,
-              child: const Text('Pretraga'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Reset filtera'.buildStyledButton(
+                onPressed: _resetFilters,
               ),
-              onPressed: _resetFilters,
-              child: const Text('Reset filtera'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 210,
+              child: 'Novo predavanje'.buildStyledButton(
+                onPressed: () async {},
               ),
-              onPressed: () async {},
-              child: const Text('Novo predavanje'),
             ),
           ],
         ),
@@ -235,34 +214,6 @@ class _PredavanjaListScreenState extends State<PredavanjaListScreen> {
                 )),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildStyledTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return TextField(
-      controller: controller,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white),
       ),
     );
   }

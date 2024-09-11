@@ -1,3 +1,6 @@
+import 'package:enote_desktop/extensions/dropdown_button_extension.dart';
+import 'package:enote_desktop/extensions/elevated_button_extension.dart';
+import 'package:enote_desktop/extensions/text_field_extension.dart';
 import 'package:enote_desktop/layouts/master_screen.dart';
 import 'package:enote_desktop/models/korisnik.dart';
 import 'package:enote_desktop/models/kurs.dart';
@@ -23,16 +26,22 @@ class _KursListScreenState extends State<KursListScreen> {
   SearchResult<Korisnik>? korisniciResult;
 
   final TextEditingController _nazivSearch = TextEditingController();
-  Korisnik? _selectedKorisnik;
+
+  final ValueNotifier<Korisnik?> _selectedKorisnik = ValueNotifier(null);
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     kursProvider = context.read<KursProvider>();
     korisniciProvider = context.read<KorisniciProvider>();
 
     _loadKurs();
     _loadKorisnici();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   Future<void> _loadKurs({Map<String, String>? filter}) async {
@@ -48,7 +57,7 @@ class _KursListScreenState extends State<KursListScreen> {
   void _applyFilters() async {
     var filter = {
       'naziv': _nazivSearch.text,
-      'instruktorId': _selectedKorisnik?.id.toString()
+      'instruktorId': _selectedKorisnik.value?.id.toString()
     };
 
     filter.removeWhere((key, value) {
@@ -61,7 +70,7 @@ class _KursListScreenState extends State<KursListScreen> {
 
   void _resetFilters() {
     _nazivSearch.clear();
-    _selectedKorisnik = null;
+    _selectedKorisnik.value = null;
     _loadKurs();
   }
 
@@ -92,108 +101,59 @@ class _KursListScreenState extends State<KursListScreen> {
           children: [
             SizedBox(
               width: 200,
-              child: buildStyledTextField(
-                controller: _nazivSearch,
+              child: _nazivSearch.buildStyledTextField(
                 labelText: "Naziv",
               ),
             ),
             const SizedBox(width: space),
             SizedBox(
               width: 200,
-              child: DropdownButtonFormField<Korisnik>(
-                decoration: InputDecoration(
-                  labelText: "Instruktor",
-                  labelStyle: const TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 2.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 1.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(width: 1.0, color: Colors.white),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                value: _selectedKorisnik,
-                items: [
-                  const DropdownMenuItem<Korisnik>(
-                    value: null,
-                    child: Text('Svi instruktori',
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                  ...?korisniciResult?.result
-                      .where((Korisnik option) => option.uloga == 'Instruktor')
-                      .map((Korisnik option) {
-                    return DropdownMenuItem<Korisnik>(
-                      value: option,
-                      child: Text(
-                          '${option.ime ?? ""} ${option.prezime ?? ""}'.trim(),
-                          style: const TextStyle(color: Colors.white)),
-                    );
-                  }),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    _selectedKorisnik = value;
-                  });
+              child: ValueListenableBuilder<Korisnik?>(
+                valueListenable: _selectedKorisnik,
+                builder: (context, selectedValue, child) {
+                  return korisniciResult?.result
+                          .where(
+                              (Korisnik option) => option.uloga == "Instruktor")
+                          .map((Korisnik option) {
+                            return DropdownMenuItem<Korisnik>(
+                              value: option,
+                              child: Text(
+                                  '${option.ime ?? ""} ${option.prezime ?? ""}',
+                                  style: const TextStyle(color: Colors.white)),
+                            );
+                          })
+                          .toList()
+                          .buildStyledDropdown(
+                            selectedValue: selectedValue,
+                            onChanged: (Korisnik? value) {
+                              _selectedKorisnik.value = value;
+                            },
+                            labelText: "Instruktori",
+                          ) ??
+                      const SizedBox.shrink();
                 },
-                style: const TextStyle(color: Colors.white),
-                dropdownColor: const Color.fromARGB(255, 49, 53, 61),
               ),
             ),
             const SizedBox(width: 40.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Pretraga'.buildStyledButton(
+                onPressed: _applyFilters,
               ),
-              onPressed: _applyFilters,
-              child: const Text('Pretraga'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Reset filtera'.buildStyledButton(
+                onPressed: _resetFilters,
               ),
-              onPressed: _resetFilters,
-              child: const Text('Reset filtera'),
             ),
             const SizedBox(width: space),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.transparent,
-                side: const BorderSide(color: Colors.white, width: 2),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                elevation: 4,
+            SizedBox(
+              width: 200,
+              child: 'Novi kurs'.buildStyledButton(
+                onPressed: () async {},
               ),
-              onPressed: () async {},
-              child: const Text('Novi kurs'),
             ),
           ],
         ),
@@ -213,7 +173,7 @@ class _KursListScreenState extends State<KursListScreen> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
+                crossAxisCount: 5,
                 childAspectRatio: 3.0,
                 mainAxisSpacing: 24.0,
                 crossAxisSpacing: 24.0,
@@ -279,33 +239,41 @@ class _KursListScreenState extends State<KursListScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          ElevatedButton(
-                                            style: buildButtonStyleForCard(),
-                                            onPressed: () {},
-                                            child: const Text('Detalji'),
-                                          ),
-                                          const SizedBox(width: 8.0),
-                                          ElevatedButton(
-                                            style: buildButtonStyleForCard(),
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PredavanjaListScreen(
-                                                    kursId: kurs.id,
-                                                    kursNaziv: kurs.naziv,
+                                      child: ConstrainedBox(
+                                        constraints: const BoxConstraints(
+                                          maxHeight: 80.0,
+                                        ),
+                                        child: Wrap(
+                                          spacing: 8.0,
+                                          runSpacing: 8.0,
+                                          alignment: WrapAlignment.center,
+                                          children: [
+                                            'Detalji'.buildStyledButton(
+                                              onPressed: () {},
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 8),
+                                            ),
+                                            'Predavanja'.buildStyledButton(
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PredavanjaListScreen(
+                                                      kursId: kurs.id,
+                                                      kursNaziv: kurs.naziv,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            },
-                                            child: const Text('Predavanja'),
-                                          ),
-                                        ],
+                                                );
+                                              },
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 8),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -323,47 +291,6 @@ class _KursListScreenState extends State<KursListScreen> {
           );
         },
       ),
-    );
-  }
-
-  Widget buildStyledTextField({
-    required TextEditingController controller,
-    required String labelText,
-  }) {
-    return TextField(
-      controller: controller,
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 1.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(width: 2.0, color: Colors.white),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  ButtonStyle buildButtonStyleForCard() {
-    return ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: Colors.transparent,
-      side: const BorderSide(color: Colors.white, width: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      elevation: 4,
     );
   }
 }
