@@ -1,18 +1,14 @@
+import 'package:enote_desktop/extensions/dropdown_button_extension.dart';
+import 'package:enote_desktop/extensions/elevated_button_extension.dart';
+import 'package:enote_desktop/extensions/text_field_extension.dart';
 import 'package:enote_desktop/models/instrumenti.dart';
-import 'package:enote_desktop/models/music_shop.dart';
-import 'package:enote_desktop/models/search_result.dart';
-import 'package:enote_desktop/models/vrsta_instrumenta.dart';
-import 'package:enote_desktop/providers/instrumenti_provider.dart';
-import 'package:enote_desktop/providers/music_shop_provider.dart';
-import 'package:enote_desktop/providers/vrsta_instrumenta_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:provider/provider.dart';
 
 class InstrumentiDialog extends StatefulWidget {
   final Instrumenti? instrument;
-
-  const InstrumentiDialog({super.key, this.instrument});
+  final bool edit;
+  const InstrumentiDialog({super.key, this.instrument, required this.edit});
 
   @override
   State<InstrumentiDialog> createState() => _InstrumentiDialogState();
@@ -20,222 +16,183 @@ class InstrumentiDialog extends StatefulWidget {
 
 class _InstrumentiDialogState extends State<InstrumentiDialog> {
   final _formKey = GlobalKey<FormBuilderState>();
-  final Map<String, dynamic> _initialValue = {};
 
-  SearchResult<VrstaInstrumenta>? vrstaInstrumentaResult;
-  SearchResult<MusicShop>? musicShopResult;
+  TextEditingController model = TextEditingController();
+  TextEditingController proizvodjac = TextEditingController();
+  TextEditingController opis = TextEditingController();
+  TextEditingController vrstaInstrumenta = TextEditingController();
+  TextEditingController musicShop = TextEditingController();
 
-  late InstrumentiProvider instrumentiProvider;
-  late VrstaInstrumentaProvider vrstaInstrumentaProvider;
-  late MusicShopProvider musicShopProvider;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
+  bool editMode = false;
+  String? selectedMusicShop;
+  String? selectedInstrumentType;
 
   @override
   void initState() {
-    musicShopProvider = context.read<MusicShopProvider>();
-    vrstaInstrumentaProvider = context.read<VrstaInstrumentaProvider>();
-    instrumentiProvider = context.read<InstrumentiProvider>();
-
-    _loadVrstaInstrumenta();
-    _loadMusicShops();
-
     super.initState();
+
+    if (widget.edit == true && widget.instrument != null) {
+      loadCurrent();
+      editMode = false;
+    } else {
+      editMode = true;
+    }
   }
 
-  Future<void> _loadVrstaInstrumenta() async {
-    vrstaInstrumentaResult = await vrstaInstrumentaProvider.get();
-    setState(() {});
+  void loadCurrent() {
+    model.text = widget.instrument!.model!;
+    proizvodjac.text = widget.instrument!.proizvodjac!;
+    opis.text = widget.instrument!.opis!;
+    vrstaInstrumenta.text = widget.instrument!.vrstaInstrumenta!;
+    musicShop.text = widget.instrument!.musicShop!;
   }
 
-  Future<void> _loadMusicShops() async {
-    musicShopResult = await musicShopProvider.get();
-    setState(() {});
+  String get dialogTitle {
+    if (widget.instrument == null) {
+      return "Novi instrument";
+    } else if (editMode) {
+      return "Ažuriranje";
+    } else {
+      return "Detalji";
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color.fromARGB(255, 0, 150, 135);
+    const Color borderColor = Colors.white;
+    const TextStyle textStyle = TextStyle(color: Colors.white);
+    const Color lockedFieldColor = Color.fromARGB(255, 26, 89, 105);
+    const Color editableFieldColor = Color.fromARGB(255, 107, 105, 105);
 
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
         side: const BorderSide(color: borderColor, width: 2.0),
       ),
-      content: SizedBox(
-        width: 400,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [_buildForm(), const SizedBox(height: 10.0)],
-          ),
-        ),
-      ),
       backgroundColor: const Color.fromARGB(255, 26, 89, 105),
-      actionsPadding:
-          const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
-      actions: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 100,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.white,
+      title: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Text(dialogTitle,
+            style: const TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+            textAlign: TextAlign.center),
+      ),
+      content: SizedBox(
+        height: 500,
+        width: 500,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  model.buildStyledTextField(
+                    labelText: "Model",
+                    textStyle: textStyle,
+                    enabled: editMode,
+                    fillColor: editMode ? editableFieldColor : lockedFieldColor,
                   ),
-                  child: const Text('Cancel'),
-                ),
+                  const SizedBox(height: 32.0),
+                  proizvodjac.buildStyledTextField(
+                    labelText: "Proizvođač",
+                    textStyle: textStyle,
+                    enabled: editMode,
+                    fillColor: editMode ? editableFieldColor : lockedFieldColor,
+                  ),
+                  const SizedBox(height: 32.0),
+                  opis.buildStyledTextField(
+                    labelText: "Opis",
+                    textStyle: textStyle,
+                    enabled: editMode,
+                    fillColor: editMode ? editableFieldColor : lockedFieldColor,
+                  ),
+                  const SizedBox(height: 32.0),
+                  if (widget.edit)
+                    vrstaInstrumenta.buildStyledTextField(
+                      labelText: "Vrsta instrumenta",
+                      textStyle: textStyle,
+                      enabled: false,
+                    )
+                  else
+                    _buildInstrumentTypeDropdown(),
+                  const SizedBox(height: 32.0),
+                  if (widget.edit)
+                    musicShop.buildStyledTextField(
+                      labelText: "Music Shop",
+                      textStyle: textStyle,
+                      enabled: false,
+                    )
+                  else
+                    _buildMusicShopDropdown(),
+                  const SizedBox(height: 48.0),
+                  Wrap(
+                    spacing: 16.0,
+                    alignment: WrapAlignment.end,
+                    children: [
+                      if (widget.edit)
+                        "Uredi".buildStyledButton(
+                          onPressed: () {
+                            setState(() {
+                              editMode = !editMode;
+                            });
+                          },
+                          child: Text(editMode ? 'Spremi' : 'Uredi'),
+                        )
+                      else
+                        "Spremi".buildStyledButton(
+                          onPressed: () {},
+                          child: const Text('Spremi'),
+                        ),
+                      "Otkaži".buildStyledButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Otkaži'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(width: 8.0),
-              customElevatedButton(
-                text: 'Save',
-                onPressed: () async {
-                  if (_formKey.currentState?.saveAndValidate() ?? false) {
-                    await instrumentiProvider
-                        .insert(_formKey.currentState?.value);
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pop(true);
-                  } else {
-                    debugPrint('Form validation failed.');
-                  }
-                },
-                borderColor: Colors.white,
-              ),
-            ],
+            ),
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildForm() {
-    return FormBuilder(
-      key: _formKey,
-      initialValue: _initialValue,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            customFormBuilderTextField(
-              name: 'model',
-              labelText: 'Model',
-            ),
-            const SizedBox(height: 16.0),
-            customFormBuilderTextField(
-              name: 'proizvodjac',
-              labelText: 'Proizvođač',
-            ),
-            const SizedBox(height: 16.0),
-            customFormBuilderTextField(
-              name: 'opis',
-              labelText: 'Opis',
-            ),
-            const SizedBox(height: 16.0),
-            customFormBuilderDropdown(
-              name: "vrstaInstrumentaId",
-              labelText: "Vrsta instrumenta",
-              items: vrstaInstrumentaResult?.result
-                      .map<DropdownMenuItem<String>>(
-                          (x) => DropdownMenuItem<String>(
-                                value: x.id.toString(),
-                                child: Text(x.naziv ?? ""),
-                              ))
-                      .toList() ??
-                  [],
-            ),
-            const SizedBox(height: 16.0),
-            customFormBuilderDropdown(
-              name: "musicShopId",
-              labelText: "Music shop",
-              items: musicShopResult?.result
-                      .map<DropdownMenuItem<String>>(
-                          (x) => DropdownMenuItem<String>(
-                                value: x.id.toString(),
-                                child: Text(x.naziv ?? ""),
-                              ))
-                      .toList() ??
-                  [],
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget customFormBuilderTextField({
-    required String name,
-    required String labelText,
-  }) {
-    return FormBuilderTextField(
-      name: name,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white),
-        hintStyle: const TextStyle(color: Colors.white70),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-      ),
-      style: const TextStyle(color: Colors.white),
-    );
+  Widget _buildInstrumentTypeDropdown() {
+    final instrumentTypes = ['Guitar', 'Piano', 'Drums', 'Violin'];
+    return instrumentTypes
+        .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+        .toList()
+        .buildStyledDropdown(
+          selectedValue: selectedInstrumentType,
+          onChanged: (value) {
+            setState(() {
+              selectedInstrumentType = value;
+            });
+          },
+          labelText: "Vrsta instrumenta",
+          backgroundColor: const Color.fromARGB(255, 107, 105, 105),
+        );
   }
 
-  Widget customElevatedButton({
-    required String text,
-    required VoidCallback onPressed,
-    required Color borderColor,
-  }) {
-    return SizedBox(
-      width: 100,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.transparent,
-          side: BorderSide(color: borderColor, width: 2.0),
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          elevation: 4,
-        ),
-        child: Text(text),
-      ),
-    );
-  }
-
-  Widget customFormBuilderDropdown({
-    required String name,
-    required String labelText,
-    required List<DropdownMenuItem<String>> items,
-  }) {
-    return FormBuilderDropdown<String>(
-      name: name,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.white),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-      ),
-      style: const TextStyle(color: Colors.white),
-      items: items,
-      dropdownColor: const Color.fromARGB(255, 49, 53, 61),
-    );
+  Widget _buildMusicShopDropdown() {
+    final musicShops = ['Shop A', 'Shop B', 'Shop C'];
+    return musicShops
+        .map((shop) => DropdownMenuItem(value: shop, child: Text(shop)))
+        .toList()
+        .buildStyledDropdown(
+          selectedValue: selectedMusicShop,
+          onChanged: (value) {
+            setState(() {
+              selectedMusicShop = value;
+            });
+          },
+          labelText: "Music Shop",
+          backgroundColor: const Color.fromARGB(255, 107, 105, 105),
+        );
   }
 }

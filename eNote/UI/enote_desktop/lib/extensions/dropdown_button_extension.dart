@@ -8,6 +8,7 @@ extension DropdownButtonExtensions<T> on List<DropdownMenuItem<T>> {
     Color textColor = Colors.white,
     Color borderColor = Colors.white,
     Color dropdownColor = const Color.fromARGB(255, 49, 53, 61),
+    Color? backgroundColor,
   }) {
     return DropdownButtonFormField<T>(
       decoration: InputDecoration(
@@ -25,13 +26,17 @@ extension DropdownButtonExtensions<T> on List<DropdownMenuItem<T>> {
           borderSide: BorderSide(width: 2.0, color: borderColor),
           borderRadius: BorderRadius.circular(12.0),
         ),
+        filled: backgroundColor != null,
+        fillColor: backgroundColor,
       ),
       value: selectedValue,
       items: this,
       onChanged: onChanged,
       style: TextStyle(color: textColor),
       dropdownColor: dropdownColor,
-      hint: Text(labelText, style: TextStyle(color: textColor)),
+      icon: Icon(Icons.arrow_drop_down, color: textColor),
+      iconEnabledColor: textColor,
+      iconDisabledColor: textColor.withOpacity(0.5),
     );
   }
 }

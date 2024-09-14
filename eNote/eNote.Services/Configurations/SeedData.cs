@@ -43,7 +43,7 @@ namespace eNote.Services.Configurations
         public static void SeedInstrumentTypes(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<VrstaInstrumenta>().HasData(
-                new VrstaInstrumenta { Id = 1, Naziv = "Zicani"},
+                new VrstaInstrumenta { Id = 1, Naziv = "žicani"},
                 new VrstaInstrumenta { Id = 2, Naziv = "Udaraljke"},
                 new VrstaInstrumenta { Id = 3, Naziv = "Limeni"},
                 new VrstaInstrumenta { Id = 4, Naziv = "Tipke"},

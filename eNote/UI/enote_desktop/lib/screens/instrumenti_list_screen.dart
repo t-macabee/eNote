@@ -136,23 +136,31 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
               child: ValueListenableBuilder<VrstaInstrumenta?>(
                 valueListenable: _selectedVrstaInstrumenta,
                 builder: (context, selectedValue, child) {
-                  return vrstaInstrumentaResult?.result
-                          .map((VrstaInstrumenta option) {
-                            return DropdownMenuItem<VrstaInstrumenta>(
-                              value: option,
-                              child: Text(option.naziv ?? "",
-                                  style: const TextStyle(color: Colors.white)),
-                            );
-                          })
-                          .toList()
-                          .buildStyledDropdown(
-                            selectedValue: selectedValue,
-                            onChanged: (value) {
-                              _selectedVrstaInstrumenta.value = value;
-                            },
-                            labelText: "Vrsta instrumenta",
-                          ) ??
-                      const SizedBox.shrink();
+                  final List<DropdownMenuItem<VrstaInstrumenta>> dropdownItems =
+                      [
+                    const DropdownMenuItem<VrstaInstrumenta>(
+                      value: null,
+                      child: Text("Svi instrumenti",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    ...vrstaInstrumentaResult?.result
+                            .map((VrstaInstrumenta option) {
+                          return DropdownMenuItem<VrstaInstrumenta>(
+                            value: option,
+                            child: Text(option.naziv ?? "",
+                                style: const TextStyle(color: Colors.white)),
+                          );
+                        }).toList() ??
+                        [],
+                  ];
+
+                  return dropdownItems.buildStyledDropdown(
+                    selectedValue: selectedValue,
+                    onChanged: (value) {
+                      _selectedVrstaInstrumenta.value = value;
+                    },
+                    labelText: "Vrsta instrumenta",
+                  );
                 },
               ),
             ),
@@ -162,23 +170,29 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
               child: ValueListenableBuilder<MusicShop?>(
                 valueListenable: _selectedMusicShop,
                 builder: (context, selectedValue, child) {
-                  return musicShopResult?.result
-                          .map((MusicShop option) {
-                            return DropdownMenuItem<MusicShop>(
-                              value: option,
-                              child: Text(option.naziv ?? "",
-                                  style: const TextStyle(color: Colors.white)),
-                            );
-                          })
-                          .toList()
-                          .buildStyledDropdown(
-                            selectedValue: selectedValue,
-                            onChanged: (value) {
-                              _selectedMusicShop.value = value;
-                            },
-                            labelText: "Music shop",
-                          ) ??
-                      const SizedBox.shrink();
+                  final List<DropdownMenuItem<MusicShop>> dropdownItems = [
+                    const DropdownMenuItem<MusicShop>(
+                      value: null,
+                      child: Text("Svi shopovi",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    ...musicShopResult?.result.map((MusicShop option) {
+                          return DropdownMenuItem<MusicShop>(
+                            value: option,
+                            child: Text(option.naziv ?? "",
+                                style: const TextStyle(color: Colors.white)),
+                          );
+                        }).toList() ??
+                        [],
+                  ];
+
+                  return dropdownItems.buildStyledDropdown(
+                    selectedValue: selectedValue,
+                    onChanged: (value) {
+                      _selectedMusicShop.value = value;
+                    },
+                    labelText: "Music shop",
+                  );
                 },
               ),
             ),
@@ -203,8 +217,9 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                 onPressed: () async {
                   final result = await showDialog<bool>(
                     context: context,
-                    builder: (BuildContext context) =>
-                        const InstrumentiDialog(),
+                    builder: (BuildContext context) => const InstrumentiDialog(
+                      edit: false,
+                    ),
                   );
                   if (result == true) {
                     _loadInstruments();
@@ -251,7 +266,8 @@ class _InstrumentiListScreenState extends State<InstrumentiListScreen> {
                           final result = await showDialog<bool>(
                             context: context,
                             builder: (BuildContext context) =>
-                                const InstrumentiDialog(),
+                                InstrumentiDialog(
+                                    instrument: instrument, edit: true),
                           );
                           if (result == true) {
                             _loadInstruments();
