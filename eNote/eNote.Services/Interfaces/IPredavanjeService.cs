@@ -1,11 +1,11 @@
-﻿using eNote.Model.Enums;
+﻿using eNote.Model.DTOs;
 using eNote.Model.Requests.Predavanje;
 using eNote.Model.SearchObjects;
 
 
 namespace eNote.Services.Interfaces
 {
-    public interface IPredavanjeService : ICRUDService<Model.DTOs.Predavanje, PredavanjeSearchObject, PredavanjeInsertRequest, PredavanjeUpdateRequest>
+    public interface IPredavanjeService : ICRUDService<Predavanje, PredavanjeSearchObject, PredavanjeInsertRequest, PredavanjeUpdateRequest>
     {
         
     }

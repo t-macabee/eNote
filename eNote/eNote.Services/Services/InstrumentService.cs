@@ -1,10 +1,10 @@
 ﻿using eNote.Model.Requests.Instrument;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Database.Entities;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace eNote.Services.Services
 {

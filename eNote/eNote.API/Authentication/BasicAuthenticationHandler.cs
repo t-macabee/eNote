@@ -1,12 +1,12 @@
 ﻿using eNote.Model;
-using eNote.Services.Database;
+using eNote.Services.Database.Entities;
 using eNote.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Encodings.Web;
+using System.Text;
 
 namespace eNote.API.Authentication
 {
@@ -34,43 +34,33 @@ namespace eNote.API.Authentication
                     Password = credentials[1],
                 };
 
-                ClaimsIdentity identity = null;
-
                 var user = await authService.Login(loginRequest);
 
-                if (user is Model.Korisnik korisnik)
+                if (user is BaseKorisnik korisnik)
                 {
-                    identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, korisnik.Uloga.ToString());
-                }
-                else if (user is Model.DTOs.MusicShop shop)
-                {
-                    identity = CreateIdentity(shop.Id.ToString(), shop.KorisnickoIme, shop.Uloga.ToString());
-                }
+                    var identity = CreateIdentity(korisnik.Id.ToString(), korisnik.KorisnickoIme, korisnik.Uloga.ToString());
+                    var principal = new ClaimsPrincipal(identity);
+                    var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
-                if (identity == null)
-                {
-                    return AuthenticateResult.Fail("Invalid username or password");
+                    return AuthenticateResult.Success(ticket);
                 }
 
-                var principal = new ClaimsPrincipal(identity);
-                var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
-                return AuthenticateResult.Success(ticket);
+                return AuthenticateResult.Fail("Invalid username or password");
             }
             catch (Exception ex)
             {
                 return AuthenticateResult.Fail($"Authentication failed: {ex.Message}");
             }
         }
-            
+
         private ClaimsIdentity CreateIdentity(string id, string username, string role)
         {
             var claims = new List<Claim>
-            {
-                new (ClaimTypes.Name, username),
-                new (ClaimTypes.NameIdentifier, id),
-                new (ClaimTypes.Role, role)
-            };
+        {
+            new (ClaimTypes.Name, username),
+            new (ClaimTypes.NameIdentifier, id),
+            new (ClaimTypes.Role, role)
+        };
             return new ClaimsIdentity(claims, Scheme.Name);
         }
     }

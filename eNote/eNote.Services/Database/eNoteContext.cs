@@ -1,47 +1,46 @@
-﻿using eNote.Model.Enums;
-using eNote.Services.Configurations;
+﻿using eNote.Services.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Database
 {
     public class ENoteContext(DbContextOptions<ENoteContext> options) : DbContext(options)
     {
-        public DbSet<Korisnik> Korisnici { get; set; }
-        public DbSet<MusicShop> MusicShops { get; set; }
+        public DbSet<Administrator> Administrator { get; set; }
+        public DbSet<Instruktor> Instruktor { get; set; }
+        public DbSet<Polaznik> Polaznik { get; set; }
+        public DbSet<MusicShop> MusicShop { get; set; }
         public DbSet<Adresa> Adresa { get; set; }
-        public DbSet<Uloge> Uloge { get; set; }
         public DbSet<Kurs> Kurs { get; set; }
-        public DbSet<Predavanje> Predavanja { get; set; }
-        public DbSet<TipPredavanja> TipPredavanja { get; set; }
-        public DbSet<Upis> Upisi { get; set; }
+        public DbSet<Predavanje> Predavanje { get; set; }
+        public DbSet<Upis> Upis { get; set; }
         public DbSet<Instrumenti> Instrumenti { get; set; }
         public DbSet<VrstaInstrumenta> VrstaInstrumenta { get; set; }
         public DbSet<IznajmljivanjeInstrumenta> IznajmljivanjeInstrumenata { get; set; }
-        public DbSet<Obavijest> Obavijesti { get; set; }
+        public DbSet<Napomena> Napomena { get; set; }
         public DbSet<PredajaZadatka> PredajaZadatka { get; set; }
-        public DbSet<Zadatak> Zadaci { get; set; }
-        public DbSet<Prisustvo> Prisustva { get; set; }
+        public DbSet<Zadatak> Zadatak { get; set; }
+        public DbSet<Prisustvo> Prisustvo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {           
-            // Korisnik-uloga
-            modelBuilder.Entity<Korisnik>()
-                .HasOne(k => k.Uloga)
-                .WithMany(u => u.Korisnik)
-                .HasForeignKey(k => k.UlogaId)
+        {
+            // Administrator-adresa
+            modelBuilder.Entity<Administrator>()
+                .HasOne(k => k.Adresa)
+                .WithMany(a => a.Administratori)
+                .HasForeignKey(k => k.AdresaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // MusicShop-uloga
-            modelBuilder.Entity<MusicShop>()
-                .HasOne(m => m.Uloga)
-                .WithMany(u => u.MusicShop)
-                .HasForeignKey(m => m.UlogaId)
-                .OnDelete(DeleteBehavior.Restrict);          
-
-            // Korisnik-adresa
-            modelBuilder.Entity<Korisnik>()
+            // Instruktor-adresa
+            modelBuilder.Entity<Instruktor>()
                 .HasOne(k => k.Adresa)
-                .WithMany(a => a.Korisnici)
+                .WithMany(a => a.Instruktori)
+                .HasForeignKey(k => k.AdresaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Polaznik-adresa
+            modelBuilder.Entity<Polaznik>()
+                .HasOne(k => k.Adresa)
+                .WithMany(a => a.Polaznici)
                 .HasForeignKey(k => k.AdresaId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -75,9 +74,9 @@ namespace eNote.Services.Database
 
             // Upis
             modelBuilder.Entity<Upis>()
-                .HasOne(u => u.Student)
+                .HasOne(u => u.Polaznik)
                 .WithMany(s => s.Upis)
-                .HasForeignKey(u => u.StudentId)
+                .HasForeignKey(u => u.PolaznikId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Upis>()
@@ -85,7 +84,7 @@ namespace eNote.Services.Database
                 .WithMany(k => k.Upis)
                 .HasForeignKey(u => u.KursId)
                 .OnDelete(DeleteBehavior.Restrict);
-         
+
             modelBuilder.Entity<Kurs>()
                 .Property(k => k.Cijena)
                 .HasColumnType("decimal(8, 2)");
@@ -99,9 +98,9 @@ namespace eNote.Services.Database
 
             // Prisustvo
             modelBuilder.Entity<Prisustvo>()
-                .HasOne(p => p.Student)
+                .HasOne(p => p.Polaznik)
                 .WithMany(s => s.Prisustvo)
-                .HasForeignKey(p => p.StudentId)
+                .HasForeignKey(p => p.PolaznikId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Prisustvo>()
@@ -111,7 +110,7 @@ namespace eNote.Services.Database
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Predavanje-obavijest
-            modelBuilder.Entity<Obavijest>()
+            modelBuilder.Entity<Napomena>()
                 .HasOne(o => o.Predavanje)
                 .WithMany(p => p.Napomena)
                 .HasForeignKey(o => o.PredavanjeId)
@@ -124,13 +123,6 @@ namespace eNote.Services.Database
                 .HasForeignKey(z => z.PredavanjeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Predavanje-tip predavanja
-            modelBuilder.Entity<Predavanje>()
-                .HasOne(p => p.TipPredavanja)
-                .WithMany(t => t.Predavanje)  
-                .HasForeignKey(p => p.TipPredavanjaId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             // PredajaZadatka
             modelBuilder.Entity<PredajaZadatka>()
                 .HasOne(p => p.Zadatak)
@@ -139,16 +131,16 @@ namespace eNote.Services.Database
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PredajaZadatka>()
-                .HasOne(p => p.Student)
+                .HasOne(p => p.Polaznik)
                 .WithMany(s => s.PredajaZadatka)
-                .HasForeignKey(p => p.StudentId)
+                .HasForeignKey(p => p.PolaznikId)
                 .OnDelete(DeleteBehavior.Restrict);
-          
+
             // Iznajmljivanje
             modelBuilder.Entity<IznajmljivanjeInstrumenta>()
-                .HasOne(r => r.Student)
+                .HasOne(r => r.Polaznik)
                 .WithMany(s => s.IznajmljivanjeInstrumenta)
-                .HasForeignKey(r => r.StudentId)
+                .HasForeignKey(r => r.PolaznikId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<IznajmljivanjeInstrumenta>()

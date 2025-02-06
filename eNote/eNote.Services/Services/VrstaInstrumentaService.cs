@@ -1,13 +1,14 @@
 ﻿using eNote.Model.Requests.VrstaInstrumenta;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Database.Entities;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class VrstaInstrumentaService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest, Database.VrstaInstrumenta>(context, mapper), IVrstaInstrumentaService
+    public class VrstaInstrumentaService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.VrstaInstrumenta, VrstaInstrumentaSearchObject, VrstaInstrumentaUpsertRequest, VrstaInstrumentaUpsertRequest, VrstaInstrumenta>(context, mapper), IVrstaInstrumentaService
     {
         public override IQueryable<VrstaInstrumenta> AddFilter(VrstaInstrumentaSearchObject search, IQueryable<VrstaInstrumenta> query)
         {

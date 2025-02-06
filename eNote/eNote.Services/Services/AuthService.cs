@@ -1,34 +1,48 @@
 ﻿using eNote.Model;
 using eNote.Services.Database;
-using eNote.Services.Helpers;
+using eNote.Services.Database.Entities;
 using eNote.Services.Interfaces;
-using MapsterMapper;
+using eNote.Services.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace eNote.Services.Services
 {
-    public class AuthService(ENoteContext context, IMapper mapper) : IAuthService
+    public class AuthService(ENoteContext context) : IAuthService
     {
-        public async Task<object> Login(LoginModel model)
+        public async Task<BaseKorisnik?> Login(LoginModel model)
         {
-            var korisnikEntity = await context.Korisnici
-                .Include(x => x.Uloga)
-                .Include(x => x.Adresa)
-                .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
+            var admin = await context.Administrator.FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
 
-            if (korisnikEntity != null && PasswordBuilder.VerifyPassword(korisnikEntity.LozinkaSalt, model.Password, korisnikEntity.LozinkaHash))
+            if (admin != null && PasswordBuilder.VerifyPassword(admin.LozinkaSalt, model.Password, admin.LozinkaHash))
             {
-                return mapper.Map<Model.Korisnik>(korisnikEntity);
+                return admin;
             }
 
-            var musicShopEntity = await context.MusicShops
-                .Include(x => x.Uloga)
+            var instruktor = await context.Instruktor
                 .Include(x => x.Adresa)
                 .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
 
-            if (musicShopEntity != null && PasswordBuilder.VerifyPassword(musicShopEntity.LozinkaSalt, model.Password, musicShopEntity.LozinkaHash))
+            if (instruktor != null && PasswordBuilder.VerifyPassword(instruktor.LozinkaSalt, model.Password, instruktor.LozinkaHash))
             {
-                return mapper.Map<Model.DTOs.MusicShop>(musicShopEntity);
+                return instruktor;
+            }
+
+            var polaznik = await context.Polaznik
+                .Include(x => x.Adresa)
+                .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
+
+            if (polaznik != null && PasswordBuilder.VerifyPassword(polaznik.LozinkaSalt, model.Password, polaznik.LozinkaHash))
+            {
+                return polaznik;
+            }
+
+            var musicShop = await context.MusicShop
+                .Include(x => x.Adresa)
+                .FirstOrDefaultAsync(x => x.KorisnickoIme == model.Username);
+
+            if (musicShop != null && PasswordBuilder.VerifyPassword(musicShop.LozinkaSalt, model.Password, musicShop.LozinkaHash))
+            {
+                return musicShop;
             }
 
             return null;

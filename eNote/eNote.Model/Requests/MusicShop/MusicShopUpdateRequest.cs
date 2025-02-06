@@ -1,13 +1,11 @@
 ﻿using eNote.Model.Requests.Base;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace eNote.Model.Requests.MusicShop
 {
-    public class MusicShopUpdateRequest : BaseMembersUpdateRequest
+    public class MusicShopUpdateRequest : BaseKorisnikUpdateRequest
     {
-        public string Naziv {  get; set; }
-        public string RadnoVrijeme {  get; set; }
+        public string? Naziv {  get; set; }
+        public string? Opis {  get; set; }
+        public string? RadnoVrijeme {  get; set; }
     }
 }

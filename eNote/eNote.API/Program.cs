@@ -1,9 +1,9 @@
 using eNote.API.Authentication;
 using eNote.API.Filters;
-using eNote.Services.Configurations;
 using eNote.Services.Database;
 using eNote.Services.Interfaces;
 using eNote.Services.Services;
+using eNote.Services.Utilities;
 using Mapster;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
@@ -14,15 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IInstrumentService, InstrumentService>();
 builder.Services.AddTransient<IKursService, KursService>();
-builder.Services.AddTransient<IKorisniciService, KorisniciService>();
 builder.Services.AddTransient<IMusicShopService, MusicShopService>();
 builder.Services.AddTransient<IUpisService, UpisService>();
 builder.Services.AddTransient<IPredavanjeService, PredavanjeService>();
-builder.Services.AddTransient<IObavijestService, ObavijestService>();
+builder.Services.AddTransient<INapomenaService, NapomenaService>();
 builder.Services.AddTransient<IVrstaInstrumentaService, VrstaInstrumentaService>();
 builder.Services.AddTransient<IAdresaService, AdresaService>();
-builder.Services.AddTransient<IUlogeService, UlogeService>();
-builder.Services.AddTransient<ITipPredavanjaService, TipPredavanjaService>();
 
 builder.Services.AddControllers(x =>
 {

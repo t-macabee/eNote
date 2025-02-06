@@ -1,7 +1,7 @@
-﻿using eNote.Model.Enums;
-using eNote.Model.Requests.Kurs;
+﻿using eNote.Model.Requests.Kurs;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Database.Entities;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +19,9 @@ namespace eNote.Services.Services
                 query = query.Where(x => x.Naziv.Contains(search.Naziv));
             }
 
-            if (search.instruktorId.HasValue)
+            if (search.InstruktorId.HasValue)
             {
-                query = query.Where(x => x.InstruktorId == search.instruktorId.Value);
+                query = query.Where(x => x.InstruktorId == search.InstruktorId.Value);
             }
 
             return query;
@@ -43,13 +43,12 @@ namespace eNote.Services.Services
                 throw new Exception("Kurs pod tim imenom već postoji. Molimo odaberite drugo ime za kurs.");
             }
 
-            var instruktor = await context.Korisnici
-                .FirstOrDefaultAsync(x => x.Id == request.InstruktorId && x.UlogaId == 2) ?? throw new Exception("Odabrani korisnik nije Instruktor");
+            var instruktor = await context.Instruktor.FirstOrDefaultAsync(x => x.Id == request.InstruktorId) ?? throw new Exception("Odabrani korisnik nije Instruktor");
 
-            if (request.DatumPocetka.Date < DateTime.Today)
+            if (request.DatumPocetka < DateTime.Today)
                 throw new ArgumentException("Početni datum ne može biti manji od trenutnog datuma.");
 
-            if (request.DatumZavrsetka.Date < request.DatumPocetka.Date)
+            if (request.DatumZavrsetka < request.DatumPocetka)
                 throw new ArgumentException("Datum završetka ne može biti manji od početnog datuma.");
 
             entity.InstruktorId = request.InstruktorId;

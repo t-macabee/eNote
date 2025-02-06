@@ -1,9 +1,10 @@
 ﻿using eNote.Model;
+using eNote.Services.Database.Entities;
 
 namespace eNote.Services.Interfaces
 {
     public interface IAuthService 
     {
-        Task<object> Login(LoginModel model);
+        Task<BaseKorisnik?> Login(LoginModel model);
     }
 }

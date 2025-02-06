@@ -1,8 +1,6 @@
-﻿using eNote.Model.Requests.Korisnik;
-using eNote.Model.Requests.Kurs;
+﻿using eNote.Model.Requests.Kurs;
 using eNote.Model.SearchObjects;
 using eNote.Services.Interfaces;
-using eNote.Services.Services;
 
 namespace eNote.API.Controllers
 {

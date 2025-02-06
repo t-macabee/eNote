@@ -1,23 +1,22 @@
-﻿using eNote.Model.Enums;
-using eNote.Model.Requests.Upis;
+﻿using eNote.Model.Requests.Upis;
 using eNote.Model.SearchObjects;
 using eNote.Services.Database;
+using eNote.Services.Database.Entities;
 using eNote.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace eNote.Services.Services
 {
-    public class UpisService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, object, Upis>(context, mapper), IUpisService
+    public class UpisService(ENoteContext context, IMapper mapper) : CRUDService<Model.DTOs.Upis, UpisSearchObject, UpisInsertRequest, UpisUpdateRequest, Upis>(context, mapper), IUpisService
     {
         public override IQueryable<Upis> AddFilter(UpisSearchObject search, IQueryable<Upis> query)
         {
             query = base.AddFilter(search, query);
 
-            if (search.StudentId.HasValue)
+            if (search.PolaznikId.HasValue)
             {
-                query = query.Where(x => x.StudentId == search.StudentId.Value);
+                query = query.Where(x => x.PolaznikId == search.PolaznikId.Value);
             }
 
             if (search.KursId.HasValue)
@@ -30,7 +29,7 @@ namespace eNote.Services.Services
 
         public override async Task<Model.DTOs.Upis> GetById(int id)
         {
-            var entity = await context.Upisi.FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await context.Upis.FirstOrDefaultAsync(x => x.Id == id);
 
             if (entity == null)
             {
@@ -42,40 +41,27 @@ namespace eNote.Services.Services
 
         public override async Task BeforeInsert(UpisInsertRequest request, Upis entity)
         {
-            var student = await context.Korisnici.FindAsync(request.StudentId);
+            var student = await context.Polaznik.FindAsync(request.PolaznikId) ?? throw new Exception("Samo korisnici sa ulogom 'Polaznik' mogu biti upisani na kurs.");
 
-            if (student == null || student.UlogaId != 3)
+            if (await context.Upis.AnyAsync(x => x.PolaznikId == request.PolaznikId && x.KursId == request.KursId))
             {
-                throw new Exception("Samo korisnici sa ulogom 'Polaznik' mogu biti upisani na kurs.");
+                throw new Exception("Polaznik je prijavljen na ovaj kurs.");
             }
 
-            if (await context.Upisi.AnyAsync(x => x.StudentId == request.StudentId && x.KursId == request.KursId))
-            {
-                throw new Exception("Student je prijavljen na ovaj kurs.");
-            }
+            entity.PolaznikId = request.PolaznikId;
 
-            entity.StudentId = request.StudentId;
             entity.KursId = request.KursId;
 
             var kurs = await context.Kurs.FindAsync(request.KursId);
-            if (kurs != null)
-            {
-                kurs.BrojUpisanih++;
-            }
 
             await base.BeforeInsert(request, entity);
         }
 
         public override async Task Delete(int id)
         {
-            var entity = await context.Upisi.Include(x => x.Kurs).FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("ID nije pronađen", nameof(id));
+            var entity = await context.Upis.Include(x => x.Kurs).FirstOrDefaultAsync(x => x.Id == id) ?? throw new ArgumentException("ID nije pronađen", nameof(id));
 
-            if (entity.Kurs != null && entity.Kurs.BrojUpisanih > 0)
-            {
-                entity.Kurs.BrojUpisanih--;
-            }
-
-            context.Upisi.Remove(entity);
+            context.Upis.Remove(entity);
 
             await context.SaveChangesAsync();
         }
